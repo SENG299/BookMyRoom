@@ -147,6 +147,47 @@ module.exports = function(app, express) {
 		});
 
 
+
+
+
+//added by JJ 
+// on routes that end in /bookings/day
+// returns all the boookings in a specific day
+// ----------------------------------------------------
+	apiRouter.route('/bookings/day')
+		
+		.get(function(req, res, year, month, day) {
+
+			Booking.find({"start_time": {"$gte": new Date(year, month, day), "$lte": new Date(year, month, day)}}, function(err, bookings) {
+				if (err) res.send(err);
+
+				// return the bookings
+				res.json(bookings);
+			});
+		});
+
+// on routes that end in /bookings/user
+// returns all the boookings in a specific day
+// ----------------------------------------------------
+	apiRouter.route('/bookings/:netlink_id')
+		
+		.get(function(req, res) {
+
+			Booking.find({"netlink_id": req.params.netlink_id, function(err, bookings) {
+				if (err) res.send(err);
+
+				// return the bookings belonging to the user with the netlink_id
+				res.json(bookings);
+			});
+		});
+		
+		
+
+
+
+
+
+
 	// on routes that end in /users/:user_id
 	// ----------------------------------------------------
 	apiRouter.route('/users/:user_id')
