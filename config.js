@@ -1,5 +1,5 @@
 module.exports = {
 	'port': process.env.PORT || 8080,
-	'database': 'mongodb://admin:admin@ds033750.mongolab.com:33750/seng299',
+	'database': 'mongodb://adubicki:adubicki@ds031571.mongolab.com:31571/bookmyroom',
 	'secret': 'seng299lab7secret'
 };
