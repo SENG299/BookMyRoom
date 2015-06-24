@@ -7,8 +7,13 @@ var BookingSchema = new Schema({
 	room_id: String,
 	projector_id: String,
 	laptop_id: String,
-	start_time: Date,
-	end_time: Date
+	start_year: Number,
+	start_month: Number,
+	start_day: Number,
+	start_hour: Number,
+	start_minute: Number,
+	end_hour: Number,
+	end_minute: Number
 });
 
 module.exports = mongoose.model('Booking', BookingSchema);

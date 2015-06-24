@@ -162,37 +162,13 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
 // on routes that end in /bookings/day
 // returns all the boookings in a specific day
 // ----------------------------------------------------
-	apiRouter.route('/bookings/day')
-		
-		// create a user (accessed at POST http://localhost:8080/users)
-		.post(function(req, res) {
-			
-			var booking = new Booking();		// create a new instance of the Booking model
-			booking.booking_id = req.body.booking_id; //sets the booking id in the booking model from the request
-			booking.netlink_id = req.body.netlink_id; //sets netlink id in the booking model from the request
-			booking.room_id = req.body.room_id;  //sets room id in the booking model from the request
-			booking.projector_id = req.body.projector_id;  //sets projector id in the booking model from the request
-			booking.laptop_id = req.body.laptop_id;  //sets laptop id in the booking model from the request
-			booking.start_time = req.body.start_time; //sets start_time id in the booking model from the request
-			booking.end_time = req.body.end_time; //sets end_time id in the booking model from the request
-			booking.save(function(err) {
-				if (err) {
-					// duplicate entry
-					if (err.code == 11000) 
-						return res.json({ success: false, message: 'A booking with that id already exists. '});
-					else 
-						return res.send(err);
-				}
+	apiRouter.route('/bookings/:year/:month/:day')
 
-				// return a message
-				res.json({ message: 'Booking created!' });
-			});
-
-		})
-
-		.get(function(req, res, year, month, day) {
-
-			Booking.find({"start_time": {"$gte": new Date(year, month, day), "$lte": new Date(year, month, day)}}, function(err, bookings) {
+		.get(function(req, res) {
+			var year = req.params.year;
+			var month = req.params.month;
+			var day = req.params.day;
+			Booking.find({"start_year":year, "start_month": month, "start_day": day}, function(err, bookings) {
 				if (err) res.send(err);
 
 				// return the bookings
@@ -215,6 +191,44 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
 				res.json(bookings);
 			});
 		});
+
+// on routes that end in /bookings/create
+// creates a new booking
+// ----------------------------------------------------
+
+apiRouter.route('/bookings/create')
+		
+		// create a user (accessed at POST http://localhost:8080/users)
+		.post(function(req, res) {
+			
+			var booking = new Booking();		// create a new instance of the Booking model
+			booking.booking_id = req.body.booking_id; //sets the booking id in the booking model from the request
+			booking.netlink_id = req.body.netlink_id; //sets netlink id in the booking model from the request
+			booking.room_id = req.body.room_id;  //sets room id in the booking model from the request
+			booking.projector_id = req.body.projector_id;  //sets projector id in the booking model from the request
+			booking.laptop_id = req.body.laptop_id;  //sets laptop id in the booking model from the request
+			booking.start_year = req.body.start_year; //sets start_year in the booking model from the request
+			booking.start_month = req.body.start_month;
+			booking.start_day = req.body.start_day;
+			booking.start_hour = req.body.start_hour;
+			booking.start_minute = req.body.start_minute;
+			booking.end_hour = req.body.end_hour; //sets end_hour in the booking model from the request	
+			booking.end_minute = req.body.end_minute;
+			booking.save(function(err) {
+				if (err) {
+					// duplicate entry
+					if (err.code == 11000) 
+						return res.json({ success: false, message: 'A booking with that id already exists. '});
+					else 
+						return res.send(err);
+				}
+
+				// return a message
+				res.json({ message: 'Booking created!' });
+			});
+
+		});
+
 
 // on routes that end in /bookings/user
 // returns all the boookings in a specific day
