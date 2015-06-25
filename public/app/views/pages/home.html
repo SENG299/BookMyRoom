@@ -1,10 +1,17 @@
+<h1 align="center">{{booker.chosenDate | date}}</h1> 
+	<h2 align="center"> </br> Select the end time for booking</br>Time: {{booker.chosenDate.getHours() | date : 'h:mma'}} to 
+		<select style="height:2em; top:-400px;" ng-init="booker.validEndTimes[0]" ng-model="booker.validEndTimes" convert-to-number>
+		  <option ng-repeat="endtime in booker.validEndTimes">{{endtime.time}}</option>
+		</select>
+	 </h2>
+	<h2> </br>Equipment Available</h2>
+	<input type="checkbox" name="option1" value="Laptop"> Laptop<br> </input>
+	<input type="checkbox" name="option2" value="Projector">  Projector </input>
 
-<!-- ANGULAR VIEWS -->
-	<div class="jumbotron text-center">
+	</br>
+	</br>
+	</br>
+		 <button align="left" type="button">Confirm</button> 
+		 <button align="right" type="button">Cancel</button> 
 
-        <h1>{{ main.message }}</h1>
-        <h4>Login to see or manage your users</h4>
-
-        <a href="/login" class="btn btn-primary">Login</a>
-      
-	</div>
+	

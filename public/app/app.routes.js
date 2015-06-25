@@ -1,6 +1,21 @@
+angular.module('app.routes', ['ngRoute'])
 
- angular.module('app.routes', ['ngRoute'])
+//added by JJ
+.config(function($routeProvider, $locationProvider){
 
+	$routeProvider
+
+	// Route for home page
+	.when("/", {
+		templateUrl: 'app/views/pages/booker.html',
+		controller: 'bookerController',
+		controllerAs: 'booker'
+	});
+
+	// Added to remove the # from URLs
+	$locationProvider.html5Mode(true);
+})
+/*
 // Configuring the routes
 .config(function($routeProvider, $locationProvider){
 
@@ -23,7 +38,7 @@
 	// Added to remove the # from URLs
 	$locationProvider.html5Mode(true);
 })
-
+ */
 
 .config(function($routeProvider, $locationProvider){
 
@@ -62,8 +77,4 @@
 
 	// Added to remove the # from URLs
 	$locationProvider.html5Mode(true);
-})
-
-
-
-;
+});
