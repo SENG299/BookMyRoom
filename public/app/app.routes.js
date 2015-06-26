@@ -6,10 +6,25 @@ angular.module('app.routes', ['ngRoute'])
 	$routeProvider
 
 	// Route for home page
-	.when("/", {
+	.when("/booker", {
 		templateUrl: 'app/views/pages/booker.html',
 		controller: 'bookingCreatorController',
 		controllerAs: 'booker'
+	});
+
+	// Added to remove the # from URLs
+	$locationProvider.html5Mode(true);
+})
+
+.config(function($routeProvider, $locationProvider){
+
+	$routeProvider
+
+	// Route for home page
+	.when("/", {
+		templateUrl: 'app/views/pages/dayselector.html',
+		controller: 'daySelectorController',
+		controllerAs: 'selector'
 	});
 
 	// Added to remove the # from URLs
