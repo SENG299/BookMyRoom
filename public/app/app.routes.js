@@ -36,6 +36,21 @@ angular.module('app.routes', ['ngRoute'])
 	$routeProvider
 
 	// Route for home page
+	.when("/schedule", {
+		templateUrl: 'app/views/pages/schedule.html',
+		controller: 'scheduleController',
+		controllerAs: 'schedule'
+	});
+
+	// Added to remove the # from URLs
+	$locationProvider.html5Mode(true);
+})
+
+.config(function($routeProvider, $locationProvider){
+
+	$routeProvider
+
+	// Route for home page
 	.when("/users", {
 		templateUrl: 'app/views/pages/users/all.html',
 		controller: 'userController',

@@ -1,4 +1,4 @@
-angular.module('bookerCtrl', ['bookingService'])
+angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 .controller('bookingCreatorController', function($rootScope, $location, Booking) {
 
@@ -74,11 +74,10 @@ angular.module('bookerCtrl', ['bookingService'])
 	};
 })
 
-
-.controller('daySelectorController', function($rootScope, $location, Booking) {
+.controller('daySelectorController', function($rootScope, $location, sharedProperties) {
 
     	var vm = this;
-	vm.chosenDate = "";
+	vm.chosenDate = sharedProperties.getchosenDate();
 	vm.dates = [
 		date = new Date(),
 		date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
@@ -90,8 +89,24 @@ angular.module('bookerCtrl', ['bookingService'])
 	]; 
 
 	vm.updateSelectedValue = function(item){
-		vm.chosenDate = item;	
+		sharedProperties.getchosenDate(item);	
 	};
+
+	vm.go = function ( path ) {
+  		$location.path( path );
+	};
+})
+
+.controller('scheduleController', function($rootScope, $location, sharedProperties) {
+
+    	var vm = this;
+
+	vm.go = function ( path ) {
+  		$location.path( path );
+	};
+	vm.chosenDate = sharedProperties.getchosenDate();
+
+
 });
 
 

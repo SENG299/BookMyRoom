@@ -3,7 +3,7 @@
 
 // CALL THE PACKAGES --------------------
 var express    = require('express');		// call express
-var app        = express(); 				// define our app using express
+var app        = express(); 			// define our app using express
 var bodyParser = require('body-parser'); 	// get body-parser
 var morgan     = require('morgan'); 		// used to see requests
 var mongoose   = require('mongoose');
@@ -47,7 +47,7 @@ app.use('/api', apiRoutes);
 // SEND USERS TO FRONTEND ------------
 // has to be registered after API ROUTES
 app.get('*', function(req, res) {
-	res.sendFile(path.join(__dirname + '/public/app/views/user_day_selector.html'));
+	res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
 });
 
 // START THE SERVER
