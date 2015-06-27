@@ -5,6 +5,9 @@ angular.module('userApp', [
     'authService',
     'mainCtrl',
     'userCtrl',
+    'bookerCtrl',
+    'bookingService',
+    'sharedService',
     'userService'
 
 ])

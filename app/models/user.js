@@ -3,9 +3,12 @@ var Schema       = mongoose.Schema;
 var bcrypt 		 = require('bcrypt-nodejs');
 
 // user schema 
-var UserSchema   = new Schema({
+var UserSchema = new Schema({
+	netlink_id: { type: String, required: true, index: { unique: true }}, 
 	name: String,
-	username: { type: String, required: true, index: { unique: true }},
+	last_name: String,
+	user_type: Number, 
+	username: { type: String, required: true, index: { unique: true }}, //this is not needed in the real app, this is still here so that it doesn't break the code.
 	password: { type: String, required: true, select: false }
 });
 

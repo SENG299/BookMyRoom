@@ -1,5 +1,6 @@
 var bodyParser = require('body-parser'); 	// get body-parser
 var User       = require('../models/user');
+var Booking = require('../models/booking');
 var jwt        = require('jsonwebtoken');
 var config     = require('../../config');
 
@@ -80,6 +81,10 @@ module.exports = function(app, express) {
         // check header or url parameters or post parameters for token
         var token = req.body.token || req.param('token') || req.headers['x-access-token'];
 
+
+
+//IMPORTAN THE TOKEN PART IS DEACTIVATED FOR TESTING. THIS SHOULD BE REINCORPORATED LATER
+/*
         // decode token
         if (token) {
 
@@ -105,6 +110,9 @@ module.exports = function(app, express) {
                 message: 'No token provided.'
             });
         }
+
+*/
+next(); //FOR DEBUGGING ONLY TODO: remove this line
     });
     
 
@@ -145,6 +153,116 @@ module.exports = function(app, express) {
 				res.json(users);
 			});
 		});
+
+
+
+
+
+//added by JJ 
+// on routes that end in /bookings/day
+// returns all the boookings in a specific day
+// ----------------------------------------------------
+	apiRouter.route('/bookings/:year/:month/:day')
+
+		.get(function(req, res) {
+			var year = req.params.year;
+			var month = req.params.month;
+			var day = req.params.day;
+			Booking.find({"start_year":year, "start_month": month, "start_day": day}, function(err, bookings) {
+				if (err) res.send(err);
+
+				// return the bookings
+				res.json(bookings);
+			});
+		});
+
+// on routes that end in /bookings/day
+// returns all the boookings in a specific day
+// ----------------------------------------------------
+	apiRouter.route('/allbookings')
+		
+		// create a user (accessed at POST http://localhost:8080/users)
+		.get(function(req, res) {
+
+			Booking.find({}, function(err, bookings) {
+				if (err) res.send(err);
+
+				// return the bookings
+				res.json(bookings);
+			});
+		});
+
+// on routes that end in /bookings/create
+// creates a new booking
+// ----------------------------------------------------
+
+apiRouter.route('/bookings/create')
+		
+		// create a user (accessed at POST http://localhost:8080/users)
+		.post(function(req, res) {
+			
+			var booking = new Booking();		// create a new instance of the Booking model
+			booking.booking_id = req.body.booking_id; //sets the booking id in the booking model from the request
+			booking.netlink_id = req.body.netlink_id; //sets netlink id in the booking model from the request
+			booking.room_id = req.body.room_id;  //sets room id in the booking model from the request
+			booking.projector_id = req.body.projector_id;  //sets projector id in the booking model from the request
+			booking.laptop_id = req.body.laptop_id;  //sets laptop id in the booking model from the request
+			booking.start_year = req.body.start_year; //sets start_year in the booking model from the request
+			booking.start_month = req.body.start_month;
+			booking.start_day = req.body.start_day;
+			booking.start_hour = req.body.start_hour;
+			booking.start_minute = req.body.start_minute;
+			booking.end_hour = req.body.end_hour; //sets end_hour in the booking model from the request	
+			booking.end_minute = req.body.end_minute;
+			booking.save(function(err) {
+				if (err) {
+					// duplicate entry
+					if (err.code == 11000) 
+						return res.json({ success: false, message: 'A booking with that id already exists. '});
+					else 
+						return res.send(err);
+				}
+
+				// return a message
+				res.json({ message: 'Booking created!' });
+			});
+
+		});
+
+
+// on routes that end in /bookings/user
+// returns all the boookings in a specific day
+// ----------------------------------------------------
+
+	apiRouter.route('/bookings/:netlink_id')
+		
+		.get(function(req, res) {
+
+			Booking.find({"netlink_id":req.params.netlink_id}, function(err, bookings) {
+			if (err) res.send(err);
+
+				// return the bookings belonging to the user with the netlink_id
+				res.json(bookings);
+			});
+		});
+
+// on routes that end in /bookings/delete/:/booking_id
+// deletes a specific booking
+// ----------------------------------------------------
+apiRouter.route('/bookings/delete/:booking_id')
+		// delete the booking with this id
+		.delete(function(req, res) {
+			Booking.remove({
+				_id: req.params.booking_id
+			}, function(err, booking) {
+				if (err) res.send(err);
+
+				res.json({ message: 'Successfully deleted' });
+			});
+		});
+
+
+
 
 
 	// on routes that end in /users/:user_id

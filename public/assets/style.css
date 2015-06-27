@@ -18,6 +18,16 @@ header .navbar 		{
 	animation:zoomIn 0.3s both ease;
 }
 
+
+/*buttons
+
+*/
+button {
+	width: 400px;
+
+}
+
+
 /* ANIMATIONS
 ====================== */
 .spinner {

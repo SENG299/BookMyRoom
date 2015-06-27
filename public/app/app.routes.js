@@ -1,29 +1,50 @@
+angular.module('app.routes', ['ngRoute'])
 
- angular.module('app.routes', ['ngRoute'])
-
-// Configuring the routes
+//added by JJ
 .config(function($routeProvider, $locationProvider){
 
 	$routeProvider
 
 	// Route for home page
-	.when("/", {
-		templateUrl: 'app/views/pages/home.html',
-		controller: 'mainController',
-		controllerAs: 'main'
-	})
-
-    // Route for login page
-	.when("/login", {
-		templateUrl: 'app/views/pages/login.html',
-		controller: 'mainController',
-		controllerAs: 'login'
+	.when("/booker", {
+		templateUrl: 'app/views/pages/booker.html',
+		controller: 'bookingCreatorController',
+		controllerAs: 'booker'
 	});
 
 	// Added to remove the # from URLs
 	$locationProvider.html5Mode(true);
 })
 
+.config(function($routeProvider, $locationProvider){
+
+	$routeProvider
+
+	// Route for home page
+	.when("/", {
+		templateUrl: 'app/views/pages/dayselector.html',
+		controller: 'daySelectorController',
+		controllerAs: 'selector'
+	});
+
+	// Added to remove the # from URLs
+	$locationProvider.html5Mode(true);
+})
+
+.config(function($routeProvider, $locationProvider){
+
+	$routeProvider
+
+	// Route for home page
+	.when("/schedule", {
+		templateUrl: 'app/views/pages/schedule.html',
+		controller: 'scheduleController',
+		controllerAs: 'schedule'
+	});
+
+	// Added to remove the # from URLs
+	$locationProvider.html5Mode(true);
+})
 
 .config(function($routeProvider, $locationProvider){
 
@@ -62,8 +83,4 @@
 
 	// Added to remove the # from URLs
 	$locationProvider.html5Mode(true);
-})
-
-
-
-;
+});
