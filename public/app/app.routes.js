@@ -16,6 +16,19 @@ angular.module('app.routes', ['ngRoute'])
 	$locationProvider.html5Mode(true);
 })
 
+//Tony Test Route
+.config(function($routeProvider, $locationProvider){
+	$routeProvider	
+
+	.when("/schedule", {
+		templateUrl: 'app/views/pages/schedule.html',
+		controller: 'scheduleController',
+		controllerAs: 'schedule'
+	});
+
+	$locationProvider.html5Mode(true);
+})
+
 .config(function($routeProvider, $locationProvider){
 
 	$routeProvider
