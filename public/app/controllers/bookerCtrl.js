@@ -1,21 +1,30 @@
 angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
-.controller('bookingCreatorController', function($rootScope, $location, Booking) {
+.controller('bookingCreatorController', function($rootScope, $location, Booking, sharedProperties) {
 
-    	var vm = this;
+    var vm = this;
 
-	//TODO: these variables should be initialized with the parameters passed to the controller 
-	vm.chosenDate = new Date();
+	//these values are grabbed from the shared service for the controllers
+	vm.chosenDate = sharedProperties.getchosenDate();
+	vm.selectedStartTime = sharedProperties.getChosenStartTime();
+	vm.selectedDuration = sharedProperties.getDuration().duration; 
 
+	vm.calculateEndTime = function(){
+		var decimalPart = Number((vm.selectedDuration % 1).toFixed(1));
+		var integerPart = Math.floor(vm.selectedDuration);
+		var totalHours = Number(integerPart) + Number(vm.selectedStartTime.hour);
+		var totalMinutes = vm.selectedStartTime.minutes;
 
-	// TODO: validEndTimes should be populated by parameters passed 
-	vm.validEndTimes = [
-	     { hours: 5, minutes: 30, time: "5:30" },
-	     { hours: 6, minutes: 30, time: "6:30" },
-	     { hours: 7, minutes: 30, time: "7:30" }
-	];
-	
-	vm.selectedEndTime = { hours: 0, minutes: 0, time: "00:00" }; //this value contains the real time value of the selected dropdown option
+		if(Number(vm.selectedStartTime.minutes) == 30 && decimalPart == 0.5){
+			totalHours++;
+		}
+		else if(vm.selectedStartTime.minutes == 0 && decimalPart == 0.5){
+			totalMinutes = 30;
+		}
+		return {hour: totalHours, minutes: totalMinutes};
+	};
+
+	vm.finalEndTime = vm.calculateEndTime();
 
 	//this variables represent the current value of the checkboxes
 	//true = user wants to add laptop/projector
@@ -62,7 +71,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 		vm.bookingData.end_hour = Number(vm.selectedEndTime.hours);
 		vm.bookingData.end_minute = Number(vm.selectedEndTime.minutes);
 
-		//th create booking service is called, vm.bookingData will populate the new booking in the db
+		//the create booking service is called, vm.bookingData will populate the new booking in the db
 		Booking.create(vm.bookingData)
 			.success(function(data) {
 				vm.processing = false;
@@ -76,7 +85,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 .controller('daySelectorController', function($rootScope, $location, sharedProperties) {
 
-    	var vm = this;
+    var vm = this;
 	vm.userDate = sharedProperties.getchosenDate();
 	vm.dates = [
 		date = new Date(),
@@ -100,12 +109,23 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 .controller('scheduleController', function($rootScope, $location, sharedProperties) {
 
-    	var vm = this;
+    var vm = this;
+
+    //valid durations have to be calculated TODO: hard coded for debugging (remove when done)
+    vm.validDurations = [
+	     {duration: 0.5},
+	     {duration: 1},
+	     {duration: 1.5}
+	];
+
+    vm.chosenDate = sharedProperties.getchosenDate();
+    vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
-	vm.selectedEndTime = "";
 	vm.selectedTimeSlot = "";
 
 	vm.go = function ( path ) {
+		sharedProperties.setDuration(vm.bookingDuration);
+		sharedProperties.setChosenStartTime(vm.selectedTimeSlot);
   		$location.path( path );
 	};
 
@@ -113,7 +133,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 		var numberOfTimeSlots = 28;
 		var hours = 8;
-		console.log('day is ' + day);
+
 		if(day > 5 || day == 0){
 			//it's a weekend
 			numberOfTimeSlots = 14;	
@@ -136,16 +156,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 		}
 	};
 
-	vm.chosenDate = sharedProperties.getchosenDate();
 	vm.createTimeSlots(new Date(vm.chosenDate).getDay());
-	
-
-	vm.validDurations = [
-	     {duration: 0.5},
-	     {duration: 1},
-	     {duration: 1.5}
-	];
-
 	vm.selectedDuration = vm.validDurations[0];
 	
 /*

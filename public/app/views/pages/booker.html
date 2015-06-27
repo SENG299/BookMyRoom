@@ -1,7 +1,11 @@
 <h1 align="center">{{booker.chosenDate | date}}</h1> 
-	<h2 align="center"> </br> Select the end time for booking</br>Time: {{booker.chosenDate.getHours() | date : 'h'}}:{{(booker.chosenDate.getMinutes() < 10) && ("0"+booker.chosenDate.getMinutes()) || (booker.chosenDate.getMinutes())}} {{booker.chosenDate | date : 'a'}} to 
-		<select ng-model="booker.selectedEndTime" ng-options="item as item.time for item in booker.validEndTimes" ng-init="booker.validEndTimes[0]"></select>
-		<p>{{booker.selectedEndTime}}</p> <!--- this line is to show that we have the real time value of the dropdown --->
+	<h2 align="center"> </br> 
+		Selected Time for Booking
+	</br>Start Time: 
+	{{(booker.selectedStartTime.hour > 12) && (booker.selectedStartTime.hours - 12) || (booker.selectedStartTime.hour)}}:{{(booker.selectedStartTime.minutes == 0) &&('00') || booker.selectedStartTime.minutes}} {{(booker.selectedStartTime.hour > 11) && ('PM') || ('AM')}}  
+	</br>          
+	End Time: 
+	{{(booker.finalEndTime.hour > 12) && (booker.finalEndTime.hours - 12) || (booker.finalEndTime.hour)}}:{{(booker.finalEndTime.minutes == 0) && ('00') || booker.finalEndTime.minutes}} {{(booker.finalEndTime.hour > 11) && ('PM') || ('AM')}}
 	</h2>
 	
 	<h2> </br>Equipment Available</h2>
