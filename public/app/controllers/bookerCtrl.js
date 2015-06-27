@@ -77,7 +77,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 .controller('daySelectorController', function($rootScope, $location, sharedProperties) {
 
     	var vm = this;
-	vm.chosenDate = sharedProperties.getchosenDate();
+	vm.userDate = sharedProperties.getchosenDate();
 	vm.dates = [
 		date = new Date(),
 		date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
@@ -89,7 +89,8 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	]; 
 
 	vm.updateSelectedValue = function(item){
-		sharedProperties.getchosenDate(item);	
+		sharedProperties.setchosenDate(item);
+		vm.go('/schedule');	
 	};
 
 	vm.go = function ( path ) {
@@ -100,12 +101,57 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 .controller('scheduleController', function($rootScope, $location, sharedProperties) {
 
     	var vm = this;
+	vm.timeSlots = [];
+	vm.selectedEndTime = "";
+	vm.selectedTimeSlot = "";
 
 	vm.go = function ( path ) {
   		$location.path( path );
 	};
-	vm.chosenDate = sharedProperties.getchosenDate();
 
+	vm.createTimeSlots = function(day){
+
+		var numberOfTimeSlots = 28;
+		var hours = 8;
+		console.log('day is ' + day);
+		if(day > 5 || day == 0){
+			//it's a weekend
+			numberOfTimeSlots = 14;	
+			hours = 11;
+		}
+
+		var i;
+		
+		/*
+			TODO: populate the projector, laptop, and avail fields from the data of the calculated schedule object
+		*/
+
+		for(i = 0; i < numberOfTimeSlots; i++){
+			var mins = (i%2 == 0) ? 0 : 30;
+			vm.timeSlots.push({hour: hours, minutes: mins, projector: false, laptop: true, avail: true});
+
+			if(i%2 != 0){
+				hours++;
+			}
+		}
+	};
+
+	vm.chosenDate = sharedProperties.getchosenDate();
+	vm.createTimeSlots(new Date(vm.chosenDate).getDay());
+	
+
+	vm.validDurations = [
+	     {duration: 0.5},
+	     {duration: 1},
+	     {duration: 1.5}
+	];
+
+	vm.selectedDuration = vm.validDurations[0];
+	
+/*
+	Monday thru Friday 8 am to 10pm and on Saturdays and Sundays 11 am to 6pm. 
+
+*/
 
 });
 

@@ -1,13 +1,12 @@
 angular.module('sharedService', [])
     .service('sharedProperties', function () {
-        var chosenDate = "";
+            this.chosenDate = "";
 
-        return {
-            getchosenDate: function () {
-                return chosenDate;
-            },
-            setchosenDate: function(value) {
-                chosenDate = value;
-            }
+            this.getchosenDate = function () {
+                return this.chosenDate;
+            };
+	
+	    this.setchosenDate = function(value) {
+                this.chosenDate = value;      
         };
-    });
+});

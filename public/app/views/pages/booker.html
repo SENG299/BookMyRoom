@@ -1,6 +1,6 @@
 <h1 align="center">{{booker.chosenDate | date}}</h1> 
-	<h2 align="center"> </br> Select the end time for booking</br>Time: {{booker.chosenDate.getHours() | date : 'h'}}:{{booker.chosenDate.getMinutes()}} {{booker.chosenDate | date : 'a'}} to 
-		<select ng-model="booker.selectedEndTime" ng-options="item as item.time for item in booker.validEndTimes" ng-init="booker.validEndTimes[0]"><option value="">Select End Time</option></select>
+	<h2 align="center"> </br> Select the end time for booking</br>Time: {{booker.chosenDate.getHours() | date : 'h'}}:{{(booker.chosenDate.getMinutes() < 10) && ("0"+booker.chosenDate.getMinutes()) || (booker.chosenDate.getMinutes())}} {{booker.chosenDate | date : 'a'}} to 
+		<select ng-model="booker.selectedEndTime" ng-options="item as item.time for item in booker.validEndTimes" ng-init="booker.validEndTimes[0]"></select>
 		<p>{{booker.selectedEndTime}}</p> <!--- this line is to show that we have the real time value of the dropdown --->
 	</h2>
 	

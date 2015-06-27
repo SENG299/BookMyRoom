@@ -1,14 +1,14 @@
 <div align="center">
 	<h1 align="center">Please select the date of your booking</h1> 
-	<h2 align="center">			 
-		<button ng-click="selector.updateSelectedValue(selector.dates[0])"> {{selector.dates[0] | date}} </button>
-		<button ng-click="selector.updateSelectedValue(selector.dates[1])"> {{selector.dates[1] | date}} </button>
-		<button ng-click="selector.updateSelectedValue(selector.dates[2])"> {{selector.dates[2] | date}} </button>
-		<button ng-click="selector.updateSelectedValue(selector.dates[3])"> {{selector.dates[3] | date}} </button>
-		<button ng-click="selector.updateSelectedValue(selector.dates[4])"> {{selector.dates[4] | date}} </button>
-		<button ng-click="selector.updateSelectedValue(selector.dates[5])"> {{selector.dates[5] | date}} </button>
-		<button ng-click="selector.updateSelectedValue(selector.dates[6])"> {{selector.dates[6] | date}} </button>	
-	</h2>
-	<h2>{{selector.chosenDate | date}}</h2>
-	<button ng-click="selector.go('/schedule')" >go to schedule</button>
+	<ul>
+		<h2 align="center">			 
+			<li><button ng-click="selector.updateSelectedValue(selector.dates[0])"> {{selector.dates[0] | date}} </button></li>
+			<li><button ng-click="selector.updateSelectedValue(selector.dates[1])"> {{selector.dates[1] | date}} </button></li>
+			<li><button ng-click="selector.updateSelectedValue(selector.dates[2])"> {{selector.dates[2] | date}} </button></li>
+			<li><button ng-click="selector.updateSelectedValue(selector.dates[3])"> {{selector.dates[3] | date}} </button></li>
+			<li><button ng-click="selector.updateSelectedValue(selector.dates[4])"> {{selector.dates[4] | date}} </button></li>
+			<li><button ng-click="selector.updateSelectedValue(selector.dates[5])"> {{selector.dates[5] | date}} </button></li>
+			<li width = "500px" ><button ng-click="selector.updateSelectedValue(selector.dates[6])"> {{selector.dates[6] | date}} </button></li>
+		</h2>
+	</ul>
 </div>
