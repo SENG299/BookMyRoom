@@ -38,9 +38,9 @@ angular.module('scheduleCtrl', ['bookingService'])
 					"_id": 3,
 					"room_id": 2,
 					"end_minute": 30,
-					"end_hour": 18,
+					"end_hour": 6,
 					"start_minute": 30,
-					"start_hour": 15,
+					"start_hour": 4,
 					"start_day": 3,
 					"start_month": 4,
 					"start_year": 2014
@@ -99,7 +99,7 @@ angular.module('scheduleCtrl', ['bookingService'])
 			alert(mystring);
 
 			vm.test = "" + time;
-		});
+		}); 
 
 });
 
@@ -116,7 +116,7 @@ function scheduleTest() {
 
 	var projectors = [[1,0,0,0,0,0],
 			  [1,0,0,0,0,0],
-			  [1,1,1,1,1,1],
+			  [0,0,0,0,0,0],
 			  [1,0,0,0,0,0],
 			  [1,0,0,0,0,0]];
 
@@ -145,19 +145,17 @@ function buildSchedule(objectArray2D, bookingLength)
 	var numObjects = objectArray2D.length;
 	var numSlots = objectArray2D[0].length;
 
-	alert("" + numObjects + " " + numSlots);
-
 	var schedule = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 1);
 
 	for(var y = 0; y < numSlots; y++)
 	{
 		for(var x = 0; x < numObjects; x++)
-		{
+		{	
 			var taken = 0;
 			for(var i = 0; i < bookingLength; i++)
 			{
 				var slot = y + i;
-				if(objectArray2D[x][slot] == 1 || slot > numObjects)
+				if(slot >= numSlots || objectArray2D[x][slot] == 1)
 				{
 					taken = 1;
 					break;
@@ -166,13 +164,12 @@ function buildSchedule(objectArray2D, bookingLength)
 
 			if(taken == 0)
 			{
-				schedule[y] = taken;
+				schedule[y] = 0;
 				break;
 			}
 		}
 	}
 	
-
 	return schedule;
 }
 
