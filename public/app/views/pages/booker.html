@@ -2,10 +2,10 @@
 	<h2 align="center"> </br> 
 		Selected Time for Booking
 	</br>Start Time: 
-	{{(booker.selectedStartTime.hour > 12) && (booker.selectedStartTime.hours - 12) || (booker.selectedStartTime.hour)}}:{{(booker.selectedStartTime.minutes == 0) &&('00') || booker.selectedStartTime.minutes}} {{(booker.selectedStartTime.hour > 11) && ('PM') || ('AM')}}  
+	{{(booker.selectedStartTime.hour > 12) && (booker.selectedStartTime.hour - 12) || (booker.selectedStartTime.hour)}}:{{(booker.selectedStartTime.minutes == 0) &&('00') || booker.selectedStartTime.minutes}} {{(booker.selectedStartTime.hour > 11) && ('PM') || ('AM')}}  
 	</br>          
 	End Time: 
-	{{(booker.finalEndTime.hour > 12) && (booker.finalEndTime.hours - 12) || (booker.finalEndTime.hour)}}:{{(booker.finalEndTime.minutes == 0) && ('00') || booker.finalEndTime.minutes}} {{(booker.finalEndTime.hour > 11) && ('PM') || ('AM')}}
+	{{(booker.finalEndTime.hour > 12) && (booker.finalEndTime.hour - 12) || (booker.finalEndTime.hour)}}:{{(booker.finalEndTime.minutes == 0) && ('00') || booker.finalEndTime.minutes}} {{(booker.finalEndTime.hour > 11) && ('PM') || ('AM')}}
 	</h2>
 	
 	<h2> </br>Equipment Available</h2>

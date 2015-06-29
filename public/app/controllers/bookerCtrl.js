@@ -15,10 +15,11 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 		var totalHours = Number(integerPart) + Number(vm.selectedStartTime.hour);
 		var totalMinutes = vm.selectedStartTime.minutes;
 
-		if(Number(vm.selectedStartTime.minutes) == 30 && decimalPart == 0.5){
+		if(Number(vm.selectedStartTime.minutes) === 30 && decimalPart === 0.5){
+			totalMinutes = 0;
 			totalHours++;
 		}
-		else if(vm.selectedStartTime.minutes == 0 && decimalPart == 0.5){
+		else if(vm.selectedStartTime.minutes === 0 && decimalPart === 0.5){
 			totalMinutes = 30;
 		}
 		return {hour: totalHours, minutes: totalMinutes};
@@ -161,10 +162,6 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	
 /*
 	Monday thru Friday 8 am to 10pm and on Saturdays and Sundays 11 am to 6pm. 
-
 */
 
 });
-
-
-
