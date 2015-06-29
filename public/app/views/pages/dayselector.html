@@ -1,14 +1,31 @@
 <div align="center">
-	<h1 align="center">Please select the date of your booking</h1> 
-	<ul>
-		<h2 align="center">			 
-			<li><button ng-click="selector.updateSelectedValue(selector.dates[0])"> {{selector.dates[0] | date}} </button></li>
-			<li><button ng-click="selector.updateSelectedValue(selector.dates[1])"> {{selector.dates[1] | date}} </button></li>
-			<li><button ng-click="selector.updateSelectedValue(selector.dates[2])"> {{selector.dates[2] | date}} </button></li>
-			<li><button ng-click="selector.updateSelectedValue(selector.dates[3])"> {{selector.dates[3] | date}} </button></li>
-			<li><button ng-click="selector.updateSelectedValue(selector.dates[4])"> {{selector.dates[4] | date}} </button></li>
-			<li><button ng-click="selector.updateSelectedValue(selector.dates[5])"> {{selector.dates[5] | date}} </button></li>
-			<li width = "500px" ><button ng-click="selector.updateSelectedValue(selector.dates[6])"> {{selector.dates[6] | date}} </button></li>
-		</h2>
-	</ul>
+	<h2 align="center">Please select the date of your booking</h2>
+	<h3 align="center">Today: {{ selector.today | date: 'dd MMM yyyy (EEEE)' }}</h3>
+		<div class="table-responsive">
+			<table class="table table-bordered table-hover text-center ">
+		    <tbody>
+		      <tr>
+		        <td><button ng-click="selector.updateSelectedValue(selector.dates[0])"> {{selector.dates[0] | date}} </button></td>
+		      </tr>
+		      <tr>
+		        <td><button ng-click="selector.updateSelectedValue(selector.dates[1])"> {{selector.dates[1] | date}} </button></td>
+		      </tr>
+		      <tr>
+		        <td><button ng-click="selector.updateSelectedValue(selector.dates[2])"> {{selector.dates[2] | date}} </button></td>
+		      </tr>
+		      <tr>
+		        <td><button ng-click="selector.updateSelectedValue(selector.dates[3])"> {{selector.dates[3] | date}} </button></td>
+		      </tr>
+		      <tr>
+		        <td><button ng-click="selector.updateSelectedValue(selector.dates[4])"> {{selector.dates[4] | date}} </button></td>
+		      </tr>
+		      <tr>
+		        <td><button ng-click="selector.updateSelectedValue(selector.dates[5])"> {{selector.dates[5] | date}} </button></td>
+		      </tr>
+		      <tr>
+		        <td><button ng-click="selector.updateSelectedValue(selector.dates[6])"> {{selector.dates[6] | date}} </button></td>
+		      </tr>
+		    </tbody>
+	  </table>
+	</div>
 </div>
