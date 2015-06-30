@@ -38,20 +38,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	vm.disableAddLaptop = false;
 
 	//this object is populated with the information that will belong to the new booking
-	vm.bookingData = {
-		booking_id: "",
-		netlink_id:"",
-		room_id: "",
-		projector_id: "",
-		laptop_id: "",
-		start_year: "",
-		start_month: "",
-		start_day: "",
-		start_hour: "",
-		start_minute: "",
-		end_hour: "",
-		end_minute: ""
-	};
+	vm.bookingData = {};
 
 	vm.createBooking = function(){
 	
@@ -59,18 +46,18 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 		vm.message = '';
 		
 		//data to create new booking (hard coded for debugging)	
-		vm.bookingData.booking_id = "2014030915fuckthis" //TODO: get this passed as a parameter
+		vm.bookingData.booking_id = "0" //TODO: get this passed as a parameter
 		vm.bookingData.netlink_id = "gordillo"; //TODO: get this passed as a parameter
-		vm.bookingData.room_id = "A101"; //TODO: has to be dynamically found
-		vm.bookingData.projector_id = "p123423"; //TODO: has to be dynamically found
-		vm.bookingData.laptop_id = "l5645648"; //TODO: has to be dynamically found
+		vm.bookingData.room_id = 0; //TODO: has to be dynamically found
+		vm.bookingData.projector_id = 0; //TODO: has to be dynamically found
+		vm.bookingData.laptop_id = 0; //TODO: has to be dynamically found
 		vm.bookingData.start_year = vm.chosenDate.getFullYear();
 		vm.bookingData.start_month = vm.chosenDate.getMonth() + 1; //so it is between 1 and 12
 		vm.bookingData.start_day = vm.chosenDate.getDate();
 		vm.bookingData.start_hour = vm.chosenDate.getHours(); //it is between 0 and 23
 		vm.bookingData.start_minute = vm.chosenDate.getMinutes();	
-		vm.bookingData.end_hour = Number(vm.selectedEndTime.hours);
-		vm.bookingData.end_minute = Number(vm.selectedEndTime.minutes);
+		vm.bookingData.end_hour = vm.bookingData.start_hour + 3;
+		vm.bookingData.end_minute = 0;
 
 		//the create booking service is called, vm.bookingData will populate the new booking in the db
 		Booking.create(vm.bookingData)
