@@ -10,77 +10,43 @@ angular.module('app.routes', ['ngRoute'])
 		templateUrl: 'app/views/pages/booker.html',
 		controller: 'bookingCreatorController',
 		controllerAs: 'booker'
-	});
-
-	// Added to remove the # from URLs
-	$locationProvider.html5Mode(true);
-})
-
-.config(function($routeProvider, $locationProvider){
-
-	$routeProvider
-
+	})
 	// Route for home page
 	.when("/", {
 		templateUrl: 'app/views/pages/dayselector.html',
 		controller: 'daySelectorController',
 		controllerAs: 'selector'
-	});
-
-	// Added to remove the # from URLs
-	$locationProvider.html5Mode(true);
-})
-
-.config(function($routeProvider, $locationProvider){
-
-	$routeProvider
+	})
+	.when("/profile", {
+		templateUrl: 'app/views/pages/profile.html'
+		//controller: 'userController',
+		//controllerAs: 'user'
+	})
 
 	// Route for home page
 	.when("/schedule", {
 		templateUrl: 'app/views/pages/schedule.html',
 		controller: 'scheduleController',
 		controllerAs: 'schedule'
-	});
-
-	// Added to remove the # from URLs
-	$locationProvider.html5Mode(true);
-})
-
-.config(function($routeProvider, $locationProvider){
-
-	$routeProvider
-
+	})
 	// Route for home page
 	.when("/users", {
 		templateUrl: 'app/views/pages/users/all.html',
 		controller: 'userController',
 		controllerAs: 'user'
-	});
-
-	// Added to remove the # from URLs
-	$locationProvider.html5Mode(true);
-})
-
-
-.config(function($routeProvider, $locationProvider){
-
-	$routeProvider
-
+	})
 	// Route for user create page
 	.when("/users/create", {
 		templateUrl: 'app/views/pages/users/single.html',
 		controller: 'userCreateController',
 		controllerAs: 'user'
 	})
-
-
     // page to edit a user
     .when("/users/:user_id", {
         templateUrl: 'app/views/pages/users/single.html',
         controller: 'userEditController',
         controllerAs: 'user'
     })
-
 	// Added to remove the # from URLs
 	$locationProvider.html5Mode(true);
 });

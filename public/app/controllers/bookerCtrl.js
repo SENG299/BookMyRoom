@@ -106,6 +106,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	vm.go = function ( path ) {
   		$location.path( path );
 	};
+	vm.loggedIn = true;
 })
 
 .controller('scheduleController', function($rootScope, $location, sharedProperties) {
@@ -159,6 +160,8 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 	vm.createTimeSlots(new Date(vm.chosenDate).getDay());
 	vm.selectedDuration = vm.validDurations[0];
+	
+	
 	
 /*
 	Monday thru Friday 8 am to 10pm and on Saturdays and Sundays 11 am to 6pm. 
