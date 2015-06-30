@@ -83,4 +83,20 @@ angular.module('app.routes', ['ngRoute'])
 
 	// Added to remove the # from URLs
 	$locationProvider.html5Mode(true);
+})
+
+
+.config(function($routeProvider, $locationProvider){
+
+	$routeProvider
+
+	// Route for home page
+	.when("/login", {
+		templateUrl: 'app/views/pages/login.html',
+		controller: 'mainController',
+		controllerAs: 'main'
+	});
+
+	// Added to remove the # from URLs
+	$locationProvider.html5Mode(true);
 });
