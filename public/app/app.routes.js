@@ -11,7 +11,7 @@ angular.module('app.routes', ['ngRoute'])
 		controller: 'bookingCreatorController',
 		controllerAs: 'booker'
 	});
-
+			
 	// Added to remove the # from URLs
 	$locationProvider.html5Mode(true);
 })
@@ -93,8 +93,8 @@ angular.module('app.routes', ['ngRoute'])
 	// Route for home page
 	.when("/login", {
 		templateUrl: 'app/views/pages/login.html',
-		controller: 'mainController',
-		controllerAs: 'main'
+		controller: 'loginController',
+		controllerAs: 'login'
 	});
 
 	// Added to remove the # from URLs
