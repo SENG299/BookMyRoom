@@ -109,7 +109,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	vm.loggedIn = true;
 })
 
-.controller('scheduleController', function($rootScope, $location, sharedProperties) {
+.controller('scheduleController', function($rootScope, $location, Booking, sharedProperties) {
 
     var vm = this;
 
@@ -133,29 +133,99 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 	vm.createTimeSlots = function(day){
 
-		var numberOfTimeSlots = 28;
-		var hours = 8;
+		Booking.getAllBookings()
+			.success(function(data) {
+	
+			vm.processing = false;
 
-		if(day > 5 || day == 0){
-			//it's a weekend
-			numberOfTimeSlots = 14;	
-			hours = 11;
-		}
+			vm.bookings = data;
 
-		var i;
-		
-		/*
-			TODO: populate the projector, laptop, and avail fields from the data of the calculated schedule object
-		*/
+			vm.bookings =  [
+				    {
+					"_id": 1,
+					"room_id": 0,
+					"end_minute": 30,
+					"end_hour": 6,
+					"start_minute": 30,
+					"start_hour": 4,
+					"start_day": 3,
+					"start_month": 4,
+					"start_year": 2014	
+				    },
+				    {
+					"_id": 2,
+					"room_id": 1,
+					"end_minute": 0,
+					"end_hour": 6,
+					"start_minute": 0,
+					"start_hour": 4,
+					"start_day": 3,
+					"start_month": 4,
+					"start_year": 2014
+				    },
+				    {
+					"_id": 3,
+					"room_id": 2,
+					"end_minute": 30,
+					"end_hour": 6,
+					"start_minute": 30,
+					"start_hour": 4,
+					"start_day": 3,
+					"start_month": 4,
+					"start_year": 2014
+				    }
+				];
 
-		for(i = 0; i < numberOfTimeSlots; i++){
-			var mins = (i%2 == 0) ? 0 : 30;
-			vm.timeSlots.push({hour: hours, minutes: mins, projector: false, laptop: true, avail: true});
+			var numSlots = 28;
+			var numRooms = 3;
+			var numProjectors = 3;
+			var numLaptops = 3;
 
-			if(i%2 != 0){
-				hours++;
+			var startHour = 8;
+
+			if(day > 5 || day == 0)
+			{
+				//it's a weekend
+				numSlots = 14;	
+				startHour = 11;
+			}	
+
+			var time = 0;
+				
+			/* Initialize room array */
+			var rooms = new Array(numRooms);
+			for(var i = 0; i < numRooms; i++)
+			{
+				rooms[i] = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 0);	
 			}
-		}
+	
+		        for(var i = 0; i < vm.bookings.length; i++)	
+			{					
+				var room_id = vm.bookings[i].room_id;
+				var start_slot = (vm.bookings[i].start_hour * 2) + (vm.bookings[i].start_minute / 30);
+				var end_slot = (vm.bookings[i].end_hour * 2) + (vm.bookings[i].end_minute / 30);	
+
+				for(var j = start_slot; j <= end_slot; j++)
+				{			
+					rooms[room_id][j] = 1;	
+				}
+			}
+
+			roomSchedule = buildSchedule(rooms, 2);
+
+			for(var i = 0; i < numSlots; i++)
+			{
+				var hours = startHour + Math.floor(i / 2);	
+				var mins = (i%2 == 0) ? 0 : 30;
+
+				var roomAvailable = (roomSchedule[i] == 0) ? true : false;			
+
+				vm.timeSlots.push({hour: hours, minutes: mins, projector: roomAvailable, laptop: true, avail: true});
+			}
+			
+
+		});
+	
 	};
 
 	vm.createTimeSlots(new Date(vm.chosenDate).getDay());
@@ -168,3 +238,49 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 */
 
 });
+
+
+//Function to build an object schedule. Outside controllers for now.
+//
+//Input: 2D array where each column is a half hour slot and 
+//	 each row is a is an object (room, projector, laptop).
+//	 An entry is 1 if the time slot is taken for that object and
+//	 0 if it isn't taken. Booking length: 1 = 30 minutes, 2 = 60 minutes
+//	 3 = 90 minutes ect.
+//
+//Output: Returns an array where an entry is 1 if all objects are taken for 
+//	  that slot and 0 if at least one object is available.
+function buildSchedule(objectArray2D, bookingLength)
+{	
+	var numObjects = objectArray2D.length;
+	var numSlots = objectArray2D[0].length;
+
+	var schedule = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 1);
+
+	for(var y = 0; y < numSlots; y++)
+	{
+		for(var x = 0; x < numObjects; x++)
+		{	
+			var taken = 0;
+			for(var i = 0; i < bookingLength; i++)
+			{
+				var slot = y + i;
+				if(slot >= numSlots || objectArray2D[x][slot] == 1)
+				{
+					taken = 1;
+					break;
+				}
+			}
+
+			if(taken == 0)
+			{
+				schedule[y] = 0;
+				break;
+			}
+		}
+	}
+	
+	return schedule;
+}
+
+

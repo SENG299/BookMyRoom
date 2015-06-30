@@ -22,7 +22,6 @@ angular.module('app.routes', ['ngRoute'])
 		//controller: 'userController',
 		//controllerAs: 'user'
 	})
-
 	// Route for home page
 	.when("/schedule", {
 		templateUrl: 'app/views/pages/schedule.html',
