@@ -8,6 +8,7 @@ angular.module('userApp', [
     'bookerCtrl',
     'scheduleCtrl',
     'bookingService',
+    'sharedService',
     'userService'
 
 ])

@@ -28,7 +28,7 @@ angular.module('userCtrl', ['userService'])
 		User.delete(id)
 			.success(function(data) {
 
-                //console.log("in deleete")
+                		//console.log("in delete")
 				// get all users to update the table
 				// you can also set up your api 
 				// to return the list of users with the delete call
