@@ -39,12 +39,14 @@
 <!-- NAVBAR -->
 <header>
 	<div class="navbar navbar-inverse">
-	<div class="container">
+	<div class="container" ng-controller="daySelectorController as selector">
 		<div class="navbar-header">
 			<a href="/" class="navbar-brand"><span class="glyphicon glyphicon-fire text-danger"></span> Book My Room</a>
 		</div>	
 		<ul class="nav navbar-nav navbar-right">
 			<li><a href="/login">Log In </a></li>
+			<li ng-if = "selector.loggedIn == false"><a href="/about"> Log In</a></li>
+			<li ng-if = "selector.loggedIn"><a href="/profile">Profile </a></li>
 		</ul>
 	</div>
 	</div>
