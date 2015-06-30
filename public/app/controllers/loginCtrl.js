@@ -1,9 +1,12 @@
-angular.module('mainCtrl', ['authService'])
+angular.module('loginCtrl', ['authService'])
 
 .controller('loginController', function($rootScope, $location, Auth) {
  // function to handle login form
 
-   vm.loggedIn = Auth.isLoggedIn();
+ var vm = this;
+   // vm.loggedIn = Auth.isLoggedIn();
+
+
 
     // check to see if a user is logged in on every request
     $rootScope.$on('$routeChangeStart', function() {
@@ -16,7 +19,6 @@ angular.module('mainCtrl', ['authService'])
 
     });
 
-    vm.loginMeassage = "See this brah?"
     vm.doLogin = function() {
       vm.processing = true;
       vm.error = '';
@@ -30,17 +32,18 @@ angular.module('mainCtrl', ['authService'])
         else
             vm.error = data.message;
 
-            });
+      });
 
        
     };
 
     // function to handle logging out
     vm.doLogout = function() {
+      console.log("BAAAM")
         Auth.logout();
 
         // reset all user info
         vm.user = {};
         $location.path('/login');
-    };
-}
+    }
+});

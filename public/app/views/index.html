@@ -20,8 +20,9 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-animate.js"></script>
 
 	<script src="app/controllers/bookerCtrl.js"></script>
-    <script src="app/controllers/mainCtrl.js"></script>
-    <script src="app/controllers/userCtrl.js"></script>
+  <script src="app/controllers/mainCtrl.js"></script>
+  <script src="app/controllers/userCtrl.js"></script>
+  <script src="app/controllers/loginCtrl.js"></script>
 
 	<!-- Add Angular services here-->
     <script src="app/services/userService.js"></script>
@@ -43,10 +44,10 @@
 		<div class="navbar-header">
 			<a href="/" class="navbar-brand"><span class="glyphicon glyphicon-fire text-danger"></span> Book My Room</a>
 		</div>	
-		<ul class="nav navbar-nav navbar-right">
-			<li><a href="/login">Log In </a></li>
-			<li ng-if = "selector.loggedIn == false"><a href="/about"> Log In</a></li>
-			<li ng-if = "selector.loggedIn"><a href="/profile">Profile </a></li>
+		<ul class="nav navbar-nav navbar-right" ng-controller="loginController as login">
+			<li ng-if = "login.loggedIn == false"><a href="/login"> Log In</a></li>
+      <li ng-if = "login.loggedIn" ng-click="login.doLogout()"><a href="#">Log Out</a></li>
+			<li ng-if = "login.loggedIn"><a href="/profile">Profile </a></li>
 		</ul>
 	</div>
 	</div>
