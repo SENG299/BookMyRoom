@@ -17,6 +17,7 @@ angular.module('app.routes', ['ngRoute'])
 })
 
 //Tony Test Route
+/*
 .config(function($routeProvider, $locationProvider){
 	$routeProvider	
 
@@ -28,6 +29,7 @@ angular.module('app.routes', ['ngRoute'])
 
 	$locationProvider.html5Mode(true);
 })
+*/
 
 .config(function($routeProvider, $locationProvider){
 
