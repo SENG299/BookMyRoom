@@ -41,12 +41,11 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	vm.bookingData = {};
 
 	vm.createBooking = function(){
-	
+			
 		vm.processing = true;
 		vm.message = '';
 		
 		//data to create new booking (hard coded for debugging)	
-		vm.bookingData.booking_id = "0" //TODO: get this passed as a parameter
 		vm.bookingData.netlink_id = "gordillo"; //TODO: get this passed as a parameter
 		vm.bookingData.room_id = 0; //TODO: has to be dynamically found
 		vm.bookingData.projector_id = 0; //TODO: has to be dynamically found
@@ -54,16 +53,25 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 		vm.bookingData.start_year = vm.chosenDate.getFullYear();
 		vm.bookingData.start_month = vm.chosenDate.getMonth() + 1; //so it is between 1 and 12
 		vm.bookingData.start_day = vm.chosenDate.getDate();
-		vm.bookingData.start_hour = vm.chosenDate.getHours(); //it is between 0 and 23
-		vm.bookingData.start_minute = vm.chosenDate.getMinutes();	
-		vm.bookingData.end_hour = vm.bookingData.start_hour + 3;
-		vm.bookingData.end_minute = 0;
+		vm.bookingData.start_hour = vm.selectedStartTime.hour; //it is between 0 and 23
+		vm.bookingData.start_minute = vm.selectedStartTime.minutes;	
+		vm.bookingData.end_hour = vm.finalEndTime.hour;
+		vm.bookingData.end_minute = vm.finalEndTime.minutes;
+		vm.bookingData.booking_id = vm.bookingData.start_year + ":" +
+					    vm.bookingData.start_month + ":" +
+					    vm.bookingData.start_day + ":" +
+				            vm.bookingData.start_hour + ":" +
+					    vm.bookingData.start_minute + ":" + 
+					    vm.bookingData.end_hour + ":" +
+					    vm.bookingData.end_minute + ":" +
+					    vm.bookingData.room_id; 			
 
+		
 		//the create booking service is called, vm.bookingData will populate the new booking in the db
 		Booking.create(vm.bookingData)
 			.success(function(data) {
-				vm.processing = false;
-                
+				vm.processing = false; 
+				 
                 		//clear the form
 				vm.bookingData = {};
 				vm.message = data.message;
@@ -101,10 +109,11 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
     var vm = this;
 
     //valid durations have to be calculated TODO: hard coded for debugging (remove when done)
+    // 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
     vm.validDurations = [
-	     {duration: 0.5},
 	     {duration: 1},
-	     {duration: 1.5}
+	     {duration: 2},
+	     {duration: 3}
 	];
 
     vm.chosenDate = sharedProperties.getchosenDate();
