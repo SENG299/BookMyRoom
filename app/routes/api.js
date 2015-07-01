@@ -19,58 +19,55 @@ module.exports = function(app, express) {
 	});
     */
 
-    //authentication route
-    apiRouter.post('/authenticate', function(req, res) {
+//################### Authentication 
+  //authentication route (accessed at POST http://localhost:8080/api/authenticate)
+  apiRouter.post('/authenticate', function(req, res) {
+
+    // find the user
+    // select the name username and password explicitly
+    User.findOne({
+      username: req.body.username
+    }).select('name username password').exec(function  (err, user) {
+
+      if (err) throw err;
+
+      // no user with that username was found
+      if (!user) {
+        res.json({
+          success: false,
+          message: 'Authentication failed. User not found.'
+        })
+      } else if (user) {
         
-        //console.log(req.body.username);
+        // check if password matches
+        var validPassword = user.comparePassword(req.body.password);
+          
+        if (!validPassword) {
+          res.json({
+            success: false,
+            message: 'Authentication failed. Wrong password.'
+          })
+        } else {
 
-        // find the user
-        // select the name username and password explicitly
-        User.findOne({
-            username: req.body.username
-        }).select('name username password').exec(function  (err, user) {
+          // if user is found and password is right
+          // create a token
+          var token = jwt.sign({
+            name: user.name,
+            username: user.username
+          }, superSecret, {
+              expiresInMinutes: 1440 // expires in 24 hours
+          });
 
-            if (err) throw err;
-
-            // no user with that username was found
-            if (!user) {
-                res.json({
-                    success: false,
-                    message: 'Authentication failed. User not found.'
-
-                });
-
-            } else if (user) {
-            
-                // check if password matches
-                var validPassword = user.comparePassword(req.body.password);
-                
-                if (!validPassword) {
-                    res.json({
-                        success: false,
-                        message: 'Authentication failed. Wrong password.'
-                    });
-                } else {
-
-                    // if user is found and password is right
-                    // create a token
-                    var token = jwt.sign({
-                        name: user.name,
-                        username: user.username
-                    }, superSecret, {
-                        expiresInMinutes: 1440 // expires in 24 hours
-                    });
-
-                    // return the information including token as JSON
-                    res.json({
-                        success: true,
-                        message: 'Enjoy your token!',
-                        token: token
-                    });
-                }
-            }
-        });
+          // return the information including token as JSON
+          res.json({
+            success: true,
+            message: 'Enjoy your token!',
+                token: token
+          });
+        }
+      }
     });
+  });
 
     // route middleware to verify a token
     apiRouter.use(function(req, res, next) {
@@ -116,18 +113,21 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
     });
     
 
-	// on routes that end in /users
-	// ----------------------------------------------------
+//############# Routes with localhost://users/*
 	apiRouter.route('/users')
 
-		// create a user (accessed at POST http://localhost:8080/users)
+		// create a user (accessed at POST http://localhost:8080/api/users)
 		.post(function(req, res) {
 			
+      console.log("####")
 			var user = new User();		// create a new instance of the User model
 			user.name = req.body.name;  // set the users name (comes from the request)
 			user.username = req.body.username;  // set the users username (comes from the request)
 			user.password = req.body.password;  // set the users password (comes from the request)
+      user.netlink_id = req.body.netlink;
 
+
+      console.log("details: ", req.body.username, req.body.password, req.body.netlink )
 			user.save(function(err) {
 				if (err) {
 					// duplicate entry
@@ -155,9 +155,56 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
 		});
 
 
+//############# Routes with localhost://users/:user id  
+  apiRouter.route('/users/:user_id')
+    //(accessed at GET http://localhost:8080/api/users/:userid)
+    // get the user with that id
+    .get(function(req, res) {
+      User.findById(req.params.user_id, function(err, user) {
+        if (err) res.send(err);
+
+        // return that user
+        res.json(user);
+      });
+    })
+
+    // update the user with this id
+    //(accessed at PUT http://localhost:8080/api/users/:userid)
+    .put(function(req, res) {
+      User.findById(req.params.user_id, function(err, user) {
+
+        if (err) res.send(err);
+
+        // set the new user information if it exists in the request
+        if (req.body.name) user.name = req.body.name;
+        if (req.body.username) user.username = req.body.username;
+        if (req.body.password) user.password = req.body.password;
+
+        // save the user
+        user.save(function(err) {
+          if (err) res.send(err);
+
+          // return a message
+          res.json({ message: 'User updated!' });
+        });
+
+      });
+    })
+
+    ////(accessed at DELETE http://localhost:8080/api/users/:userid)
+    // delete the user with this id
+    .delete(function(req, res) {
+      User.remove({
+        _id: req.params.user_id
+      }, function(err, user) {
+        if (err) res.send(err);
+
+        res.json({ message: 'Successfully deleted' });
+      });
+    });
 
 
-
+//############################ Routes with http://localhost:8080/api/bookings/*
 //added by JJ 
 // on routes that end in /bookings/day
 // returns all the boookings in a specific day
@@ -176,29 +223,13 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
 			});
 		});
 
-// on routes that end in /bookings/day
-// returns all the boookings in a specific day
-// ----------------------------------------------------
-	apiRouter.route('/allbookings')
-		
-		// create a user (accessed at POST http://localhost:8080/users)
-		.get(function(req, res) {
-
-			Booking.find({}, function(err, bookings) {
-				if (err) res.send(err);
-
-				// return the bookings
-				res.json(bookings);
-			});
-		});
 
 // on routes that end in /bookings/create
 // creates a new booking
-// ----------------------------------------------------
 
-apiRouter.route('/bookings/create')
+  apiRouter.route('/bookings/create')
 		
-		// create a user (accessed at POST http://localhost:8080/users)
+		// create a user (accessed at POST http://localhost:8080/api/bookings/create)
 		.post(function(req, res) {
 			
 			var booking = new Booking();		// create a new instance of the Booking model
@@ -235,7 +266,8 @@ apiRouter.route('/bookings/create')
 // ----------------------------------------------------
 
 	apiRouter.route('/bookings/:netlink_id')
-		
+
+		//(accessed at GET http://localhost:8080/api/bookings/netlink_id)
 		.get(function(req, res) {
 
 			Booking.find({"netlink_id":req.params.netlink_id}, function(err, bookings) {
@@ -246,71 +278,42 @@ apiRouter.route('/bookings/create')
 			});
 		});
 
-// on routes that end in /bookings/delete/:/booking_id
+// on routes that end in /api/bookings/delete/:/booking_id
 // deletes a specific booking
 // ----------------------------------------------------
-apiRouter.route('/bookings/delete/:booking_id')
-		// delete the booking with this id
-		.delete(function(req, res) {
-			Booking.remove({
-				_id: req.params.booking_id
-			}, function(err, booking) {
-				if (err) res.send(err);
+  apiRouter.route('/bookings/delete/:booking_id')
+  		// delete the booking with this id
+  	.delete(function(req, res) {
+  		Booking.remove({
+  			_id: req.params.booking_id
+  		}, function(err, booking) {
+  			if (err) res.send(err);
 
-				res.json({ message: 'Successfully deleted' });
-			});
-		});
+  			res.json({ message: 'Successfully deleted' });
+  		});
+  	});
 
 
+// on routes that end in /bookings/day
+// returns all the boookings in a specific day
+// ----------------------------------------------------
+  apiRouter.route('/allbookings')
+    
+    // create a user (accessed at POST http://localhost:8080/api/allbookings)
+    .get(function(req, res) {
 
+      Booking.find({}, function(err, bookings) {
+        if (err) res.send(err);
+
+        // return the bookings
+        res.json(bookings);
+      });
+    });
 
 
 	// on routes that end in /users/:user_id
 	// ----------------------------------------------------
-	apiRouter.route('/users/:user_id')
-
-		// get the user with that id
-		.get(function(req, res) {
-			User.findById(req.params.user_id, function(err, user) {
-				if (err) res.send(err);
-
-				// return that user
-				res.json(user);
-			});
-		})
-
-		// update the user with this id
-		.put(function(req, res) {
-			User.findById(req.params.user_id, function(err, user) {
-
-				if (err) res.send(err);
-
-				// set the new user information if it exists in the request
-				if (req.body.name) user.name = req.body.name;
-				if (req.body.username) user.username = req.body.username;
-				if (req.body.password) user.password = req.body.password;
-
-				// save the user
-				user.save(function(err) {
-					if (err) res.send(err);
-
-					// return a message
-					res.json({ message: 'User updated!' });
-				});
-
-			});
-		})
-
-		// delete the user with this id
-		.delete(function(req, res) {
-			User.remove({
-				_id: req.params.user_id
-			}, function(err, user) {
-				if (err) res.send(err);
-
-				res.json({ message: 'Successfully deleted' });
-			});
-		});
+	
 
 	// api endpoint to get user information
 	apiRouter.get('/me', function(req, res) {
