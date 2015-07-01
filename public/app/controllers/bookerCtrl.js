@@ -136,78 +136,24 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 			vm.bookings = data;
 
-			vm.bookings =  [
-				    {
-					"_id": 1,
-					"room_id": 0,
-					"end_minute": 30,
-					"end_hour": 6,
-					"start_minute": 30,
-					"start_hour": 4,
-					"start_day": 3,
-					"start_month": 4,
-					"start_year": 2014	
-				    },
-				    {
-					"_id": 2,
-					"room_id": 1,
-					"end_minute": 0,
-					"end_hour": 6,
-					"start_minute": 0,
-					"start_hour": 4,
-					"start_day": 3,
-					"start_month": 4,
-					"start_year": 2014
-				    },
-				    {
-					"_id": 3,
-					"room_id": 2,
-					"end_minute": 30,
-					"end_hour": 6,
-					"start_minute": 30,
-					"start_hour": 4,
-					"start_day": 3,
-					"start_month": 4,
-					"start_year": 2014
-				    }
-				];
-
 			var numSlots = 28;
-			var numRooms = 3;
-			var numProjectors = 3;
-			var numLaptops = 3;
-
 			var startHour = 8;
 
-			if(day > 5 || day == 0)
-			{
-				//it's a weekend
+			//it's a weekend
+			if(day > 5 || day == 0){
 				numSlots = 14;	
 				startHour = 11;
 			}	
 
-			var time = 0;
-				
-			/* Initialize room array */
-			var rooms = new Array(numRooms);
-			for(var i = 0; i < numRooms; i++)
-			{
-				rooms[i] = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 0);	
-			}
-	
-		        for(var i = 0; i < vm.bookings.length; i++)	
-			{					
-				var room_id = vm.bookings[i].room_id;
-				var start_slot = (vm.bookings[i].start_hour * 2) + (vm.bookings[i].start_minute / 30);
-				var end_slot = (vm.bookings[i].end_hour * 2) + (vm.bookings[i].end_minute / 30);	
+			// Initialize room array
+			var objectArrays = buildObjectArrays(numSlots, startHour, vm.bookings);
+			var rooms = objectArrays.rooms;
+			var projectors = objectArrays.projectors;
+			var laptops = objectArrays.laptops;
 
-				for(var j = start_slot; j <= end_slot; j++)
-				{			
-					rooms[room_id][j] = 1;	
-				}
-			}
-
-			roomSchedule = buildSchedule(rooms, 2);
+			roomSchedule = buildSchedule(rooms, 1);
+			projectorSchedule = buildSchedule(projectors, 1);
+			laptopSchedule = buildSchedule(laptops, 1);
 
 			for(var i = 0; i < numSlots; i++)
 			{
@@ -215,8 +161,10 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 				var mins = (i%2 == 0) ? 0 : 30;
 
 				var roomAvailable = (roomSchedule[i] == 0) ? true : false;			
+				var laptopAvailable = (laptopSchedule[i] == 0) ? true : false;			
+				var projectorAvailable = (projectorSchedule[i] == 0) ? true : false;			
 
-				vm.timeSlots.push({hour: hours, minutes: mins, projector: roomAvailable, laptop: true, avail: true});
+				vm.timeSlots.push({hour: hours, minutes: mins, projector: projectorAvailable, laptop: laptopAvailable, avail: roomAvailable});
 			}
 			
 
@@ -225,10 +173,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	};
 
 	vm.createTimeSlots(new Date(vm.chosenDate).getDay());
-	vm.selectedDuration = vm.validDurations[0];
-	
-	
-	
+	vm.selectedDuration = vm.validDurations[0];	
 /*
 	Monday thru Friday 8 am to 10pm and on Saturdays and Sundays 11 am to 6pm. 
 */
@@ -236,10 +181,57 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 });
 
 
+function buildObjectArrays(numSlots, startHour, bookings)
+{
+	var numRooms = 3;
+	var numProjectors = 3;
+	var numLaptops = 3;
+
+	var rooms = new Array(numRooms);
+	var projectors = new Array(numProjectors);
+	var laptops = new Array(numLaptops);
+
+	for(var i = 0; i < numRooms; i++){
+		rooms[i] = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 0);
+	}
+	for(var i = 0; i < numProjectors; i++){
+		projectors[i] = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 0);	
+	}
+	for(var i = 0; i < numLaptops; i++){
+		laptops[i] = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 0);	
+	}
+
+	for(var i = 0; i < bookings.length; i++)	
+	{					
+		var roomId = bookings[i].room_id;
+		var projectorId = bookings[i].projector_id;
+		var laptopId = bookings[i].laptop_id;
+
+		var startSlot = ((bookings[i].start_hour - startHour) * 2) + Math.floor(bookings[i].start_minute / 30);
+		var endSlot = ((bookings[i].end_hour - startHour) * 2) + (bookings[i].end_minute / 30);	
+
+		for(var j = startSlot; j <= endSlot; j++)
+		{			
+			rooms[roomId][j] = 1;
+			projectors[projectorId][j] = 1;
+			laptops[laptopId][j] = 1;	
+		}
+	}
+
+	var objectArrays = 
+	{
+		rooms: rooms,
+		projectors: projectors,
+		laptops: laptops
+	}	
+	
+	return objectArrays;
+}
+
 //Function to build an object schedule. Outside controllers for now.
 //
 //Input: 2D array where each column is a half hour slot and 
-//	 each row is a is an object (room, projector, laptop).
+//	 each row is an object (room, projector, laptop).
 //	 An entry is 1 if the time slot is taken for that object and
 //	 0 if it isn't taken. Booking length: 1 = 30 minutes, 2 = 60 minutes
 //	 3 = 90 minutes ect.
