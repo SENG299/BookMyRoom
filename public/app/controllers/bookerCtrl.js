@@ -1,4 +1,4 @@
-angular.module('bookerCtrl', ['bookingService', 'sharedService'])
+angular.module('bookerCtrl', ['bookingService', 'sharedService', 'ngCookies'])
 
 .controller('bookingCreatorController', function($rootScope, $location, Booking, sharedProperties) {
 
