@@ -4,10 +4,10 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
     var vm = this;
 
-	//these values are grabbed from the shared service for the controllers
-	vm.chosenDate = sharedProperties.getchosenDate();
-	vm.selectedStartTime = sharedProperties.getChosenStartTime();
-	vm.selectedDuration = sharedProperties.getDuration().duration; 
+	//these values are grabbed from the cookies (saved by other controllers)
+	vm.chosenDate = $cookies.getObject('chosenDate');
+	vm.selectedStartTime = $cookies.getObject('chosenStartTime');
+	vm.selectedDuration = $cookies.getObject('duration').duration;
 
 	vm.calculateEndTime = function(){
 		var decimalPart = Number((vm.selectedDuration % 1).toFixed(1));
@@ -122,14 +122,14 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	     {duration: 1.5}
 	];
 
-    vm.chosenDate = sharedProperties.getchosenDate();
+    vm.chosenDate = $cookies.getObject('chosenDate');
     vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
 
 	vm.go = function ( path ) {
-		sharedProperties.setDuration(vm.bookingDuration);
-		sharedProperties.setChosenStartTime(vm.selectedTimeSlot);
+		$cookies.putObject('duration', vm.bookingDuration);
+		$cookies.putObject('chosenStartTime', vm.selectedTimeSlot);
   		$location.path( path );
 	};
 
@@ -185,7 +185,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 			var startHour = 8;
 
-			if(day > 5 || day == 0)
+			if(day == 6 || day == 0)
 			{
 				//it's a weekend
 				numSlots = 14;	
