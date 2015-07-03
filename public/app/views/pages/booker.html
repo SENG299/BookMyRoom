@@ -1,23 +1,106 @@
-<h1 align="center">{{booker.chosenDate | date}}</h1> 
-	<h2 align="center"> </br> 
-		Selected Time for Booking
-	</br>Start Time: 
-	{{(booker.selectedStartTime.hour > 12) && (booker.selectedStartTime.hour - 12) || (booker.selectedStartTime.hour)}}:{{(booker.selectedStartTime.minutes == 0) &&('00') || booker.selectedStartTime.minutes}} {{(booker.selectedStartTime.hour > 11) && ('PM') || ('AM')}}  
-	</br>          
-	End Time: 
-	{{(booker.finalEndTime.hour > 12) && (booker.finalEndTime.hour - 12) || (booker.finalEndTime.hour)}}:{{(booker.finalEndTime.minutes == 0) && ('00') || booker.finalEndTime.minutes}} {{(booker.finalEndTime.hour > 11) && ('PM') || ('AM')}}
-	</h2>
+
+<div class="container fill" >
+
+    <div class="row">
+	<div class="fixeddiv">
+		<h3>{{booker.chosenDate | date}}</h3> 
+	</div>	 
+   </div>
 	
-	<h2> </br>Equipment Available</h2>
-	<input type="checkbox" name="option1" ng-model="booker.addLaptop" ng-disabled="{{booker.disableAddLaptop}}"> Laptop<br> </input>
-	<input type="checkbox" name="option2" ng-model="booker.addProjector" ng-disabled="{{booker.disableAddProjector}}">  Projector </input>
+        <div class="col-xs-1 col-md-3 "  ></div>
+        <div class="col-xs-10 col-md-6" id="centre">
+            
+            <!-- Basic info -->
+		<div id="incentre">
 
-	</br>
-	</br>
-	</br>
+			<h2>Room: A103</h2>
+			<h2><i class="fa fa-clock-o fa-lg"></i> Time: {{(booker.selectedStartTime.hour > 12) && (booker.selectedStartTime.hour - 12) || (booker.selectedStartTime.hour)}}:{{(booker.selectedStartTime.minutes == 0) &&('00') || booker.selectedStartTime.minutes}} {{(booker.selectedStartTime.hour > 11) && ('PM') || ('AM')}} to {{(booker.finalEndTime.hour > 12) && (booker.finalEndTime.hour - 12) || (booker.finalEndTime.hour)}}:{{(booker.finalEndTime.minutes == 0) && ('00') || booker.finalEndTime.minutes}} {{(booker.finalEndTime.hour > 11) && ('PM') || ('AM')}}</h2>
+			<h2>Add/Remove Equipment:</h2>
+            <!-- Equipment -->	
+		<div id="equip">
+		
+			<input type="checkbox" name="option1" ng-model="booker.addLaptop" ng-disabled="{{booker.disableAddLaptop}}"> Laptop<br> </input>
+			<input type="checkbox" name="option2" ng-model="booker.addProjector" ng-disabled="{{booker.disableAddProjector}}">  Projector </input>
+			<!--broken pretty toggle switches
+			<input class="checkbox" type="checkbox"  data-style="ios" data-toggle="toggle" checked data-on="<i class='fa fa-laptop'></i>" data-off=
+			"<i class='fa fa-laptop'></i>" data-onstyle="success">
+			<input class="checkbox" type="checkbox"  data-style="ios" data-toggle="toggle" data-on="<i class='fa fa-video-camera'></i>" data-off=
+			"<i class='fa fa-video-camera fg-lg'></i>" data-onstyle="success" >-->
+			</div>
+			<h2>Extend booking to   <div id="sel1">
+			  <select class="form-control form-small" >
+					<option>10am</option>
+					<option>10:30am</option>
+					<option>11am</option>
+					<option>11:30am</option>
+			  </select>
+			</div>             
+			</h2>
+		<!-- Trigger the modal with a button -->
+		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"> Save changes </button>
+		<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+  		<div class="modal-dialog modal-sm">
+    		<!-- Modal content-->
+    		<div class="modal-content">
+	      <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">Are you sure you want to save your booking?</h4>
+	      </div>
+	      <div class="modal-body">
+		<p>Room A103</p>
+		<p>Wednesday July 1st, 2015</p>
+		<p>Time: 8:30 am to 10:30am</p>
+		<p>Equipment: Laptop, Projector</p>
+	      </div>
+	      <div class="modal-footer">
+		<button type="button" class="btn btn-default" ng-click="booker.createBooking()" data-dismiss="modal">Confirm</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+		<!-- Trigger the modal with a button -->
+		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal2"> Delete booking </button>
+		<!-- Modal -->
+		<div id="myModal2" class="modal fade" role="dialog">
+  		<div class="modal-dialog modal-sm">
+    		<!-- Modal content-->
+    		<div class="modal-content">
+	      <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">Note: If you are cancelling your booking within 5 hours of its start time than you will be unable to make bookings for 24 hours.</h4>
+	      </div>
+	      <div class="modal-body">
+		<p>Are you sure you want to delete your booking?<p>
+	      </div>
+	      <div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
-	<button type="button" ng-click="booker.createBooking()">Confirm</button> 
-	<button type="button">Cancel</button> 
+<nav class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container">
 
+        <div class="navbar-header navbar-left col-xs-3">
+          <!--<a class="navbar-brand" href="#">BookMyRoom</a>-->
+          <a href="/" class="btn navbar-btn btn-default btn-small">Home</a>
+        </div>
+        
 
+         <div class="equip col-xs-6">
 
+        
+
+     </div>
+
+       <div class=" navbar-right">
+
+         <!---<a href="#/back" class="btn navbar-btn btn-default btn-small">Next</a>--->
+         
+     
+      </div>
+</nav>

@@ -1,0 +1,23 @@
+<h1 align="center">{{booker.chosenDate | date}}</h1> 
+	<h2 align="center"> </br> 
+		Selected Time for Booking
+	</br>Start Time: 
+	{{(booker.selectedStartTime.hour > 12) && (booker.selectedStartTime.hour - 12) || (booker.selectedStartTime.hour)}}:{{(booker.selectedStartTime.minutes == 0) &&('00') || booker.selectedStartTime.minutes}} {{(booker.selectedStartTime.hour > 11) && ('PM') || ('AM')}}  
+	</br>          
+	End Time: 
+	{{(booker.finalEndTime.hour > 12) && (booker.finalEndTime.hour - 12) || (booker.finalEndTime.hour)}}:{{(booker.finalEndTime.minutes == 0) && ('00') || booker.finalEndTime.minutes}} {{(booker.finalEndTime.hour > 11) && ('PM') || ('AM')}}
+	</h2>
+	
+	<h2> </br>Equipment Available</h2>
+	<input type="checkbox" name="option1" ng-model="booker.addLaptop" ng-disabled="{{booker.disableAddLaptop}}"> Laptop<br> </input>
+	<input type="checkbox" name="option2" ng-model="booker.addProjector" ng-disabled="{{booker.disableAddProjector}}">  Projector </input>
+
+	</br>
+	</br>
+	</br>
+
+	<button type="button" ng-click="booker.createBooking()">Confirm</button> 
+	<button type="button">Cancel</button> 
+
+
+

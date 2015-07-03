@@ -1,0 +1,31 @@
+<div style="outline: 2px solid black; width:300px">
+	<div class="jumbotron" style=" width:300px; padding: 5px; margin-bottom:5px;" float="top" >
+
+		<h3>{{schedule.chosenDate | date}}</h3>
+		<div display="inline-block" float="left"></div>
+
+			<div float="right" style="width:100px; display:inline-block;" >
+				Duration:  
+				  <select ng-model="schedule.bookingDuration" ng-options="item as item.duration for item in schedule.validDurations">
+						<option value="" ng-if="false"></option> 
+				</select> 
+			</div>
+
+		</div>
+
+		<div class = "jumbotron" style="float:left; height:400px; width:300px; padding: 5px; overflow: scroll; padding-left:2px">
+			<ul style="padding-left:3px;">
+				<div class= "scrolling" width="200px" ng-repeat="item in schedule.timeSlots">
+					<li style="list-style-type: none; padding-right:5px; font-size:200%; float:left;" width="300px" >
+						<span><button style="float:left; width:200px;" ng-click="schedule.selectedTimeSlot = item ; schedule.go('/booker')"> {{(item.hour > 12) && (item.hour - 12) || (item.hour)}}:{{(item.minutes == 0) && ('00') || item.minutes}} {{(item.hour > 11) && ('PM') || ('AM')}} 
+						</button></span>
+						<i class="fa fa-laptop" style="color:black; align:left" ng-if="item.laptop"></i>
+						<i class="fa fa-laptop" style="color:grey" ng-if="item.laptop == false"></i>
+
+						<i class="fa fa-laptop" style="color:black" ng-if="item.projector"></i>
+						<i class="fa fa-laptop" style="color:grey" ng-if="item.projector == false"></i>
+					</li>
+				</div>
+			<ul>
+		</div>
+</div> 

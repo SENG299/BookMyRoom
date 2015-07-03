@@ -13,14 +13,6 @@ body{
    padding-top: 50px;
 }
 
-main{
-   padding-top: 50px;
-}
-
-main{
-margin-top:150px;
-}
-
 /*middle master column (middle of 3)*/
 #centre{
 
@@ -29,13 +21,12 @@ margin-top:150px;
    margin-bottom:50px;
    margin-top:10px;
    padding-left:0px;
-   margin-top:85px;
 
 }
 
 /* for innner most content div*/
 #incentre{
-	 margin-top:85px;
+	 
 
 }
 
@@ -62,12 +53,13 @@ right:0;
 
 /* for time selector */
 #timeselector{
-	margin-top:75px;
+	margin-top:80px;
     list-style-type:none;
     text-align:center;
+	padding-bottom:50px;
+	
 
 }
-
 
 
 /* for day selector */
@@ -75,7 +67,6 @@ right:0;
 
     list-style-type:none;
     text-align:center;
-	padding-top:85px;
 
 }
 
