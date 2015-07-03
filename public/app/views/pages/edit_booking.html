@@ -1,0 +1,165 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>HTML5</title>
+  <meta name="description" content="HTML TEMPLATE">
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no, height=device-height">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+    
+  <!-- CSS  -->
+	<!-- load bootstrap from CDN and custom CSS -->
+	<!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+ 
+    
+</head>
+
+<body>
+
+
+<nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+
+        <div class="navbar-header navbar-left col-xs-6">
+          <a class="navbar-brand" href="#">BookMyRoom</a>
+        </div>
+
+       <div class="navbar-right">
+
+         <a href="#/profile" class="btn navbar-btn btn-default btn-small">Profile</a>
+     
+      </div>
+</nav>
+
+<div class="container fill" >
+
+    <div class="row">
+	<div class="fixeddiv">
+		<h3>Wednesday July 1st, 2015</h3> 
+	</div>	 
+   </div>
+	
+        <div class="col-xs-1 col-md-3 "  ></div>
+        <div class="col-xs-10 col-md-6" id="centre">
+            
+            <!-- Basic info -->
+		<div id="incentre">
+
+			<h2>Room: A103</h2></br>
+			<h2><i class="fa fa-clock-o fa-lg"></i> Time: 8:30 am to 9:30am</h2></br></br>
+			<h2>Add/Remove Equipment:</h2>
+            <!-- Equipment -->	
+		<div id="equip">
+			<input class="checkbox" type="checkbox"  data-style="ios" data-toggle="toggle" checked data-on="<i class='fa fa-laptop'></i>" data-off=
+			"<i class='fa fa-laptop'></i>" data-onstyle="success">
+			<input class="checkbox" type="checkbox"  data-style="ios" data-toggle="toggle" data-on="<i class='fa fa-video-camera'></i>" data-off=
+			"<i class='fa fa-video-camera fg-lg'></i>" data-onstyle="success" >
+			</div></br></br>
+			<h2>Extend booking to   <div id="sel1">
+			  <select class="form-control form-small" >
+					<option>10am</option>
+					<option>10:30am</option>
+					<option>11am</option>
+					<option>11:30am</option>
+			  </select>
+			</div>             
+			</h2></br></br>
+		<!-- Trigger the modal with a button -->
+		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"> Save changes </button>
+		<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+  		<div class="modal-dialog modal-sm">
+    		<!-- Modal content-->
+    		<div class="modal-content">
+	      <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">Are you sure you want to save your booking?</h4>
+	      </div>
+	      <div class="modal-body">
+		<p>Room A103</p>
+		<p>Wednesday July 1st, 2015</p>
+		<p>Time: 8:30 am to 10:30am</p>
+		<p>Equipment: Laptop, Projector</p>
+	      </div>
+	      <div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+		<!-- Trigger the modal with a button -->
+		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal2"> Delete booking </button>
+		<!-- Modal -->
+		<div id="myModal2" class="modal fade" role="dialog">
+  		<div class="modal-dialog modal-sm">
+    		<!-- Modal content-->
+    		<div class="modal-content">
+	      <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">Note: If you are cancelling your booking within 5 hours of its start time than you will be unable to make bookings for 24 hours.</h4>
+	      </div>
+	      <div class="modal-body">
+		<p>Are you sure you want to delete your booking?<p>
+	      </div>
+	      <div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container">
+
+        <div class="navbar-header navbar-left col-xs-3">
+          <!--<a class="navbar-brand" href="#">BookMyRoom</a>-->
+          <a href="dayselector.html" class="btn navbar-btn btn-default btn-small"><i class="fa fa-arrow-left fg-lg"></i> Return to profile</a>
+        </div>
+        
+
+         <div class="equip col-xs-6">
+
+        
+
+     </div>
+        
+
+
+       <div class=" navbar-right">
+
+         <!---<a href="#/back" class="btn navbar-btn btn-default btn-small">Next</a>--->
+         
+     
+      </div>
+</nav>
+
+
+</body>
+</html>
