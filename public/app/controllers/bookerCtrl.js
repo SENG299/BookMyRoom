@@ -40,41 +40,68 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	//this object is populated with the information that will belong to the new booking
 	vm.bookingData = {};
 
-	vm.createBooking = function(){
-			
-		vm.processing = true;
-		vm.message = '';
+	vm.createBooking = function()
+	{
+		Booking.getAllBookings()
+		.success(function(data)
+		{	
+			vm.processing = true;
+			vm.message = '';
 		
-		//data to create new booking (hard coded for debugging)	
-		vm.bookingData.netlink_id = "gordillo"; //TODO: get this passed as a parameter
-		vm.bookingData.room_id = 0; //TODO: has to be dynamically found
-		vm.bookingData.projector_id = 0; //TODO: has to be dynamically found
-		vm.bookingData.laptop_id = 0; //TODO: has to be dynamically found
-		vm.bookingData.start_year = vm.chosenDate.getFullYear();
-		vm.bookingData.start_month = vm.chosenDate.getMonth() + 1; //so it is between 1 and 12
-		vm.bookingData.start_day = vm.chosenDate.getDate();
-		vm.bookingData.start_hour = vm.selectedStartTime.hour; //it is between 0 and 23
-		vm.bookingData.start_minute = vm.selectedStartTime.minutes;	
-		vm.bookingData.end_hour = vm.finalEndTime.hour;
-		vm.bookingData.end_minute = vm.finalEndTime.minutes;
-		vm.bookingData.booking_id = vm.bookingData.start_year + ":" +
-					    vm.bookingData.start_month + ":" +
-					    vm.bookingData.start_day + ":" +
-				            vm.bookingData.start_hour + ":" +
-					    vm.bookingData.start_minute + ":" + 
-					    vm.bookingData.end_hour + ":" +
-					    vm.bookingData.end_minute + ":" +
-					    vm.bookingData.room_id; 			
+			var numSlots = 28;
+			var startHour = 8;
 
+			//it's a weekend
+			var day = 1;
+			if(day > 5 || day == 0)
+			{
+				numSlots = 14;	
+				startHour = 11;
+			}	
 		
-		//the create booking service is called, vm.bookingData will populate the new booking in the db
-		Booking.create(vm.bookingData)
-			.success(function(data) {
-				vm.processing = false; 
-				 
-                		//clear the form
-				vm.bookingData = {};
-				vm.message = data.message;
+			var startSlot = calculateSlot(vm.selectedStartTime.hour, vm.selectedStartTime.minutes, startHour);
+			var endSlot = calculateSlot(vm.finalEndTime.hour, vm.finalEndTime.minutes, startHour); 
+
+			var objectArrays = buildObjectArrays(numSlots, startHour, data);
+			var rooms = objectArrays.rooms;
+			var projectors = objectArrays.projectors;
+			var laptops = objectArrays.laptops;
+
+			var roomId = findRoom(rooms, startSlot, endSlot);
+			var projectorId = findProjector(projectors, startSlot, endSlot);
+			var laptopId = findLaptop(laptops, startSlot, endSlot);
+			alert(roomId + " " + projectorId + " " + laptopId);
+				
+			//data to create new booking (hard coded for debugging)	
+			vm.bookingData.netlink_id = "gordillo"; 
+			vm.bookingData.room_id = roomId; 
+			vm.bookingData.projector_id = projectorId;
+			vm.bookingData.laptop_id = laptopId;
+			vm.bookingData.start_year = vm.chosenDate.getFullYear();
+			vm.bookingData.start_month = vm.chosenDate.getMonth() + 1; //so it is between 1 and 12
+			vm.bookingData.start_day = vm.chosenDate.getDate();
+			vm.bookingData.start_hour = vm.selectedStartTime.hour; //it is between 0 and 23
+			vm.bookingData.start_minute = vm.selectedStartTime.minutes;	
+			vm.bookingData.end_hour = vm.finalEndTime.hour;
+			vm.bookingData.end_minute = vm.finalEndTime.minutes;
+			vm.bookingData.booking_id = vm.bookingData.start_year + ":" +
+						    vm.bookingData.start_month + ":" +
+						    vm.bookingData.start_day + ":" +
+						    vm.bookingData.start_hour + ":" +
+						    vm.bookingData.start_minute + ":" + 
+						    vm.bookingData.end_hour + ":" +
+						    vm.bookingData.end_minute + ":" +
+						    vm.bookingData.room_id; 			
+			
+			//the create booking service is called, vm.bookingData will populate the new booking in the db
+			Booking.create(vm.bookingData)
+				.success(function(data) {
+					vm.processing = false; 
+					 
+					//clear the form
+					vm.bookingData = {};
+					vm.message = data.message;
+			});
 		});	
 	};
 })
@@ -106,18 +133,19 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 .controller('scheduleController', function($rootScope, $location, Booking, sharedProperties) {
 
-    var vm = this;
+       var vm = this;
 
-    //valid durations have to be calculated TODO: hard coded for debugging (remove when done)
-    // 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
-    vm.validDurations = [
+        //valid durations have to be calculated TODO: hard coded for debugging (remove when done)
+        // 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
+        vm.validDurations =
+	[
 	     {duration: 1},
 	     {duration: 2},
 	     {duration: 3}
 	];
 
-    vm.chosenDate = sharedProperties.getchosenDate();
-    vm.bookingDuration = vm.validDurations[0];
+        vm.chosenDate = sharedProperties.getchosenDate();
+        vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
 
@@ -127,10 +155,11 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
   		$location.path( path );
 	};
 
-	vm.createTimeSlots = function(day){
-
+	vm.createTimeSlots = function(day)
+	{
 		Booking.getAllBookings()
-			.success(function(data) {
+		.success(function(data)
+		{
 	
 			vm.processing = false;
 
@@ -140,7 +169,8 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 			var startHour = 8;
 
 			//it's a weekend
-			if(day > 5 || day == 0){
+			if(day > 5 || day == 0)
+			{
 				numSlots = 14;	
 				startHour = 11;
 			}	
@@ -164,7 +194,11 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 				var laptopAvailable = (laptopSchedule[i] == 0) ? true : false;			
 				var projectorAvailable = (projectorSchedule[i] == 0) ? true : false;			
 
-				vm.timeSlots.push({hour: hours, minutes: mins, projector: projectorAvailable, laptop: laptopAvailable, avail: roomAvailable});
+				vm.timeSlots.push({hour: hours,
+						   minutes: mins,
+						   projector: projectorAvailable,
+						   laptop: roomAvailable,
+						   avail: roomAvailable});
 			}
 			
 
@@ -180,6 +214,11 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 
 });
 
+
+function calculateSlot(hour, minute, startHour)
+{
+	return ((hour - startHour) * 2) + Math.floor(minute / 30);	
+}
 
 function buildObjectArrays(numSlots, startHour, bookings)
 {
@@ -207,14 +246,19 @@ function buildObjectArrays(numSlots, startHour, bookings)
 		var projectorId = bookings[i].projector_id;
 		var laptopId = bookings[i].laptop_id;
 
-		var startSlot = ((bookings[i].start_hour - startHour) * 2) + Math.floor(bookings[i].start_minute / 30);
-		var endSlot = ((bookings[i].end_hour - startHour) * 2) + (bookings[i].end_minute / 30);	
+		var startSlot = calculateSlot(bookings[i].start_hour, bookings[i].start_minute, startHour);
+		var endSlot = calculateSlot(bookings[i].end_hour, bookings[i].end_minute, startHour);
 
-		for(var j = startSlot; j <= endSlot; j++)
+		for(var j = startSlot; j < endSlot; j++)
 		{			
 			rooms[roomId][j] = 1;
-			projectors[projectorId][j] = 1;
-			laptops[laptopId][j] = 1;	
+
+			if(projectorId != -1){	
+				projectors[projectorId][j] = 1;
+			}
+			if(laptopId != -1){
+				laptops[laptopId][j] = 1;
+			}	
 		}
 	}
 
@@ -226,6 +270,87 @@ function buildObjectArrays(numSlots, startHour, bookings)
 	}	
 	
 	return objectArrays;
+}
+
+function findLaptop(laptops, startSlot, endSlot)
+{
+	var numLaptops = laptops.length;
+	var laptopId = -1;
+	
+	for(var i = 0; i < numLaptops; i++)
+	{		
+		var taken = 0;
+		for(var j = startSlot; j < endSlot; j++)
+		{
+			if(laptops[i][j] == 1)
+			{
+				taken = 1;
+				break;
+			}
+		}	
+			
+		if(taken == 0)
+		{
+			laptopId = i;
+			break;
+		}
+	}	
+
+	return laptopId;
+}
+
+function findProjector(projectors, startSlot, endSlot)
+{
+	var numProjectors = projectors.length;
+	var projectorId = -1;
+	
+	for(var i = 0; i < numProjectors; i++)
+	{		
+		var taken = 0;
+		for(var j = startSlot; j < endSlot; j++)
+		{
+			if(projectors[i][j] == 1)
+			{
+				taken = 1;
+				break;
+			}
+		}	
+			
+		if(taken == 0)
+		{
+			projectorId = i;
+			break;
+		}
+	}	
+
+	return projectorId;
+}
+
+function findRoom(rooms, startSlot, endSlot)
+{
+	var numRooms = rooms.length;
+	var roomId = -1;
+	
+	for(var i = 0; i < numRooms; i++)
+	{		
+		var taken = 0;
+		for(var j = startSlot; j < endSlot; j++)
+		{
+			if(rooms[i][j] == 1)
+			{
+				taken = 1;
+				break;
+			}
+		}	
+			
+		if(taken == 0)
+		{
+			roomId = i;
+			break;
+		}
+	}	
+
+	return roomId;
 }
 
 //Function to build an object schedule. Outside controllers for now.
