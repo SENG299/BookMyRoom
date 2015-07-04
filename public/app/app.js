@@ -9,7 +9,8 @@ angular.module('userApp', [
     'bookingService',
     'sharedService',
     'userService',
-    'loginCtrl'
+    'loginCtrl',
+    'profileCtrl'
 
 ])
 
