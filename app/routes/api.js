@@ -11,16 +11,15 @@ module.exports = function(app, express) {
 
 	var apiRouter = express.Router();
 
-    /*
-	// test route to make sure everything is working 
-	// accessed at GET http://localhost:8080/api
-	apiRouter.get('/', function(req, res) {
-		res.json({ message: 'Welcome to the User API for Lab 7' });	
-	});
-    */
+//################### Authentication ##############################
+/*
+  authentication route (accessed at POST http://localhost:8080/api/authenticate)
+  Finds user from db using username, checks for authenticate password
+  If everything is fine, it will return a token
+  Then Middleware will verify the token
+  So make ANY api calls, you need a token.
+*/
 
-//################### Authentication 
-  //authentication route (accessed at POST http://localhost:8080/api/authenticate)
   apiRouter.post('/authenticate', function(req, res) {
 
     // find the user
@@ -69,48 +68,36 @@ module.exports = function(app, express) {
     });
   });
 
-    // route middleware to verify a token
-    apiRouter.use(function(req, res, next) {
-    
-        // do logging
-        console.log('Somebody just came to our app!');
+//######################## MIDDLEWARE AUTHENTICATING TOKEN #############################
+  apiRouter.use(function(req, res, next) {
 
-        // check header or url parameters or post parameters for token
-        var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+  console.log('Somebody just came to our app!');
 
+  // check header or url parameters or post parameters for token
+  var token = req.body.token || req.param('token') || req.headers['x-access-token'];
 
-
-//IMPORTAN THE TOKEN PART IS DEACTIVATED FOR TESTING. THIS SHOULD BE REINCORPORATED LATER
-/*
-        // decode token
-        if (token) {
-
-            // verifies secret and checks exp
-            jwt.verify(token, superSecret, function(err, decoded) {
-                if (err) {
-                    return res.json({ success: false, message: 'Failed to authenticate token.' });
-
-                } else {
-                
-                    // if everything is good, save to request for use in other routes
-                    req.decoded = decoded;
-                    next(); // make sure we go to the next routes and don't stop here
-                }
-            });
-
+    if (token) {
+      // verifies secret and checks exp
+      jwt.verify(token, superSecret, function(err, decoded) {
+        if (err) {
+            return res.json({ success: false, message: 'Failed to authenticate token.' });
         } else {
-
-        // if there is no token
-        // return an HTTP response of 403 (access forbidden) and an error message
-            return res.status(403).send({
-                success: false,
-                message: 'No token provided.'
-            });
+          
+          // if everything is good, save to request for use in other routes
+          req.decoded = decoded;
+          next(); // make sure we go to the next routes and don't stop here
         }
+      });
+    } else {
 
-*/
-next(); //FOR DEBUGGING ONLY TODO: remove this line
-    });
+    // if there is no token
+    // return an HTTP response of 403 (access forbidden) and an error message
+        return res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
+    }
+  });
     
 
 //############# Routes with localhost://users/*
@@ -316,8 +303,10 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
 	
 
 	// api endpoint to get user information
-	apiRouter.get('/me', function(req, res) {
-		res.send(req.decoded);
+	apiRouter.route('/me')
+    .get(function(req, res) {
+
+      res.send(req.decoded);
 	});
 
 	return apiRouter;
