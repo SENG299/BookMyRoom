@@ -1,31 +1,31 @@
 <div class="container fill" >
 
-	
-        <div class="col-xs-1 col-md-3 "  ></div>
-        <div class="col-xs-10 col-md-6" id="centre">
+	<div class="col-xs-1 col-md-3 "></div>
+	<div class="col-xs-10 col-md-6" id="centre">
             
-            <!-- buttons -->
+  	<!-- buttons -->
 		
 		<form id= "profileform" role="form" class="form-horizontal"> 
 		  <div class="form-group has-feedback">
 		 
-
 		    <div class=" col-xs-12">
-		      <input type="text" class="form-control" placeholder="Username" disabled/>
-		      <i class="form-control-feedback glyphicon glyphicon-user"></i>
+		      <input type="text" class="form-control" style="text-transform: capitalize;" placeholder="{{ profile.username }}" disabled/>
+		      	<i class="form-control-feedback glyphicon glyphicon-user"></i>
 		    </div>
 	
 		     <div class=" col-xs-12">
 		      <input type="text" class="form-control" placeholder="Email" />
-		      <i class="form-control-feedback glyphicon glyphicon-envelope"></i>
+		      	<i class="form-control-feedback glyphicon glyphicon-envelope"></i>
 		    </div>
+
 		    <div class=" col-xs-12">
 		      <input type="text" class="form-control" placeholder="Phone" />
-		      <i class="form-control-feedback glyphicon glyphicon-earphone"></i>
+		      	<i class="form-control-feedback glyphicon glyphicon-earphone"></i>
 		    </div>
+
 		    <div class=" col-xs-12">
 		      <input type="text" class="form-control" placeholder="Password" />
-		      <i class="form-control-feedback fa fa-user-secret fa-lg" style="vertical-align:center; margin-top:10px;"></i>
+		      	<i class="form-control-feedback fa fa-user-secret fa-lg" style="vertical-align:center; margin-top:10px;"></i>
 		    </div>
 
 		    <div class="col-xs-12" style=" margin-top:5px;">
@@ -33,94 +33,84 @@
 		    </div>
 	 	    
 		   
-		  </div>
-		
+			</div>
 		</form>
-		<div class="row show-hide-message" >
+
+
+		<div class="row show-hide-message" ng-if = "user.message">
 			<div class="col-sm-6 col-sm-offset-2">
-				
 				<div class="alert alert-info">
 					{{ user.message }}
 				</div>
-
 			</div>
 		</div>
 
 
-<div id= "userbookinglist" class="panel panel-primary">
- <div class="panel-heading">
-      <h4 class="panel-title">
-          My Bookings
-      </h4>
-    </div>
-<div class="panel-group" id="accordion">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" 
-          href="#collapseOne">
-          Booking 1
-        </a>
-      </h4>
-    </div>
-    <div id="collapseOne" class="panel-collapse collapse in">
-      <div class="panel-body">
-        Room, date, time, projector/laptop, edit button
-	<button class="editbutton btn btn-info"><i class="fa fa-pencil"></i></button>
-      </div>
-    </div>
-  </div>
+		<div id= "userbookinglist" class="panel panel-primary">
+		 <div class="panel-heading">
+		      <h4 class="panel-title">
+		          My Bookings
+		      </h4>
+		    </div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" 
-          href="#collapseTwo">
-          Booking 2
-        </a>
-      </h4>
-    </div>
-    <div id="collapseTwo" class="panel-collapse collapse">
-      <div class="panel-body">
-        Room, date, time, projector/laptop, edit button
-	<button class="editbutton btn btn-info"><i class="fa fa-pencil"></i></button>
-      </div>
-    </div>
-  </div>
+			<div class="panel-group" id="accordion">
+			  <div class="panel panel-default">
+			    <div class="panel-heading">
+			      <h4 class="panel-title">
+			        <a data-toggle="collapse" data-parent="#accordion" 
+			          href="#collapseOne">
+			          Booking 1
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseOne" class="panel-collapse collapse in">
+			      <div class="panel-body">
+			        Room, date, time, projector/laptop, edit button
+							<button class="editbutton btn btn-info"><i class="fa fa-pencil"></i></button>
+			      </div>
+			    </div>
+			  </div>
 
+			  <div class="panel panel-default">
+			    <div class="panel-heading">
+			      <h4 class="panel-title">
+			        <a data-toggle="collapse" data-parent="#accordion" 
+			          href="#collapseTwo">
+			          Booking 2
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseTwo" class="panel-collapse collapse">
+			      <div class="panel-body">
+			        Room, date, time, projector/laptop, edit button
+							<button class="editbutton btn btn-info"><i class="fa fa-pencil"></i></button>
+			      </div>
+			    </div>
+			  </div>
+
+			</div>
+		</div>
+	
+	</div>
+        
+  <div class="col-xs-1 col-md-3"  ></div>
 </div>
-</div>
-
-
-
-
-
-
-        </div>
-        <div class="col-xs-1 col-md-3"  ></div>
-    </div>
-
-</div><!-- /.container -->
 
 
 <nav class="navbar navbar-default navbar-fixed-bottom">
-      <div class="container">
+  <div class="container">
 
-        <div class="navbar-header navbar-left col-xs-3">
-          <!--<a class="navbar-brand" href="#">BookMyRoom</a>-->
-          <a href="/" class="btn navbar-btn btn-default btn-small">Home</a>
-        </div>
-        
+    <div class="navbar-header navbar-left col-xs-3">
+      <a href="/" class="btn navbar-btn btn-default btn-small">Home</a>
+    </div>
+    
 
-         <div class="equip col-xs-6">
+    <div class="equip col-xs-6"></div>
+    
+    <div class=" navbar-right"></div>
+    
+  </div>
 
-     </div>
-        
-
-
-       <div class=" navbar-right">
-     
-      </div>
 </nav>
 
 
