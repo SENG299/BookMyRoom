@@ -9,8 +9,9 @@
 		  <div class="form-group has-feedback">
 		 
 		    <div class=" col-xs-12">
-		      <input type="text" class="form-control" style="text-transform: capitalize;" placeholder="{{ profile.username }}"/>
+		    	<p class="form-control-static" style="width: 75px; text-transform: capitalize">{{ profile.username }}</p>
 		      	<i class="form-control-feedback glyphicon glyphicon-user"></i>
+
 		    </div>
 	
 		     <div class=" col-xs-12">
@@ -58,35 +59,19 @@
 		    </div>
 
 			<div class="panel-group" id="accordion">
-			  <div class="panel panel-default">
+			  <div class="panel panel-default" ng-repeat="userFutureBooking in profile.userFutureBookings">
 			    <div class="panel-heading">
 			      <h4 class="panel-title">
 			        <a data-toggle="collapse" data-parent="#accordion" 
 			          href="#collapseOne">
-			          Booking 1
+			          Booking {{ $index + 1}}
 			        </a>
 			      </h4>
 			    </div>
 			    <div id="collapseOne" class="panel-collapse collapse in">
 			      <div class="panel-body">
-			        Room, date, time, projector/laptop, edit button
-							<button class="editbutton btn btn-info"><i class="fa fa-pencil"></i></button>
-			      </div>
-			    </div>
-			  </div>
-
-			  <div class="panel panel-default">
-			    <div class="panel-heading">
-			      <h4 class="panel-title">
-			        <a data-toggle="collapse" data-parent="#accordion" 
-			          href="#collapseTwo">
-			          Booking 2
-			        </a>
-			      </h4>
-			    </div>
-			    <div id="collapseTwo" class="panel-collapse collapse">
-			      <div class="panel-body">
-			        Room, date, time, projector/laptop, edit button
+			        {{ profile.startTime | date : 'd MMM, yyyy HH:mm'}}
+			        {{ profile.endTime | date : '- HH:mm'}}
 							<button class="editbutton btn btn-info"><i class="fa fa-pencil"></i></button>
 			      </div>
 			    </div>

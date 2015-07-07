@@ -15,6 +15,11 @@ angular.module('bookingService', [])
 		return $http.post('/api/bookings/create/', bookingData);
 	};
 
+	//Get user's bookings
+	bookingFactory.getUserBookings = function(netlink_id) {
+		return $http.get('/api/bookings/' + netlink_id);
+	};
+
 	// return our entire bookingFactory object
 	return bookingFactory;
 });
