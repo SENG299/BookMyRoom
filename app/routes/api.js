@@ -56,7 +56,6 @@ module.exports = function(app, express) {
             name: user.name,
             username: user.username,
             netlinkId: user.netlink_id,
-            lockout: 
 
           }, superSecret, {
               expiresInMinutes: 1440 // expires in 24 hours
