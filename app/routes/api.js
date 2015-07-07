@@ -26,7 +26,7 @@ module.exports = function(app, express) {
     // select the name username and password explicitly
     User.findOne({
       username: req.body.username
-    }).select('name username password').exec(function  (err, user) {
+    }).select('name username password netlink_id').exec(function  (err, user) {
 
       if (err) throw err;
 
@@ -50,18 +50,23 @@ module.exports = function(app, express) {
 
           // if user is found and password is right
           // create a token
+          // console.log(" NETLINK ID IN AUTHENTICATE", user.netlink_id)
+
           var token = jwt.sign({
             name: user.name,
-            username: user.username
+            username: user.username,
+            netlinkId: user.netlink_id,
+            lockout: 
+
           }, superSecret, {
               expiresInMinutes: 1440 // expires in 24 hours
           });
-
+          
           // return the information including token as JSON
           res.json({
             success: true,
             message: 'Enjoy your token!',
-                token: token
+            token: token
           });
         }
       }
@@ -84,7 +89,8 @@ module.exports = function(app, express) {
         } else {
           
           // if everything is good, save to request for use in other routes
-          req.decoded = decoded;
+          req.decoded = jwt.decode(token)
+
           next(); // make sure we go to the next routes and don't stop here
         }
       });
@@ -100,13 +106,15 @@ module.exports = function(app, express) {
   });
     
 
-//############# Routes with localhost://users/*
+/*
+################################ USER ROUTES ###########################################
+################################ Routes with localhost://users/* #############################
+*/
 	apiRouter.route('/users')
 
 		// create a user (accessed at POST http://localhost:8080/api/users)
 		.post(function(req, res) {
 			
-      console.log("####")
 			var user = new User();		// create a new instance of the User model
 			user.name = req.body.name;  // set the users name (comes from the request)
 			user.username = req.body.username;  // set the users username (comes from the request)
@@ -142,7 +150,7 @@ module.exports = function(app, express) {
 		});
 
 
-//############# Routes with localhost://users/:user id  
+//########################################## Routes with localhost://users/:user id  
   apiRouter.route('/users/:user_id')
     //(accessed at GET http://localhost:8080/api/users/:userid)
     // get the user with that id
@@ -191,11 +199,12 @@ module.exports = function(app, express) {
     });
 
 
-//############################ Routes with http://localhost:8080/api/bookings/*
-//added by JJ 
-// on routes that end in /bookings/day
-// returns all the boookings in a specific day
-// ----------------------------------------------------
+/*
+################################ BOOKING ROUTES ###########################################
+############################ Routes with http://localhost:8080/api/bookings
+returns all the boookings in a specific day
+*/
+
 	apiRouter.route('/bookings/:year/:month/:day')
 
 		.get(function(req, res) {
@@ -247,10 +256,11 @@ module.exports = function(app, express) {
 
 		});
 
-
-// on routes that end in /bookings/user
-// returns all the boookings in a specific day
-// ----------------------------------------------------
+/*
+############################ Routes with http://localhost:8080/api/bookings/netlink_id
+on routes that end in /bookings/user
+returns all the boookings for a user
+*/
 
 	apiRouter.route('/bookings/:netlink_id')
 
@@ -305,6 +315,9 @@ module.exports = function(app, express) {
 	// api endpoint to get user information
 	apiRouter.route('/me')
     .get(function(req, res) {
+
+      // var decodedT = jwt.decode(token)
+      //     console.log("DEcodedetoken in middleware:", decodedT)
 
       res.send(req.decoded);
 	});

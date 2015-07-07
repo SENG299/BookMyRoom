@@ -1,56 +1,105 @@
-<form class="form-horizontal" >
+<div class="container fill" >
 
-	<div class="form-group">
-		<label class="col-sm-2 control-label">Name</label>
-		<div class="col-sm-6">
-		<label class="control-label" style="text-transform: capitalize;">{{ profile.username }}</label>
-		</div>
-	</div>
-	
-
-	<div class="form-group">
-		<label class="col-sm-2 control-label">Phone Number</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" placeholder="012-345-6789">
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="col-sm-2 control-label">Email</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" placeholder="hodor@hod.org">
-		</div>
-	</div>
-	
-	<div class="form-group">
-	<div class="col-sm-offset-2 col-sm-6">
-		<button type="submit" class="btn btn-success btn-lg btn-block" >Update User</button>
-	</div>
-	</div>
-
-</form>
-
-<div class="row show-hide-message" >
-	<div class="col-sm-6 col-sm-offset-2">
+	<div class="col-xs-1 col-md-3 "></div>
+	<div class="col-xs-10 col-md-6" id="centre">
+            
+  	<!-- buttons -->
 		
-		<div class="alert alert-info">
-			
+		<form id= "profileform" role="form" class="form-horizontal"> 
+		  <div class="form-group has-feedback">
+		 
+		    <div class=" col-xs-12">
+		    	<p class="form-control-static" style="width: 75px; text-transform: capitalize">{{ profile.username }}</p>
+		      	<i class="form-control-feedback glyphicon glyphicon-user"></i>
+
+		    </div>
+	
+		     <div class=" col-xs-12">
+		      <input type="text" class="form-control" placeholder="{netlinkid@uvic.ca} Click to change" />
+		      	<i class="form-control-feedback glyphicon glyphicon-envelope"></i>
+		    </div>
+
+		    <div class=" col-xs-12">
+		      <input type="text" class="form-control" placeholder="{250-453-3958} Click to change" />
+		      	<i class="form-control-feedback glyphicon glyphicon-earphone"></i>
+		    </div>
+
+		    <div class=" col-xs-12">
+		      <input type="text" class="form-control" placeholder="Click to change password" />
+		      	<i class="form-control-feedback fa fa-user-secret fa-lg" style="vertical-align:center; margin-top:10px;"></i>
+		    </div>
+
+		   <!--  <div class="col-xs-12" style=" margin-top:5px;">
+		      <button class="btn btn-info">Reset Changes</button>
+		    </div>
+ -->
+		    <div class="col-xs-12" style=" margin-top:5px;">
+		      <button class="btn btn-info">Save Changes</button>
+		    </div>
+	 	    
+		   
+			</div>
+		</form>
+
+
+		<div class="row show-hide-message" ng-if = "user.message">
+			<div class="col-sm-6 col-sm-offset-2">
+				<div class="alert alert-info">
+					{{ user.message }}
+				</div>
+			</div>
 		</div>
 
+
+		<div id= "userbookinglist" class="panel panel-primary">
+		 <div class="panel-heading">
+		      <h4 class="panel-title">
+		          My Bookings
+		      </h4>
+		    </div>
+
+			<div class="panel-group" id="accordion">
+			  <div class="panel panel-default" ng-repeat="userFutureBooking in profile.userFutureBookings">
+			    <div class="panel-heading">
+			      <h4 class="panel-title">
+			        <a data-toggle="collapse" data-parent="#accordion" 
+			          href="#collapseOne">
+			          Booking {{ $index + 1}}
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseOne" class="panel-collapse collapse in">
+			      <div class="panel-body">
+			        {{ profile.startTime | date : 'd MMM, yyyy HH:mm'}}
+			        {{ profile.endTime | date : '- HH:mm'}}
+							<button class="editbutton btn btn-info"><i class="fa fa-pencil"></i></button>
+			      </div>
+			    </div>
+			  </div>
+
+			</div>
+		</div>
+	
 	</div>
+        
+  <div class="col-xs-1 col-md-3"  ></div>
 </div>
 
 
+<nav class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container">
 
-<div class="container">
-  <div class="jumbotron">
-    <h2>My Bookings</h2> 
-    <p>Booking 1</p>
-	<p>Booking 2</p>
-	<p>Booking 3</p>
+    <div class="navbar-header navbar-left col-xs-3">
+      <a href="/" class="btn navbar-btn btn-default btn-small">Home</a>
+    </div>
+    
+
+    <div class="equip col-xs-6"></div>
+    
+    <div class=" navbar-right"></div>
+
   </div>
 
-</div>
-
-
+</nav>
 
 
