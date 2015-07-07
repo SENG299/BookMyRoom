@@ -166,6 +166,16 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
   		$location.path( path );
 	};
 
+	vm.lastelement = "";
+
+       vm.buttonToggle = function (temp){
+            if (vm.lastelement != ""){
+                document.getElementById(vm.lastelement).style.color = "white";
+            }
+            document.getElementById(temp["$$hashKey"]).style.color = "black";
+            vm.lastelement = temp["$$hashKey"];
+        }
+	
 	vm.createTimeSlots = function(day)
 	{
 		Booking.getAllBookings()
