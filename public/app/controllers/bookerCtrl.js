@@ -1,13 +1,13 @@
-angular.module('bookerCtrl', ['bookingService', 'sharedService'])
+angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 
-.controller('bookingCreatorController', function($rootScope, $location, Booking, sharedProperties) {
+.controller('bookingCreatorController', function($rootScope, $location, $cookies, Booking) {
 
     var vm = this;
 
-	//these values are grabbed from the shared service for the controllers
-	vm.chosenDate = sharedProperties.getchosenDate();
-	vm.selectedStartTime = sharedProperties.getChosenStartTime();
-	vm.selectedDuration = sharedProperties.getDuration().duration; 
+	//these values are from the cookies
+	vm.chosenDate = $cookies.getObject('chosenDate');
+	vm.selectedStartTime = $cookies.getObject('chosenStartTime');
+	vm.selectedDuration = $cookies.getObject('duration').duration; 
 
 	vm.calculateEndTime = function(){
 		var decimalPart = Number((vm.selectedDuration % 1).toFixed(1));
@@ -106,10 +106,9 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	};
 })
 
-.controller('daySelectorController', function($rootScope, $location, sharedProperties) {
+.controller('daySelectorController', function($rootScope, $location, $cookies) {
 
   var vm = this;
-	vm.userDate = sharedProperties.getchosenDate();
 	vm.dates = [
 		date = new Date(),
 		date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
@@ -123,7 +122,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	vm.today = new Date()
 
 	vm.updateSelectedValue = function(item){
-		sharedProperties.setchosenDate(item);
+		$cookies.putObject('chosenDate', item);
 		vm.go('/schedule');	
 	};
 
@@ -133,7 +132,7 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	// vm.loggedIn = true;
 })
 
-.controller('scheduleController', function($rootScope, $location, Booking, sharedProperties) {
+.controller('scheduleController', function($rootScope, $location, $cookies, Booking) {
 
        var vm = this;
 
@@ -146,14 +145,14 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	     {duration: 3}
 	];
 
-        vm.chosenDate = sharedProperties.getchosenDate();
+	vm.chosenDate = $cookies.getObject('chosenDate');
         vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
 
 	vm.go = function ( path ) {
-		sharedProperties.setDuration(vm.bookingDuration);
-		sharedProperties.setChosenStartTime(vm.selectedTimeSlot);
+		$cookies.putObject('duration', vm.bookingDuration);
+		$cookies.putObject('chosenStartTime', vm.selectedTimeSlot);
   		$location.path( path );
 	};
 
