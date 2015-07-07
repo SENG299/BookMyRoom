@@ -4,6 +4,10 @@ angular.module('sharedService', [])
             this.chosenDate = "";
             this.duration = "";
             this.chosenStartTime = "";
+            this.laptop="";
+            this.projector ="";
+                
+   
 
             this.getchosenDate = function () {
                 return this.chosenDate;
@@ -28,4 +32,24 @@ angular.module('sharedService', [])
 	        this.setChosenStartTime = function(value){
 	        	this.chosenStartTime = value;
 	        };
+    
+            this.setEquipment = function( equ ){
+                
+                this.projector = equ.projector;
+                this.laptop = equ.laptop;
+
+            }
+
+            this.getEquipment = function(){
+               
+               this.equ = {
+                
+                   projector:this.projector,
+                   laptop:this.laptop
+                
+                }
+            
+               
+                   return equ;
+            }
 });

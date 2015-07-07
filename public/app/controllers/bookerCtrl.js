@@ -155,12 +155,39 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 	     {duration: 3}
 	];
 
+    vm.equipment = {
+        projector:false,
+        laptop:false    
+    };
+
+
+    vm.bookingDuration = vm.validDurations[0];
 	vm.chosenDate = $cookies.getObject('chosenDate');
         vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
+    
+       vm.lastelement = "";
+
+       vm.buttonToggle = function (temp){
+            if (vm.lastelement != ""){
+                document.getElementById(vm.lastelement).style.color = "white";
+            }
+            document.getElementById(temp["$$hashKey"]).style.color = "black";
+            vm.lastelement = temp["$$hashKey"];
+        }
+    
 
 	vm.go = function ( path ) {
+		sharedProperties.setDuration(vm.bookingDuration);
+		sharedProperties.setChosenStartTime(vm.selectedTimeSlot);
+        sharedProperties.setEquipment(vm.equipment);
+  		$location.path( path );
+	};
+
+
+
+	vm.createTimeSlots = function(day){
 		$cookies.putObject('duration', vm.bookingDuration);
 		$cookies.putObject('chosenStartTime', vm.selectedTimeSlot);
   		$location.path( path );

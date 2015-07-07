@@ -10,34 +10,62 @@
         <div class="col-xs-1 col-md-3 "  ></div>
         <div class="col-xs-10 col-md-6" id="centre">
             
-            <!-- Basic info -->
-		<div id="incentre">
-
-			<h2>Room: A103</h2>
-			<h2><i class="fa fa-clock-o fa-lg"></i> Time: {{(booker.selectedStartTime.hour > 12) && (booker.selectedStartTime.hour - 12) || (booker.selectedStartTime.hour)}}:{{(booker.selectedStartTime.minutes == 0) &&('00') || booker.selectedStartTime.minutes}} {{(booker.selectedStartTime.hour > 11) && ('PM') || ('AM')}} to {{(booker.finalEndTime.hour > 12) && (booker.finalEndTime.hour - 12) || (booker.finalEndTime.hour)}}:{{(booker.finalEndTime.minutes == 0) && ('00') || booker.finalEndTime.minutes}} {{(booker.finalEndTime.hour > 11) && ('PM') || ('AM')}}</h2>
-			<h2>Add/Remove Equipment:</h2>
-            <!-- Equipment -->	
-		<div id="equip">
+         
 		
-			<input type="checkbox" name="option1" ng-model="booker.addLaptop" ng-disabled="{{booker.disableAddLaptop}}"> Laptop<br> </input>
-			<input type="checkbox" name="option2" ng-model="booker.addProjector" ng-disabled="{{booker.disableAddProjector}}">  Projector </input>
-			<!--broken pretty toggle switches
-			<input class="checkbox" type="checkbox"  data-style="ios" data-toggle="toggle" checked data-on="<i class='fa fa-laptop'></i>" data-off=
-			"<i class='fa fa-laptop'></i>" data-onstyle="success">
-			<input class="checkbox" type="checkbox"  data-style="ios" data-toggle="toggle" data-on="<i class='fa fa-video-camera'></i>" data-off=
-			"<i class='fa fa-video-camera fg-lg'></i>" data-onstyle="success" >-->
+			<h4>Room A103</h4>
+			<h4>
+                <i class="fa fa-clock-o fa-lg"></i>
+	            {{(booker.selectedStartTime.hour > 12) && (booker.selectedStartTime.hour - 12) ||           (booker.selectedStartTime.hour)}}:{{(booker.selectedStartTime.minutes == 0) &&('00') || booker.selectedStartTime.minutes}} {{(booker.selectedStartTime.hour > 11) && ('PM') || ('AM')}}   
+
+to
+
+{{(booker.finalEndTime.hour > 12) && (booker.finalEndTime.hour - 12) || (booker.finalEndTime.hour)}}:{{(booker.finalEndTime.minutes == 0) && ('00') || booker.finalEndTime.minutes}} {{(booker.finalEndTime.hour > 11) && ('PM') || ('AM')}}
+
+</h4>
+
+
+			
+            <!-- Equipment -->	
+     <h4>Edit Equipment</h4>
+		<!--Old Equipment div
+            <div id="equip">
+	
+               
+				<div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-info">
+                    <input type="checkbox" ng-model="booker.addLaptop" ng-disabled="{{booker.disableAddLaptop}}" ><i class='fa fa-laptop'></i>
+                  </label>
+                  <label class="btn btn-info">
+                    <input type="checkbox" ng-model="booker.addProjector" ng-disabled="{{booker.disableAddProjector}}"><i class='fa fa-video-camera fg-lg'></i>
+                  </label>
+                </div>
+
+
+			</div>-->
+        <div id="equip">
+
+				<div class="btn-group">
+                  <label class="btn btn-info">
+                    <input type="checkbox"><i class='fa fa-laptop'></i>
+                  </label>
+                  <label class="btn btn-info">
+                    <input type="checkbox"><i class='fa fa-video-camera fg-lg'></i>         
+                </label>
+                </div>
 			</div>
-			<h2>Extend booking to   <div id="sel1">
-			  <select class="form-control form-small" >
-					<option>10am</option>
+			<h4>Extend booking to   
+              
+                <div id="sel1">
+			  <select class="form-control form-small" style="width:150%">
+					<option>10:00am</option>
 					<option>10:30am</option>
-					<option>11am</option>
+					<option>11:00am</option>
 					<option>11:30am</option>
 			  </select>
 			</div>             
-			</h2>
+			</h4>
 		<!-- Trigger the modal with a button -->
-		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"> Save changes </button>
+		<button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"> Save changes </button>
 		<!-- Modal -->
 		<div id="myModal" class="modal fade" role="dialog">
   		<div class="modal-dialog modal-sm">
@@ -61,7 +89,7 @@
 	  </div>
 	</div>
 		<!-- Trigger the modal with a button -->
-		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal2"> Delete booking </button>
+		<button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2"> Delete booking </button>
 		<!-- Modal -->
 		<div id="myModal2" class="modal fade" role="dialog">
   		<div class="modal-dialog modal-sm">
