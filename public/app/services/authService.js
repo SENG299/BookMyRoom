@@ -20,8 +20,8 @@ angular.module('authService', [])
             username: username,
             password: password
         }).success(function(data) {
-                AuthToken.setToken(data.token);
-                return data;
+            AuthToken.setToken(data.token);
+            return data;
             });
     };
 
@@ -38,7 +38,7 @@ angular.module('authService', [])
     // check if a user is logged in
     // checks if there is a local token
     authFactory.isLoggedIn = function() {
-        if (AuthToken.getToken())
+        if (AuthToken.getToken())   
             return true;
         else
             return false;
@@ -47,10 +47,11 @@ angular.module('authService', [])
     // get the logged in user
     // is cached for efficiency
     authFactory.getUser = function() {
-        if (AuthToken.getToken())
-            return $http.get('/api/me', { cache: true });
-        else
-            return $q.reject({ message: 'User has no token.' });
+      if (AuthToken.getToken()) {
+        return $http.get('/api/me', { cache: true });
+      } else {
+          return $q.reject({ message: 'User has no token.' });
+      }
     };
 
     // return auth factory object

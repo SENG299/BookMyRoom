@@ -11,23 +11,22 @@ module.exports = function(app, express) {
 
 	var apiRouter = express.Router();
 
-    /*
-	// test route to make sure everything is working 
-	// accessed at GET http://localhost:8080/api
-	apiRouter.get('/', function(req, res) {
-		res.json({ message: 'Welcome to the User API for Lab 7' });	
-	});
-    */
+//################### Authentication ##############################
+/*
+  authentication route (accessed at POST http://localhost:8080/api/authenticate)
+  Finds user from db using username, checks for authenticate password
+  If everything is fine, it will return a token
+  Then Middleware will verify the token
+  So make ANY api calls, you need a token.
+*/
 
-//################### Authentication 
-  //authentication route (accessed at POST http://localhost:8080/api/authenticate)
   apiRouter.post('/authenticate', function(req, res) {
 
     // find the user
     // select the name username and password explicitly
     User.findOne({
       username: req.body.username
-    }).select('name username password').exec(function  (err, user) {
+    }).select('name username password netlink_id').exec(function  (err, user) {
 
       if (err) throw err;
 
@@ -51,75 +50,70 @@ module.exports = function(app, express) {
 
           // if user is found and password is right
           // create a token
+          // console.log(" NETLINK ID IN AUTHENTICATE", user.netlink_id)
+
           var token = jwt.sign({
             name: user.name,
-            username: user.username
+            username: user.username,
+            netlinkId: user.netlink_id,
+
           }, superSecret, {
               expiresInMinutes: 1440 // expires in 24 hours
           });
-
+          
           // return the information including token as JSON
           res.json({
             success: true,
             message: 'Enjoy your token!',
-                token: token
+            token: token
           });
         }
       }
     });
   });
 
-    // route middleware to verify a token
-    apiRouter.use(function(req, res, next) {
-    
-        // do logging
-        console.log('Somebody just came to our app!');
+//######################## MIDDLEWARE AUTHENTICATING TOKEN #############################
+  apiRouter.use(function(req, res, next) {
 
-        // check header or url parameters or post parameters for token
-        var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+  console.log('Somebody just came to our app!');
 
+  // check header or url parameters or post parameters for token
+  var token = req.body.token || req.param('token') || req.headers['x-access-token'];
 
-
-//IMPORTAN THE TOKEN PART IS DEACTIVATED FOR TESTING. THIS SHOULD BE REINCORPORATED LATER
-/*
-        // decode token
-        if (token) {
-
-            // verifies secret and checks exp
-            jwt.verify(token, superSecret, function(err, decoded) {
-                if (err) {
-                    return res.json({ success: false, message: 'Failed to authenticate token.' });
-
-                } else {
-                
-                    // if everything is good, save to request for use in other routes
-                    req.decoded = decoded;
-                    next(); // make sure we go to the next routes and don't stop here
-                }
-            });
-
+    if (token) {
+      // verifies secret and checks exp
+      jwt.verify(token, superSecret, function(err, decoded) {
+        if (err) {
+            return res.json({ success: false, message: 'Failed to authenticate token.' });
         } else {
+          
+          // if everything is good, save to request for use in other routes
+          req.decoded = jwt.decode(token)
 
-        // if there is no token
-        // return an HTTP response of 403 (access forbidden) and an error message
-            return res.status(403).send({
-                success: false,
-                message: 'No token provided.'
-            });
+          next(); // make sure we go to the next routes and don't stop here
         }
+      });
+    } else {
 
-*/
-next(); //FOR DEBUGGING ONLY TODO: remove this line
-    });
+    // if there is no token
+    // return an HTTP response of 403 (access forbidden) and an error message
+        return res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
+    }
+  });
     
 
-//############# Routes with localhost://users/*
+/*
+################################ USER ROUTES ###########################################
+################################ Routes with localhost://users/* #############################
+*/
 	apiRouter.route('/users')
 
 		// create a user (accessed at POST http://localhost:8080/api/users)
 		.post(function(req, res) {
 			
-      console.log("####")
 			var user = new User();		// create a new instance of the User model
 			user.name = req.body.name;  // set the users name (comes from the request)
 			user.username = req.body.username;  // set the users username (comes from the request)
@@ -155,7 +149,7 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
 		});
 
 
-//############# Routes with localhost://users/:user id  
+//########################################## Routes with localhost://users/:user id  
   apiRouter.route('/users/:user_id')
     //(accessed at GET http://localhost:8080/api/users/:userid)
     // get the user with that id
@@ -204,11 +198,12 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
     });
 
 
-//############################ Routes with http://localhost:8080/api/bookings/*
-//added by JJ 
-// on routes that end in /bookings/day
-// returns all the boookings in a specific day
-// ----------------------------------------------------
+/*
+################################ BOOKING ROUTES ###########################################
+############################ Routes with http://localhost:8080/api/bookings
+returns all the boookings in a specific day
+*/
+
 	apiRouter.route('/bookings/:year/:month/:day')
 
 		.get(function(req, res) {
@@ -260,10 +255,11 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
 
 		});
 
-
-// on routes that end in /bookings/user
-// returns all the boookings in a specific day
-// ----------------------------------------------------
+/*
+############################ Routes with http://localhost:8080/api/bookings/netlink_id
+on routes that end in /bookings/user
+returns all the boookings for a user
+*/
 
 	apiRouter.route('/bookings/:netlink_id')
 
@@ -316,8 +312,13 @@ next(); //FOR DEBUGGING ONLY TODO: remove this line
 	
 
 	// api endpoint to get user information
-	apiRouter.get('/me', function(req, res) {
-		res.send(req.decoded);
+	apiRouter.route('/me')
+    .get(function(req, res) {
+
+      // var decodedT = jwt.decode(token)
+      //     console.log("DEcodedetoken in middleware:", decodedT)
+
+      res.send(req.decoded);
 	});
 
 	return apiRouter;

@@ -18,11 +18,13 @@ angular.module('app.routes', ['ngRoute'])
 		controller: 'daySelectorController',
 		controllerAs: 'selector'
 	})
+
 	.when("/profile", {
-		templateUrl: 'app/views/pages/profile.html'
-		//controller: 'userController',
-		//controllerAs: 'user'
+		templateUrl: 'app/views/pages/profile.html',
+		controller: 'profileController',
+		controllerAs: 'profile'
 	})
+
 	// Route for home page
 	.when("/schedule", {
 		templateUrl: 'app/views/pages/schedule.html',
