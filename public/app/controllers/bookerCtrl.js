@@ -1,6 +1,6 @@
-angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
+angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 
-.controller('bookingCreatorController', function($rootScope, $location, $cookies, Booking) {
+.controller('bookingCreatorController', function($rootScope, $location, $cookies, Booking, Schedule) {
 
     var vm = this;
 
@@ -42,7 +42,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 
 	vm.createBooking = function()
 	{
-		Booking.getAllBookings()
+		Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth()+1, vm.chosenDate.getDate())
 		.success(function(data)
 		{	
 			vm.processing = true;
@@ -59,18 +59,17 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 				startHour = 11;
 			}	
 		
-			var startSlot = calculateSlot(vm.selectedStartTime.hour, vm.selectedStartTime.minutes, startHour);
-			var endSlot = calculateSlot(vm.finalEndTime.hour, vm.finalEndTime.minutes, startHour); 
+			var startSlot = Schedule.calculateSlot(vm.selectedStartTime.hour, vm.selectedStartTime.minutes, startHour);
+			var endSlot = Schedule.calculateSlot(vm.finalEndTime.hour, vm.finalEndTime.minutes, startHour); 
 
-			var objectArrays = buildObjectArrays(numSlots, startHour, data);
+			var objectArrays = Schedule.buildObjectArrays(numSlots, startHour, data);
 			var rooms = objectArrays.rooms;
 			var projectors = objectArrays.projectors;
 			var laptops = objectArrays.laptops;
 
-			var roomId = findRoom(rooms, startSlot, endSlot);
-			var projectorId = findProjector(projectors, startSlot, endSlot);
-			var laptopId = findLaptop(laptops, startSlot, endSlot);
-			alert(roomId + " " + projectorId + " " + laptopId);
+			var roomId = Schedule.findRoom(rooms, startSlot, endSlot);
+			var projectorId = Schedule.findProjector(projectors, startSlot, endSlot);
+			var laptopId = Schedule.findLaptop(laptops, startSlot, endSlot);
 				
 			//data to create new booking (hard coded for debugging)	
 			vm.bookingData.netlink_id = "gordillo"; 
@@ -106,7 +105,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 	};
 })
 
-.controller('daySelectorController', function($rootScope, $location, $cookies) {
+.controller('daySelectorController', function($rootScope, $location, $cookies, Schedule) {
 
   var vm = this;
 	vm.dates = [
@@ -142,7 +141,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 	};	
 })
 
-.controller('scheduleController', function($rootScope, $location, $cookies, Booking) {
+.controller('scheduleController', function($rootScope, $location, $cookies, Booking, Schedule) {
 
        var vm = this;
 
@@ -205,7 +204,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 	
 	vm.createTimeSlots = function(day)
 	{
-		Booking.getAllBookings()
+		Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth()+1, vm.chosenDate.getDate())
 		.success(function(data)
 		{
 	
@@ -224,14 +223,14 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 			}	
 
 			// Initialize room array
-			var objectArrays = buildObjectArrays(numSlots, startHour, vm.bookings);
+			var objectArrays = Schedule.buildObjectArrays(numSlots, startHour, vm.bookings);
 			var rooms = objectArrays.rooms;
 			var projectors = objectArrays.projectors;
 			var laptops = objectArrays.laptops;
 
-			roomSchedule = buildSchedule(rooms, 1);
-			projectorSchedule = buildSchedule(projectors, 1);
-			laptopSchedule = buildSchedule(laptops, 1);
+			roomSchedule = Schedule.buildSchedule(rooms, 1);
+			projectorSchedule = Schedule.buildSchedule(projectors, 1);
+			laptopSchedule = Schedule.buildSchedule(laptops, 1);
 
 			for(var i = 0; i < numSlots; i++)
 			{
@@ -261,187 +260,4 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 */
 
 });
-
-
-function calculateSlot(hour, minute, startHour)
-{
-	return ((hour - startHour) * 2) + Math.floor(minute / 30);	
-}
-
-function buildObjectArrays(numSlots, startHour, bookings)
-{
-	var numRooms = 3;
-	var numProjectors = 3;
-	var numLaptops = 3;
-
-	var rooms = new Array(numRooms);
-	var projectors = new Array(numProjectors);
-	var laptops = new Array(numLaptops);
-
-	for(var i = 0; i < numRooms; i++){
-		rooms[i] = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 0);
-	}
-	for(var i = 0; i < numProjectors; i++){
-		projectors[i] = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 0);	
-	}
-	for(var i = 0; i < numLaptops; i++){
-		laptops[i] = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 0);	
-	}
-
-	for(var i = 0; i < bookings.length; i++)	
-	{					
-		var roomId = bookings[i].room_id;
-		var projectorId = bookings[i].projector_id;
-		var laptopId = bookings[i].laptop_id;
-
-		var startSlot = calculateSlot(bookings[i].start_hour, bookings[i].start_minute, startHour);
-		var endSlot = calculateSlot(bookings[i].end_hour, bookings[i].end_minute, startHour);
-
-		for(var j = startSlot; j < endSlot; j++)
-		{			
-			rooms[roomId][j] = 1;
-
-			if(projectorId != -1){	
-				projectors[projectorId][j] = 1;
-			}
-			if(laptopId != -1){
-				laptops[laptopId][j] = 1;
-			}	
-		}
-	}
-
-	var objectArrays = 
-	{
-		rooms: rooms,
-		projectors: projectors,
-		laptops: laptops
-	}	
-	
-	return objectArrays;
-}
-
-function findLaptop(laptops, startSlot, endSlot)
-{
-	var numLaptops = laptops.length;
-	var laptopId = -1;
-	
-	for(var i = 0; i < numLaptops; i++)
-	{		
-		var taken = 0;
-		for(var j = startSlot; j < endSlot; j++)
-		{
-			if(laptops[i][j] == 1)
-			{
-				taken = 1;
-				break;
-			}
-		}	
-			
-		if(taken == 0)
-		{
-			laptopId = i;
-			break;
-		}
-	}	
-
-	return laptopId;
-}
-
-function findProjector(projectors, startSlot, endSlot)
-{
-	var numProjectors = projectors.length;
-	var projectorId = -1;
-	
-	for(var i = 0; i < numProjectors; i++)
-	{		
-		var taken = 0;
-		for(var j = startSlot; j < endSlot; j++)
-		{
-			if(projectors[i][j] == 1)
-			{
-				taken = 1;
-				break;
-			}
-		}	
-			
-		if(taken == 0)
-		{
-			projectorId = i;
-			break;
-		}
-	}	
-
-	return projectorId;
-}
-
-function findRoom(rooms, startSlot, endSlot)
-{
-	var numRooms = rooms.length;
-	var roomId = -1;
-	
-	for(var i = 0; i < numRooms; i++)
-	{		
-		var taken = 0;
-		for(var j = startSlot; j < endSlot; j++)
-		{
-			if(rooms[i][j] == 1)
-			{
-				taken = 1;
-				break;
-			}
-		}	
-			
-		if(taken == 0)
-		{
-			roomId = i;
-			break;
-		}
-	}	
-
-	return roomId;
-}
-
-//Function to build an object schedule. Outside controllers for now.
-//
-//Input: 2D array where each column is a half hour slot and 
-//	 each row is an object (room, projector, laptop).
-//	 An entry is 1 if the time slot is taken for that object and
-//	 0 if it isn't taken. Booking length: 1 = 30 minutes, 2 = 60 minutes
-//	 3 = 90 minutes ect.
-//
-//Output: Returns an array where an entry is 1 if all objects are taken for 
-//	  that slot and 0 if at least one object is available.
-function buildSchedule(objectArray2D, bookingLength)
-{	
-	var numObjects = objectArray2D.length;
-	var numSlots = objectArray2D[0].length;
-
-	var schedule = Array.apply(null, Array(numSlots)).map(Number.prototype.valueOf, 1);
-
-	for(var y = 0; y < numSlots; y++)
-	{
-		for(var x = 0; x < numObjects; x++)
-		{	
-			var taken = 0;
-			for(var i = 0; i < bookingLength; i++)
-			{
-				var slot = y + i;
-				if(slot >= numSlots || objectArray2D[x][slot] == 1)
-				{
-					taken = 1;
-					break;
-				}
-			}
-
-			if(taken == 0)
-			{
-				schedule[y] = 0;
-				break;
-			}
-		}
-	}
-	
-	return schedule;
-}
-
 

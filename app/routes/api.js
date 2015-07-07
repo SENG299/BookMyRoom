@@ -197,19 +197,18 @@ module.exports = function(app, express) {
       });
     });
 
+//############################ Routes with http://localhost:8080/api/bookings/*
+//added by JJ 
+// on routes that end in /bookings/day
+// returns all the boookings in a specific day
+// ----------------------------------------------------
+  apiRouter.route('/bookings')
 
-/*
-################################ BOOKING ROUTES ###########################################
-############################ Routes with http://localhost:8080/api/bookings
-returns all the boookings in a specific day
-*/
+		.post(function(req, res) {
+			var year = req.body.year;
+			var month = req.body.month;
+			var day = req.body.day;
 
-	apiRouter.route('/bookings/:year/:month/:day')
-
-		.get(function(req, res) {
-			var year = req.params.year;
-			var month = req.params.month;
-			var day = req.params.day;
 			Booking.find({"start_year":year, "start_month": month, "start_day": day}, function(err, bookings) {
 				if (err) res.send(err);
 
