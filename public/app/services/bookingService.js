@@ -11,8 +11,9 @@ angular.module('bookingService', [])
 	};
 
 	bookingFactory.getBookings = function(year, month, day){
-		return $http.get('/api/bookings/'+year+'/'+month+'/'+day);
-	}
+		console.log(year + " " + month + " " + day);
+		return $http.post('/api/bookings/', {year: year, month: month, day: day});
+	};
 	
 	// create a single booking
 	bookingFactory.create = function(bookingData) {

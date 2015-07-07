@@ -196,12 +196,13 @@ module.exports = function(app, express) {
 // on routes that end in /bookings/day
 // returns all the boookings in a specific day
 // ----------------------------------------------------
-	apiRouter.route('/bookings/:year/:month/:day')
+  apiRouter.route('/bookings')
 
-		.get(function(req, res) {
-			var year = req.params.year;
-			var month = req.params.month;
-			var day = req.params.day;
+		.post(function(req, res) {
+			var year = req.body.year;
+			var month = req.body.month;
+			var day = req.body.day;
+
 			Booking.find({"start_year":year, "start_month": month, "start_day": day}, function(err, bookings) {
 				if (err) res.send(err);
 
