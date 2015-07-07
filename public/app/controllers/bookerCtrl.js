@@ -70,7 +70,6 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService', 'scheduleServic
 			var roomId = Schedule.findRoom(rooms, startSlot, endSlot);
 			var projectorId = Schedule.findProjector(projectors, startSlot, endSlot);
 			var laptopId = Schedule.findLaptop(laptops, startSlot, endSlot);
-			console.log(roomId + " " + projectorId + " " + laptopId);
 				
 			//data to create new booking (hard coded for debugging)	
 			vm.bookingData.netlink_id = "gordillo"; 
