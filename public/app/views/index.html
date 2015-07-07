@@ -51,10 +51,10 @@
 <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container" ng-controller="daySelectorController as selector">
 
-        <div class="navbar-header navbar-left col-xs-6">
-		 <img class="navbar-brand" src="bmr.png"/> 
+          <a href="/"><img  class="navbar-brand" style= "width:50px; height:50px; padding:4px"src="bmr.png"/> </a>
+       
           <a class="navbar-brand" href="/">BookMyRoom</a>
-        </div>
+        
 
        <div class="navbar-right" ng-controller="loginController as login">
 
@@ -63,8 +63,9 @@
 		 
 		 <a href="/login" class="btn navbar-btn btn-default btn-small" ng-if = "login.loggedIn == false" ng-click="login.doLogout()">Login</a>
 		 <a href="/" class="btn navbar-btn btn-default btn-small" ng-if = "login.loggedIn">Logout</a>
-		 
-      </div>
+		 </div>
+    </div>
+      
 </nav>
 
 

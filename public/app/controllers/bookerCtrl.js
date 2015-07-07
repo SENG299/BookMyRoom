@@ -122,16 +122,37 @@ angular.module('bookerCtrl', ['bookingService', 'sharedService'])
 	     {duration: 1.5}
 	];
 
+    vm.equipment = {
+        projector:false,
+        laptop:false    
+    };
+
+
+    sharedProperties.setEquipment(vm.equipment);
     vm.chosenDate = sharedProperties.getchosenDate();
     vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
+    
+       vm.lastelement = "";
+
+       vm.buttonToggle = function (temp){
+            if (vm.lastelement != ""){
+                document.getElementById(vm.lastelement).style.color = "white";
+            }
+            document.getElementById(temp["$$hashKey"]).style.color = "black";
+            vm.lastelement = temp["$$hashKey"];
+        }
+    
 
 	vm.go = function ( path ) {
 		sharedProperties.setDuration(vm.bookingDuration);
 		sharedProperties.setChosenStartTime(vm.selectedTimeSlot);
+        sharedProperties.setEquipment(vm.equipment);
   		$location.path( path );
 	};
+
+
 
 	vm.createTimeSlots = function(day){
 

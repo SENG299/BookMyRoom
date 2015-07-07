@@ -2,7 +2,12 @@ angular.module('scheduleCtrl', ['bookingService'])
 
 .controller('scheduleController', function(Booking) {
 
+
 	var vm = this;
+
+
+    
+
 
 	Booking.getAllBookings()
 			.success(function(data) {
