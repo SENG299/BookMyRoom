@@ -5,7 +5,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
     var vm = this;
 
 	//these values are from the cookies
-	vm.chosenDate = $cookies.getObject('chosenDate');
+	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
 	vm.selectedStartTime = $cookies.getObject('chosenStartTime');
 	vm.selectedDuration = $cookies.getObject('duration').duration; 
 
@@ -119,17 +119,27 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 		date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000 * 6)
 	]; 
 
-	vm.today = new Date()
+	vm.today = new Date();
 
 	vm.updateSelectedValue = function(item){
-		$cookies.putObject('chosenDate', item);
-		vm.go('/schedule');	
+
+		vm.lockoutDate = "2015-1-6-8".split("-"); //TODO: this lockout date should be grabbed from the user's lockout date in the db or the "session"
+		vm.lockoutYear = Number(vm.lockoutDate[0]);
+		vm.lockoutMonth = Number(vm.lockoutDate[1]);
+		vm.lockoutDay = Number(vm.lockoutDate[2]);
+		vm.lockoutHour = Number(vm.lockoutDate[3]);
+
+		if(vm.today.getFullYear() >= vm.lockoutYear && (vm.today.getMonth() + 1) >= vm.lockoutMonth && vm.today.getDate() > vm.lockoutDay && vm.today.getHours() > vm.lockoutHour){
+			$cookies.putObject('chosenDate', item);
+			vm.go('/schedule');
+		}else{
+			alert('Sorry. You cannot book until after '+vm.lockoutYear+ "-" +vm.lockoutMonth+ "-"+vm.lockoutDay+' because you cancelled a booking within 5 hours of its start time. Thanks!' );
+		}	
 	};
 
 	vm.go = function ( path ) {
   		$location.path( path );
-	};
-	// vm.loggedIn = true;
+	};	
 })
 
 .controller('scheduleController', function($rootScope, $location, $cookies, Booking) {
