@@ -1,14 +1,13 @@
-angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
+angular.module('bookerCtrl', ['bookingService', 'sharedService', 'ngCookies'])
 
 .controller('bookingCreatorController', function($rootScope, $location, $cookies, Booking) {
 
     var vm = this;
 
-	//these values are grabbed from the cookies (saved by other controllers)
+	//these values are grabbed from the shared service for the controllers
 	vm.chosenDate = $cookies.getObject('chosenDate');
 	vm.selectedStartTime = $cookies.getObject('chosenStartTime');
 	vm.selectedDuration = $cookies.getObject('duration').duration;
-
 
 	vm.calculateEndTime = function(){
 		var decimalPart = Number((vm.selectedDuration % 1).toFixed(1));
@@ -39,45 +38,40 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 	vm.disableAddLaptop = false;
 
 	//this object is populated with the information that will belong to the new booking
-	vm.bookingData = {
-		booking_id: "",
-		netlink_id:"",
-		room_id: "",
-		projector_id: "",
-		laptop_id: "",
-		start_year: "",
-		start_month: "",
-		start_day: "",
-		start_hour: "",
-		start_minute: "",
-		end_hour: "",
-		end_minute: ""
-	};
+	vm.bookingData = {};
 
 	vm.createBooking = function(){
-	
+			
 		vm.processing = true;
 		vm.message = '';
 		
 		//data to create new booking (hard coded for debugging)	
-		vm.bookingData.booking_id = "2014030915fuckthis" //TODO: get this passed as a parameter
 		vm.bookingData.netlink_id = "gordillo"; //TODO: get this passed as a parameter
-		vm.bookingData.room_id = "A101"; //TODO: has to be dynamically found
-		vm.bookingData.projector_id = "p123423"; //TODO: has to be dynamically found
-		vm.bookingData.laptop_id = "l5645648"; //TODO: has to be dynamically found
+		vm.bookingData.room_id = 0; //TODO: has to be dynamically found
+		vm.bookingData.projector_id = 0; //TODO: has to be dynamically found
+		vm.bookingData.laptop_id = 0; //TODO: has to be dynamically found
 		vm.bookingData.start_year = vm.chosenDate.getFullYear();
 		vm.bookingData.start_month = vm.chosenDate.getMonth() + 1; //so it is between 1 and 12
 		vm.bookingData.start_day = vm.chosenDate.getDate();
-		vm.bookingData.start_hour = vm.chosenDate.getHours(); //it is between 0 and 23
-		vm.bookingData.start_minute = vm.chosenDate.getMinutes();	
-		vm.bookingData.end_hour = Number(vm.selectedEndTime.hours);
-		vm.bookingData.end_minute = Number(vm.selectedEndTime.minutes);
+		vm.bookingData.start_hour = vm.selectedStartTime.hour; //it is between 0 and 23
+		vm.bookingData.start_minute = vm.selectedStartTime.minutes;	
+		vm.bookingData.end_hour = vm.finalEndTime.hour;
+		vm.bookingData.end_minute = vm.finalEndTime.minutes;
+		vm.bookingData.booking_id = vm.bookingData.start_year + ":" +
+					    vm.bookingData.start_month + ":" +
+					    vm.bookingData.start_day + ":" +
+				            vm.bookingData.start_hour + ":" +
+					    vm.bookingData.start_minute + ":" + 
+					    vm.bookingData.end_hour + ":" +
+					    vm.bookingData.end_minute + ":" +
+					    vm.bookingData.room_id; 			
 
+		
 		//the create booking service is called, vm.bookingData will populate the new booking in the db
 		Booking.create(vm.bookingData)
 			.success(function(data) {
-				vm.processing = false;
-                
+				vm.processing = false; 
+				 
                 		//clear the form
 				vm.bookingData = {};
 				vm.message = data.message;
@@ -88,7 +82,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 .controller('daySelectorController', function($rootScope, $location, $cookies) {
 
     var vm = this;
-	//vm.userDate = sharedProperties.getchosenDate();
 	vm.dates = [
 		date = new Date(),
 		date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
@@ -100,7 +93,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 	]; 
 
 	vm.updateSelectedValue = function(item){
-		//sharedProperties.setchosenDate(item);
 		$cookies.putObject('chosenDate', item);
 		vm.go('/schedule');	
 	};
@@ -116,13 +108,13 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
     var vm = this;
 
     //valid durations have to be calculated TODO: hard coded for debugging (remove when done)
+    // 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
     vm.validDurations = [
-	     {duration: 0.5},
 	     {duration: 1},
-	     {duration: 1.5}
+	     {duration: 2},
+	     {duration: 3}
 	];
 
-    //vm.chosenDate = sharedProperties.getchosenDate();
     vm.chosenDate = $cookies.getObject('chosenDate');
     vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
@@ -186,7 +178,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies'])
 
 			var startHour = 8;
 
-			if(day == 6 || day == 0)
+			if(day > 5 || day == 0)
 			{
 				//it's a weekend
 				numSlots = 14;	
@@ -285,5 +277,4 @@ function buildSchedule(objectArray2D, bookingLength)
 	
 	return schedule;
 }
-
 
