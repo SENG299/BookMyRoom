@@ -23,7 +23,7 @@ angular.module('bookingService', [])
 	bookingFactory.delete = function(bookingId) {
 
         console.log("call to delete booking api in service");
-		return $http.delete('/api/bookings/delete/' + bookingId);
+		return $http.delete('/api/bookings/delete/', bookingData);
  
 	};
 
