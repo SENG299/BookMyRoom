@@ -7,7 +7,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 	//these values are from the cookies
 	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
 	vm.selectedStartTime = $cookies.getObject('chosenStartTime');
-	vm.selectedDuration = $cookies.getObject('duration').duration; 
+	vm.selectedDuration = $cookies.getObject('duration'); 
 
 	vm.calculateEndTime = function(){
 		var decimalPart = Number((vm.selectedDuration % 1).toFixed(1));
@@ -161,7 +161,8 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 
 
     vm.bookingDuration = vm.validDurations[0];
-	vm.chosenDate = $cookies.getObject('chosenDate');
+	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
+	console.log(vm.chosenDate);
         vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
@@ -178,19 +179,15 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
     
 
 	vm.go = function ( path ) {
-		sharedProperties.setDuration(vm.bookingDuration);
-		sharedProperties.setChosenStartTime(vm.selectedTimeSlot);
-        sharedProperties.setEquipment(vm.equipment);
+		$cookies.putObject('duration', vm.bookingDuration);
+		$cookies.putObject('chosenStartTime', vm.selectedTimeSlot);
   		$location.path( path );
 	};
 
 
 
 	vm.createTimeSlots = function(day){
-		$cookies.putObject('duration', vm.bookingDuration);
-		$cookies.putObject('chosenStartTime', vm.selectedTimeSlot);
-  		$location.path( path );
-	};
+			};
 
 	vm.lastelement = "";
 
@@ -204,6 +201,8 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 	
 	vm.createTimeSlots = function(day)
 	{
+	        $location.path( path );
+
 		Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth()+1, vm.chosenDate.getDate())
 		.success(function(data)
 		{
