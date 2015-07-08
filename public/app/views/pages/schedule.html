@@ -31,7 +31,7 @@
             <!-- buttons -->
 
             <div id="incentre">
-			<div id="timeselector" >
+			<div id="timeselector">
 
 				<ul>
 					<div ng-repeat="item in schedule.timeSlots">
@@ -55,7 +55,7 @@
 
 </div><!-- /.container -->
 
-<div class="container">
+<div class="container" ng-controller = "bookingCreatorController as booker">
 	 <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
@@ -70,7 +70,7 @@
          <h2>Room, day, starttime, endtime, equipment id</h2>
         </div>
         <div class="modal-footer">
-          <button type="button" onclick="window.location.href='/booker'" class="btn btn-default">OK</button>
+          <button type="button" ng-click="booker.createBooking()" onclick="window.location.href='/booker'" class="btn btn-default">OK</button>
         </div>
       </div>
       
@@ -80,7 +80,7 @@
 
 
 <nav class="navbar navbar-default navbar-fixed-bottom">
-      <div class="container">
+      <div class="container" >
 
         <div class="navbar-header navbar-left col-xs-3">
           <!--<a class="navbar-brand" href="#">BookMyRoom</a>-->
@@ -91,7 +91,7 @@
 
        <div class=" navbar-right">
 
-   <button class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal">Confirm</button>
+   <button class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" ng-click="schedule.setBookingInformation()">Confirm</button>
 
      
       </div>

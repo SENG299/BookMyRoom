@@ -1,50 +1,54 @@
 angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 
-.controller('bookingCreatorController', function($rootScope, $location, $cookies, Booking, Schedule) {
+.controller('bookingCreatorController', function($rootScope, $location, Booking, $cookies, Schedule) {
 
-    var vm = this;
-
-	//these values are from the cookies
-	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
-	vm.selectedStartTime = $cookies.getObject('chosenStartTime');
-	vm.selectedDuration = $cookies.getObject('duration'); 
-
-	vm.calculateEndTime = function(){
-		var decimalPart = Number((vm.selectedDuration % 1).toFixed(1));
-		var integerPart = Math.floor(vm.selectedDuration);
-		var totalHours = Number(integerPart) + Number(vm.selectedStartTime.hour);
-		var totalMinutes = vm.selectedStartTime.minutes;
-
-		if(Number(vm.selectedStartTime.minutes) === 30 && decimalPart === 0.5){
-			totalMinutes = 0;
-			totalHours++;
-		}
-		else if(vm.selectedStartTime.minutes === 0 && decimalPart === 0.5){
-			totalMinutes = 30;
-		}
-		return {hour: totalHours, minutes: totalMinutes};
-	};
-
-	vm.finalEndTime = vm.calculateEndTime();
-
-	//this variables represent the current value of the checkboxes
-	//true = user wants to add laptop/projector
-	//false = user doesn't want to add laptop/projector 
-	vm.addProjector = false;
-	vm.addLaptop = false;
-
-	//these flags disable the checkboxes for adding laptops/projectors
-	vm.disableAddProjector = false;
-	vm.disableAddLaptop = false;
-
-	//this object is populated with the information that will belong to the new booking
-	vm.bookingData = {};
+    	var vm = this;
 
 	vm.createBooking = function()
 	{
+		//these values are from the cookies
+		vm.chosenDate = new Date($cookies.getObject('chosenDate'));
+		vm.selectedStartTime = $cookies.getObject('chosenStartTime');
+		vm.selectedDuration = $cookies.getObject('duration').duration; 
+
+		vm.calculateEndTime = function(){
+			var decimalPart = Number((vm.selectedDuration % 1).toFixed(1));
+			var integerPart = Math.floor(vm.selectedDuration);
+			var totalHours = Number(integerPart) + Number(vm.selectedStartTime.hour);
+			var totalMinutes = vm.selectedStartTime.minutes;
+
+			if(Number(vm.selectedStartTime.minutes) === 30 && decimalPart === 0.5){
+				totalMinutes = 0;
+				totalHours++;
+			}
+			else if(vm.selectedStartTime.minutes === 0 && decimalPart === 0.5){
+				totalMinutes = 30;
+			}
+			return {hour: totalHours, minutes: totalMinutes};
+		};
+
+		vm.finalEndTime = vm.calculateEndTime();
+
+		//this variables represent the current value of the checkboxes
+		//true = user wants to add laptop/projector
+		//false = user doesn't want to add laptop/projector 
+		vm.addProjector = false;
+		vm.addLaptop = false;
+
+		//these flags disable the checkboxes for adding laptops/projectors
+		vm.disableAddProjector = false;
+		vm.disableAddLaptop = false;
+
+		//this object is populated with the information that will belong to the new booking
+		vm.bookingData = {};
+
+
+		console.log(vm.selectedStartTime, vm.selectedDuration, vm.finalEndTime, vm.chosenDate);
+
 		Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth()+1, vm.chosenDate.getDate())
 		.success(function(data)
 		{	
+			console.log("Success");
 			vm.processing = true;
 			vm.message = '';
 		
@@ -101,7 +105,13 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 					vm.bookingData = {};
 					vm.message = data.message;
 			});
-		});	
+		})
+		.error(function(data){
+			console.log("HERE");
+			console.log(data);
+		});
+
+		console.log("HERE2");
 	};
 })
 
@@ -162,7 +172,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 
     vm.bookingDuration = vm.validDurations[0];
 	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
-	console.log(vm.chosenDate);
         vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
@@ -176,18 +185,11 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
             document.getElementById(temp["$$hashKey"]).style.color = "black";
             vm.lastelement = temp["$$hashKey"];
         }
-    
 
-	vm.go = function ( path ) {
+	vm.setBookingInformation = function(){
 		$cookies.putObject('duration', vm.bookingDuration);
 		$cookies.putObject('chosenStartTime', vm.selectedTimeSlot);
-  		$location.path( path );
 	};
-
-
-
-	vm.createTimeSlots = function(day){
-			};
 
 	vm.lastelement = "";
 
@@ -201,8 +203,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 	
 	vm.createTimeSlots = function(day)
 	{
-	        $location.path( path );
-
 		Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth()+1, vm.chosenDate.getDate())
 		.success(function(data)
 		{
