@@ -70,8 +70,8 @@
 			    </div>
 			    <div id="collapseOne" class="panel-collapse collapse in">
 			      <div class="panel-body">
-			        {{ profile.startTime | date : 'd MMM, yyyy HH:mm'}}
-			        {{ profile.endTime | date : '- HH:mm'}}
+ 							{{profile.userFutureBookings[$index].start | date : 'd MMM, yyyy HH:mm'}}
+			        {{profile.userFutureBookings[$index].end | date : '- HH:mm'}}
 							<button class="editbutton btn btn-info"><i class="fa fa-pencil"></i></button>
 			      </div>
 			    </div>

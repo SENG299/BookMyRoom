@@ -30,16 +30,18 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
           var i
           for ( i = 0; i< vm.totalBookings; i++) {
             if(vm.nowYear <= vm.userBookingData[i].start_year &&
-            vm.nowMonth <= (vm.userBookingData[i].start_month -1 ) &&
-            vm.nowDay < vm.userBookingData[i].start_day
-            ) {
+            vm.nowMonth <= (vm.userBookingData[i].start_month ) &&
+            vm.nowDay < vm.userBookingData[i].start_day) 
+            {
               vm.startTime = new Date(vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].start_hour, vm.userBookingData[i].start_minute)
               vm.endTime = new Date (vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].end_hour, vm.userBookingData[i].end_minute )
-              vm.userFutureBookings.push(vm.userBookingData[i])
               
+              vm.userFutureBookings.push( 
+                { start: vm.startTime,
+                  end: vm.endTime
+                })
             }
           }
-
 
         })
 
