@@ -19,6 +19,14 @@ angular.module('bookingService', [])
 		return $http.post('/api/bookings/create/', bookingData);
 	};
 
+    // delete a single booking
+	bookingFactory.delete = function(bookingId) {
+
+        console.log("call to delete booking api in service");
+		return $http.delete('/api/bookings/delete/' + bookingId);
+ 
+	};
+
 	//Get user's bookings
 	bookingFactory.getUserBookings = function(netlink_id) {
 		return $http.get('/api/bookings/' + netlink_id);
