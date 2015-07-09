@@ -70,7 +70,7 @@
          {{ modalinfo }}
         </div>
         <div class="modal-footer">
-          <button onclick="window.location.href='/profile'" ng-click="" class="btn btn-default">OK</button>
+          <button onclick="window.location.href='/profile'" ng-click="booker.clearBookingData()" class="btn btn-default">OK</button>
         </div>
       </div>
       
