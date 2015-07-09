@@ -51,7 +51,7 @@
 		</div>
 
 
-		<div id= "userbookinglist" class="panel panel-primary">
+		<div id= "userbookinglist" class="panel panel-primary scroll">
 		 <div class="panel-heading">
 		      <h4 class="panel-title">
 		          My Bookings
@@ -70,8 +70,15 @@
 			    </div>
 			    <div id="collapseOne" class="panel-collapse collapse in">
 			      <div class="panel-body">
-			        {{ profile.startTime | date : 'd MMM, yyyy HH:mm'}}
-			        {{ profile.endTime | date : '- HH:mm'}}
+
+                    {{userFutureBooking.startTime | date : 'd MMM, yyyy'}}  ---
+
+			        {{userFutureBooking.startTime | date : 'HH:mm'}} to {{userFutureBooking.endTime | date : 'HH:mm'}}
+
+
+                  
+with Laptop # {{userFutureBooking.data.laptop_id }} and Projector # {{userFutureBooking.data.projector_id }}
+			    
 							<button class="editbutton btn btn-info" ng-click="profile.setSelected(userFutureBooking);"><i class="fa fa-pencil"></i></button>
 			      </div>
 			    </div>

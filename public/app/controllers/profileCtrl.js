@@ -21,39 +21,48 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
 
         console.log("in prfile controller", data)
 
-        Booking.getUserBookings("gordillo").success(function (bookingData) {
+        Booking.getUserBookings("bunny").success(function (bookingData) {
           vm.userBookingData = bookingData
+    
+            console.log("booking data for bunny " + bookingData);
           
 
           vm.totalBookings = Object.keys(bookingData).length
 
-          var i
+          var i;
           for ( i = 0; i< vm.totalBookings; i++) {
-            if(vm.nowYear <= vm.userBookingData[i].start_year &&
-            vm.nowMonth <= (vm.userBookingData[i].start_month -1 ) &&
-            vm.nowDay < vm.userBookingData[i].start_day
-            ) {
+           
               vm.startTime = new Date(vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].start_hour, vm.userBookingData[i].start_minute)
+
+
               vm.endTime = new Date (vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].end_hour, vm.userBookingData[i].end_minute )
-              vm.userFutureBookings.push(vm.userBookingData[i])
+
               
-            }
+              vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i]})
+              
+            
           }
-
-
+            
+        
         })
 
-      });
 
+
+        console.log(vm.userFutureBookings)
+      });
+        
     } else {
       console.log("User is not logged in! ")
     }
 
+
+    
     
     vm.setSelected = function (booking) {
 
         $cookies.putObject('selectedBooking', booking)
         console.log(booking);
+
         $location.path("/booker")
 
     }

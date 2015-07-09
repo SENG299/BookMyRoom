@@ -3,7 +3,7 @@
 html, body {
   
   height:100%;
-  overflow:auto; /*global: remove scrolling  */
+  overflow:none; /*global: remove scrolling  */
  
 }
 
