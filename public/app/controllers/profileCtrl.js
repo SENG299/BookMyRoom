@@ -10,9 +10,6 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
     vm.nowMonth = vm.now.getMonth()
     vm.nowDay =vm.now.getDate()
 
-
- 
-
     //Valiadates the login+token and retrives the username from token
     if (vm.loggedIn) {
       Auth.getUser().success(function(data) {

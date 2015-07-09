@@ -26,7 +26,7 @@ module.exports = function(app, express) {
     // select the name username and password explicitly
     User.findOne({
       username: req.body.username
-    }).select('name username password netlink_id').exec(function  (err, user) {
+    }).select('name username password netlink_id email').exec(function  (err, user) {
 
       if (err) throw err;
 
@@ -56,6 +56,7 @@ module.exports = function(app, express) {
             name: user.name,
             username: user.username,
             netlinkId: user.netlink_id,
+            email: user.email
 
           }, superSecret, {
               expiresInMinutes: 1440 // expires in 24 hours
