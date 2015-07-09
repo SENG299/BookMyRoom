@@ -113,6 +113,33 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 
 		console.log("HERE2");
 	};
+
+
+    
+    
+    vm.deleteBooking = function() {
+
+        console.log("want to delete");
+        vm.selectedBooking = $cookies.getObject('selectedBooking');
+        console.log(vm.selectedBooking);
+
+        //get booking id
+        vm.bookingId = vm.selectedBooking._id;
+     
+        //make a DELETE http request to backend /api/deletebooking through service
+        Booking.delete(vm.bookingId)
+				.success(function() {	 
+					
+					console.log("did it delete?");
+                  
+            
+			    });
+
+        //in backend: find booking by the passed in object id
+        //delete booking once found. 
+        
+	};
+
 })
 
 .controller('daySelectorController', function($rootScope, $location, $cookies, Schedule) {
@@ -249,14 +276,23 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 			
 
 		});
-	
+
 	};
+
+    
 
 	vm.createTimeSlots(new Date(vm.chosenDate).getDay());
 	vm.selectedDuration = vm.validDurations[0];	
+
+
+
 /*
 	Monday thru Friday 8 am to 10pm and on Saturdays and Sundays 11 am to 6pm. 
 */
 
+
 });
+
+
+
 

@@ -1,6 +1,6 @@
 angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
 
-  .controller('profileController', function($rootScope, $location, Auth, Booking) {
+  .controller('profileController', function($rootScope, $location, Auth, Booking, $cookies) {
     var vm = this
 
 
@@ -10,7 +10,7 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
     vm.nowMonth = vm.now.getMonth()
     vm.nowDay =vm.now.getDate()
 
-
+    vm.userFutureBookings = new Array()
  
 
     //Valiadates the login+token and retrives the username from token
@@ -23,7 +23,7 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
 
         Booking.getUserBookings("gordillo").success(function (bookingData) {
           vm.userBookingData = bookingData
-          vm.userFutureBookings = new Array()
+          
 
           vm.totalBookings = Object.keys(bookingData).length
 
@@ -49,7 +49,14 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
       console.log("User is not logged in! ")
     }
 
+    
+    vm.setSelected = function (booking) {
 
+        $cookies.putObject('selectedBooking', booking)
+        console.log(booking);
+        $location.path("/booker")
+
+    }
 
 
 
