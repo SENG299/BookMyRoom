@@ -1,6 +1,6 @@
-angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
+angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'userService'])
 
-.controller('bookingCreatorController', function($rootScope, $location, Booking, $cookies, Schedule) {
+.controller('bookingCreatorController', function($rootScope, $location, Booking, $cookies, Schedule, User) {
 
     var vm = this;
 
@@ -12,15 +12,14 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 	vm.createBooking = function()
 	{
 
-
         console.log("in create booking")
 
         //these values are from the cookies
         vm.chosenDate = new Date($cookies.getObject('chosenDate'));
-	    vm.selectedStartTime = $cookies.getObject('chosenStartTime');
-	    vm.selectedDuration = $cookies.getObject('duration').duration; 
+	vm.selectedStartTime = $cookies.getObject('chosenStartTime');
+	vm.selectedDuration = $cookies.getObject('duration').duration; 
         vm.addProjector = $cookies.getObject('equipment').projector;
-	    vm.addLaptop = $cookies.getObject('equipment').laptop;
+	vm.addLaptop = $cookies.getObject('equipment').laptop;
       
 
 		vm.calculateEndTime = function(){
@@ -40,7 +39,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 		};
 
 		vm.finalEndTime = vm.calculateEndTime();
-        vm.bookingData = {};
+        	vm.bookingData = {};
 
 		//these flags disable the checkboxes for adding laptops/projectors
 		vm.disableAddProjector = false;
@@ -93,10 +92,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
                 projectorId = -1;
         
             }
-			
-		    
 
-            
 			//data to create new booking (hard coded for debugging)	
 			vm.bookingData.netlink_id = "bunny"; 
 			vm.bookingData.room_id = roomId; 
@@ -122,9 +118,9 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
             
             		
 			
-			//the create booking service is called, vm.bookingData will populate the new booking in the db
+		//the create booking service is called, vm.bookingData will populate the new booking in the db
 
-            $rootScope.modalinfo = vm.bookingData;
+            	$rootScope.modalinfo = vm.bookingData;
             
                 console.log("data to create booking" );
                 console.log($rootScope.modalinfo);
@@ -138,46 +134,80 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
             
 		})
 		.error(function(data){
-			console.log("HERE");
+			console.log("Error when creating booking!");
 			console.log(data);
 		});
         
 		console.log("HERE@")
 	};
 
-
-
-
     vm.clearBookingData = function () {
         //clear the form
-		vm.bookingData = {};
+	vm.bookingData = {};
         
     };
-    
-    
+      
     vm.deleteBooking = function() {
 
-        console.log("want to delete");
         vm.selectedBooking = $cookies.getObject('selectedBooking');
-        console.log(vm.selectedBooking);
 
         //get booking id
         vm.bookingId = vm.selectedBooking.data._id;
-     
+	
+	var now = new Date();
+	var nowYear = now.getFullYear();
+	var nowMonth = now.getMonth() + 1;
+	var nowDay = now.getDate();
+	var nowHour = now.getHours();
+	var nowMinute = now.getMinutes();
+
+	var bookingDate = new Date(vm.selectedBooking.startTime);
+	var bookingYear = bookingDate.getFullYear();
+	var bookingMonth = bookingDate.getMonth() + 1;
+	var bookingDay = bookingDate.getDate();
+	var bookingHour = bookingDate.getHours();
+	var bookingMinute = bookingDate.getMinutes();
+
+	//lockout code
+	//if booking is cancelled less than 5 hours before booking, lock user
+	console.log(vm.selectedBooking);
+	console.log("current time " + nowYear+" "+nowMonth+" "+nowDay+" "+nowHour);
+	console.log("booking time " + bookingYear+" "+bookingMonth+" "+bookingDay+" "+bookingHour);
+	if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === nowDay && (nowHour - 5) <= bookingHour){
+
+		//if true, the user will be locked out
+		//calculation of the user's lockout
+		nowDay++; //user is locked out until next day at same time
+		var lockoutDate = nowYear+"-"+nowMonth+"-"+nowDay+"-"+nowHour;
+		console.log("lockout date " + lockoutDate);
+		//using a service, the user is changed in the db
+		var b = "b";
+		var a = "asdfasdfasdf";
+		console.log(lockoutDate);
+		console.log(b);
+		
+		User.lockout(b, a) //TODO: put real netlink id later
+			.success(function() {	 
+				console.log("User was locked out.");
+			})
+			.error(function(data, status, headers, config) {	 
+				console.log("got an error...");
+				console.log(data);
+				console.log(status);		
+				console.log(headers);
+				console.log(config);
+			});
+	}
+
         //make a DELETE http request to backend /api/deletebooking through service
         Booking.delete(vm.bookingId)
-				.success(function() {	 
-					
-					console.log("did it delete?");
-                  
-            
-			    });
+		.success(function() {	 
+			console.log("Booking was deleted.");
+		});
 
-        //in backend: find booking by the passed in object id
-        //delete booking once found. 
-        
+		//in backend: find booking by the passed in object id
+		//delete booking once found. 
 	};
-
 })
 
 .controller('daySelectorController', function($rootScope, $location, $cookies, Schedule) {
