@@ -210,13 +210,14 @@ module.exports = function(app, express) {
 //############################ Routes with http://localhost:8080/api/users/lockout
  // update the user's lockout status
  //(accessed at PUT http://localhost:8080/api/users/lockout)
-apiRouter.route('/users/lockout')
-
-	.post(function(req, res) {
-	      User.findOne({"netlink_id":req.body.netlink_id}, function(err, user) {
+apiRouter.route('/users/lockout/:netlink_id')
+	.put(function(req, res) {
+	console.log(req.params.netlink_id);
+	      User.findOne({netlink_id:req.params.netlink_id}, function(err, user) {
 
 		if (err) res.send(err);
-
+		
+		
 		// set the new user information if it exists in the request
 		if (req.body.lockout) user.lockout = req.body.lockout;
 

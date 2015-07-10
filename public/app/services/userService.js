@@ -41,7 +41,7 @@ angular.module('userService', [])
 
 	//locks a user out
 	userFactory.lockout = function(netlink_id, lockout) {
-		return $http.post('/api/users/lockout', netlink_id, lockout);
+		return $http.put('/api/users/lockout/'+ netlink_id, lockout);
 	};
 	
 	return userFactory;

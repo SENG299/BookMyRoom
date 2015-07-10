@@ -183,10 +183,11 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 		//calculation of the user's lockout
 		nowDay++; //user is locked out until next day at same time
 		var lockoutDate = {lockout: nowYear+"-"+nowMonth+"-"+nowDay+"-"+nowHour};
-		console.log("lockout date " + lockoutDate);
+		var new_netlink = {netlink_id: vm.userData.netlinkId}
+		console.log(lockoutDate);
 
 		//using a service, the user is changed in the db
-		User.lockout(vm.userData.netlinkId, lockoutDate)
+		User.lockout(new_netlink, lockoutDate)
 			.success(function() {	 
 				console.log("User was locked out.");
 			})
