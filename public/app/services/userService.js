@@ -23,9 +23,15 @@ angular.module('userService', [])
 		return $http.post('/api/users', userData)	
 	};
 
-	// update a user
+	// update a user (By direct API calls)
 	userFactory.update = function(id, userData) {
 		return $http.put('/api/users/' + id, userData);
+	};
+
+	// update a user (From profile)
+	userFactory.updateInfo = function(netlink_id, newEmail, newPhone) {
+		var newInfo = { email: newEmail, phone: newPhone }
+		return $http.put('/api/users/update/' + netlink_id, newInfo);
 	};
 
 	// delete a user
