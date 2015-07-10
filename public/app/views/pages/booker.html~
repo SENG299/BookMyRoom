@@ -36,7 +36,7 @@
                   </label>
 
                     {{booker.lap}},{{booker.proj}}
-                    {{booker.lap_changed}},{{booker.proj_changed}}
+                    {{booker.lapt_changed}},{{booker.proj_changed}}
                     
                   <!-- equipment is not booking  
                   <label class="btn btn-info" ng-if="booker.bookingInfo.data.laptop_id < 0">

@@ -26,7 +26,7 @@ module.exports = function(app, express) {
     // select the name username and password explicitly
     User.findOne({
       username: req.body.username
-    }).select('name username password netlink_id email last_name user_type phone').exec(function  (err, user) {
+    }).select('name username password netlink_id').exec(function  (err, user) {
 
       if (err) throw err;
 
@@ -56,13 +56,9 @@ module.exports = function(app, express) {
             name: user.name,
             username: user.username,
             netlinkId: user.netlink_id,
-            email: user.email,
-            last_name: user.last_name,
-            user_type: user.user_type,
-            phone: user.phone,
-            lockout: user.lockout
+
           }, superSecret, {
-              expiresInMinutes: 1440 // expires in 24 hours TODO: Change the token expiry timing
+              expiresInMinutes: 1440 // expires in 24 hours
           });
           
           // return the information including token as JSON
@@ -123,11 +119,7 @@ module.exports = function(app, express) {
 			user.username = req.body.username;  // set the users username (comes from the request)
 			user.password = req.body.password;  // set the users password (comes from the request)
       user.netlink_id = req.body.netlink;
-      user.last_name = req.body.last_name;
-      user.email = req.body.email;
-      user.phone = req.body.phone;
-      user.user_type = req.body.user_type;
-      user.lockout = req.body.lockout;
+
 
       console.log("details: ", req.body.username, req.body.password, req.body.netlink )
 			user.save(function(err) {
@@ -180,9 +172,7 @@ module.exports = function(app, express) {
         // set the new user information if it exists in the request
         if (req.body.name) user.name = req.body.name;
         if (req.body.username) user.username = req.body.username;
-        // if (req.body.password) user.password = req.body.password;
-        if (req.body.email) user.email = req.body.email
-        if (req.body.phone) user.phone = req.body.phone
+        if (req.body.password) user.password = req.body.password;
 
         // save the user
         user.save(function(err) {
@@ -330,24 +320,5 @@ returns all the boookings for a user
       res.send(req.decoded);
 	});
 
-//##################### Finding by netlink_id ############
- apiRouter.route('/profile/:netlink_id')
-    .put(function(req, res) {
-
-      User.findOne({ netlink_id: req.params.netlink_id}, function (err, user){
-        if (err) res.send(err)
-
-        if (req.body.email) user.email = req.body.email
-        if (req.body.phone) user.phone = req.body.phone
-
-        user.save(function(err) {
-          if (err) res.send(err)
-
-          res.json({ message: 'User updated!' })
-        })
-
-      })
-
-    })
 	return apiRouter;
 };
