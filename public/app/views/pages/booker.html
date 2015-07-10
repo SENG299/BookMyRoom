@@ -3,7 +3,7 @@
 
     <div class="row">
 	<div class="fixeddiv">
-		<h3>{{booker.chosenDate | date}}</h3> 
+		 
 	</div>	 
    </div>
 	
@@ -11,8 +11,8 @@
         <div class="col-xs-10 col-md-6" id="centre">
             
          
-		
-			<h4>Room A103</h4>
+		    <h3>{{booker.chosenDate | date}} </br> in </br> </h3>
+			<h4>{{booker.room_id }}</h4>
 			<h4>
                 <i class="fa fa-clock-o fa-lg"></i>
 	            {{(booker.selectedStartTime.hour > 12) && (booker.selectedStartTime.hour - 12) ||           (booker.selectedStartTime.hour)}}:{{(booker.selectedStartTime.minutes == 0) &&('00') || booker.selectedStartTime.minutes}} {{(booker.selectedStartTime.hour > 11) && ('PM') || ('AM')}}   

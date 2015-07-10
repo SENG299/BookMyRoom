@@ -16,36 +16,47 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
     if (vm.loggedIn) {
       Auth.getUser().success(function(data) {
 
-        vm.username = data.username;
+        vm.username = data.username
+        vm.last_name = data.last_name
+        vm.email = data.email
+        vm.user_type = data.user_type
+        vm.userType 
+        vm.phone = data.phone
+        vm.netlink_id = data.netlinkId
+        vm.name = data.name
 
         console.log("in prfile controller", data)
 
-        Booking.getUserBookings("gordillo").success(function (bookingData) {
+        switch (data.user_type) {
+          case 0: vm.userType = "Admin"
+            break
+
+          case 1: vm.userType = "Faculty"
+            break
+
+          case 2: vm.userType = "Staff"
+            break
+            
+          case 3: vm.userType = "Student"
+            break
+        }
+
+        Booking.getUserBookings("bunny").success(function (bookingData) {
           vm.userBookingData = bookingData
-          
 
           vm.totalBookings = Object.keys(bookingData).length
 
-          var i
+          var i;
           for ( i = 0; i< vm.totalBookings; i++) {
-            if(vm.nowYear <= vm.userBookingData[i].start_year &&
-            vm.nowMonth <= (vm.userBookingData[i].start_month ) &&
-            vm.nowDay < vm.userBookingData[i].start_day) 
-            {
-              vm.startTime = new Date(vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].start_hour, vm.userBookingData[i].start_minute)
-              vm.endTime = new Date (vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].end_hour, vm.userBookingData[i].end_minute )
-              
-              vm.userFutureBookings.push( 
-                { start: vm.startTime,
-                  end: vm.endTime
-                })
-            }
+            vm.startTime = new Date(vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].start_hour, vm.userBookingData[i].start_minute)
+            vm.endTime = new Date (vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].end_hour, vm.userBookingData[i].end_minute )
+            vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i]})
           }
-
         })
-
-      });
-
+      
+        // console.log(vm.userFutureBookings)
+      })
+        
     } else {
       console.log("User is not logged in! ")
     }
@@ -55,7 +66,4 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
       console.log(booking);
       $location.path("/booker")
     }
-
-
-
-  });
+  })

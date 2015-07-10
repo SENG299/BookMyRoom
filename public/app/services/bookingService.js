@@ -11,12 +11,16 @@ angular.module('bookingService', [])
 	};
 
 	bookingFactory.getBookings = function(year, month, day){
+    
 		return $http.post('/api/bookings/', {year: year, month: month, day: day});
 	};
 	
 	// create a single booking
 	bookingFactory.create = function(bookingData) {
+
+        console.log("in booking create service")
 		return $http.post('/api/bookings/create/', bookingData);
+    
 	};
 
     // delete a single booking

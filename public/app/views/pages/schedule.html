@@ -67,10 +67,10 @@
           <h4 class="modal-title">Your Booking Info</h4>
         </div>
         <div class="modal-body">
-         <h2>Room, day, starttime, endtime, equipment id</h2>
+         {{ modalinfo }}
         </div>
         <div class="modal-footer">
-          <button type="button" ng-click="booker.createBooking()" onclick="window.location.href='/booker'" class="btn btn-default">OK</button>
+          <button onclick="window.location.href='/profile'" ng-click="" class="btn btn-default">OK</button>
         </div>
       </div>
       
@@ -79,7 +79,7 @@
 </div>
 
 
-<nav class="navbar navbar-default navbar-fixed-bottom">
+<nav class="navbar navbar-default navbar-fixed-bottom" ng-controller = "bookingCreatorController as booker" >
       <div class="container" >
 
         <div class="navbar-header navbar-left col-xs-3">
@@ -91,7 +91,7 @@
 
        <div class=" navbar-right">
 
-   <button class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" ng-click="schedule.setBookingInformation()">Confirm</button>
+   <button  class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" ng-click="schedule.setBookingInformation(); booker.createBooking()">Confirm</button>
 
      
       </div>
