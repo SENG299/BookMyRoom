@@ -177,17 +177,23 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 	console.log("current time " + nowYear+" "+nowMonth+" "+nowDay+" "+nowHour);
 	console.log("booking time " + bookingYear+" "+bookingMonth+" "+bookingDay+" "+bookingHour);
 	//if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === nowDay && (nowHour - 5) <= bookingHour){
-	if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === 16 && (nowHour - 5) <= bookingHour){ //TODO: put that commented line back in
+	if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === nowDay && (nowHour - 5) <= bookingHour){
 
 		//if true, the user will be locked out
 		//calculation of the user's lockout
 		nowDay++; //user is locked out until next day at same time
 		var lockoutDate = {lockout: nowYear+"-"+nowMonth+"-"+nowDay+"-"+nowHour};
-		var new_netlink = {netlink_id: vm.userData.netlinkId}
 		console.log(lockoutDate);
 
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE 
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE 
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE 
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
+/*
 		//using a service, the user is changed in the db
-		User.lockout(new_netlink, lockoutDate)
+		User.lockout(vm.userData.netlinkId, lockoutDate)
 			.success(function() {	 
 				console.log("User was locked out.");
 			})
@@ -198,6 +204,12 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 				console.log(headers);
 				console.log(config);
 			});
+*/
+//TODO: please remind me to uncomment it before handing it in
+//TODO: please remind me to uncomment it before handing it in
+//TODO: please remind me to uncomment it before handing it in
+//TODO: please remind me to uncomment it before handing it in
+//TODO: please remind me to uncomment it before handing it in
 	}
 
         //make a DELETE http request to backend /api/deletebooking through service
@@ -256,7 +268,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 				$cookies.putObject('chosenDate', item);
 				vm.go('/schedule');
 			}else{
-				alert("Sorry. You cannot book until after "+vm.lockoutYear+ "-" +vm.lockoutMonth+ "-"+vm.lockoutDay+" because you cancelled a booking within 5 hours of it's start time. Thanks!" );
+				alert("Sorry. You cannot book until after "+vm.lockoutYear+ "-" +(vm.lockoutMonth+1)+ "-"+vm.lockoutDay+" because you cancelled a booking within 5 hours of it's start time. Thanks!" );
 			}
 		}else{
 			vm.go('/schedule');

@@ -210,28 +210,42 @@ module.exports = function(app, express) {
 //############################ Routes with http://localhost:8080/api/users/lockout
  // update the user's lockout status
  //(accessed at PUT http://localhost:8080/api/users/lockout)
-apiRouter.route('/users/lockout/:netlink_id')
-	.put(function(req, res) {
-	console.log(req.params.netlink_id);
-	      User.findOne({netlink_id:req.params.netlink_id}, function(err, user) {
+ apiRouter.route('/users/lockout/:netlink_id')
+    .put(function(req, res) {
 
-		if (err) res.send(err);
-		
-		
-		// set the new user information if it exists in the request
-		if (req.body.lockout) user.lockout = req.body.lockout;
+      User.findOne({ netlink_id: req.params.netlink_id}, function (err, user){
+        if (err) res.send(err)
 
-		// save the user
-		user.save(function(err) {
-		  if (err) res.send(err);
+           console.log("Passed in data is", req.body)
+        if (req.body.lockout) user.lockout = req.body.lockout
 
-		  // return a message
-		  res.json({ message: 'User updated!' });
-		});
-	      });
-	    });
+        user.save(function(err) {
+          if (err) res.send(err)
 
+          var token = jwt.sign({
+            name: user.name,
+            username: user.username,
+            netlinkId: user.netlink_id,
+            email: user.email,
+            last_name: user.last_name,
+            user_type: user.user_type,
+            phone: user.phone,
+            lockout: user.lockout
+          }, superSecret, {
+              expiresInMinutes: 1440 // expires in 24 hours TODO: Change the token expiry timing
+          });
+          
+          // return the information including token as JSON
+          res.json({
+            success: true,
+            message: 'Enjoy your token!',
+            token: token
+          });
 
+          console.log(jwt.decode(token))
+        })
+      })
+    })
 
 //##################### Finding by netlink_id ############
  apiRouter.route('/users/update/:netlink_id')
