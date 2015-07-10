@@ -21,7 +21,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 	    vm.selectedDuration = $cookies.getObject('duration').duration; 
         vm.addProjector = $cookies.getObject('equipment').projector;
 	    vm.addLaptop = $cookies.getObject('equipment').laptop;
-      
+		console.log(vm.selectedDuration);
 
 		vm.calculateEndTime = function(){
 			var decimalPart = Number((vm.selectedDuration % 1).toFixed(1));
@@ -109,6 +109,8 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 			vm.bookingData.start_minute = vm.selectedStartTime.minutes;	
 			vm.bookingData.end_hour = vm.finalEndTime.hour;
 			vm.bookingData.end_minute = vm.finalEndTime.minutes;
+			
+			
 
             
 			vm.bookingData.booking_id = vm.bookingData.start_year + ":" +
@@ -129,24 +131,18 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
                 console.log("data to create booking" );
                 console.log($rootScope.modalinfo);
 
+				
 			Booking.create(vm.bookingData)
 				.success(function(data) {
 					vm.processing = false; 
-                    console.log("hello");
 			});
             
-            
+
 		})
 		.error(function(data){
-			console.log("HERE");
 			console.log(data);
 		});
-        
-		console.log("HERE@")
 	};
-
-
-
 
     vm.clearBookingData = function () {
         //clear the form
@@ -224,9 +220,9 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
         // 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
         vm.validDurations =
 	[
-	     {duration: 1},
-	     {duration: 2},
-	     {duration: 3}
+	     {duration: 0.5},
+	     {duration: 1.0},
+	     {duration: 1.5}
 	];
 
     vm.equipment = {
@@ -240,7 +236,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
         vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
-    
 
 	vm.setBookingInformation = function(){
 		$cookies.putObject('duration', vm.bookingDuration);
