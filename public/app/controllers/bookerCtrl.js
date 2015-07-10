@@ -98,7 +98,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 
             
 			//data to create new booking (hard coded for debugging)	
-			vm.bookingData.netlink_id = "bunny"; 
+			vm.bookingData.netlink_id = "b"; 
 			vm.bookingData.room_id = roomId; 
 			vm.bookingData.projector_id = projectorId;
 			vm.bookingData.laptop_id = laptopId;

@@ -5,7 +5,7 @@
             
   	<!-- buttons -->
 		
-		<form id= "profileform" role="form" class="form-horizontal"> 
+		<form ng-submit="profile.updateUserInfo() "id= "profileform" role="form" class="form-horizontal"> 
 		  <div class="form-group has-feedback">
 		 
 		    <div class=" col-xs-12">
@@ -19,12 +19,12 @@
 		    </div>
 	
 		    <div class=" col-xs-12">
-		      <input type="text" class="form-control" placeholder= "{{ profile.email }}  [Click to change preferred email]" />
+		      <input type="text" class="form-control" ng-model="profile.new_email"/>
 		      	<i class="form-control-feedback glyphicon glyphicon-envelope"></i>
 		    </div>
 
 		    <div class=" col-xs-12">
-		      <input type="text" class="form-control" placeholder=" {{ profile.phone }} [Click to change preferred phone]" />
+		      <input type="text" class="form-control" ng-model="profile.new_phone"/>
 		      	<i class="form-control-feedback glyphicon glyphicon-earphone"></i>
 		    </div>
 
@@ -33,7 +33,7 @@
 		    </div>
  -->
 		    <div class="col-xs-12" style=" margin-top:5px;">
-		      <button class="btn btn-info">Save Changes</button>
+		      <button type="submit"class="btn btn-info">Save Changes</button>
 		    </div>
 	 	    
 		   

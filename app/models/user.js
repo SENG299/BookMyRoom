@@ -12,7 +12,7 @@ var UserSchema = new Schema({
 	password: { type: String, required: true, select: false },
 	email: String,
 	phone: String,
-	lockout: String
+	lockout: String,
 });
 
 
