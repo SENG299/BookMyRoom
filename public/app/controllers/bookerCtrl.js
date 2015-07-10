@@ -253,6 +253,9 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			
 			console.log(vm.userData);
 			vm.lockoutString = vm.userData.lockout;
+			if(typeof vm.lockoutString === 'undefined'){
+				vm.lockoutString = '1999-9-9-9'; //random date from the past in case the user has no lockout in the db
+			}
 			vm.lockoutDate = vm.lockoutString.split("-");
 			vm.lockoutYear = Number(vm.lockoutDate[0]);
 			vm.lockoutMonth = Number(vm.lockoutDate[1]);
@@ -264,12 +267,23 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			console.log(vm.today.getDate());
 			console.log(vm.today.getHours());
 
-			if(vm.today.getFullYear() >= vm.lockoutYear && (vm.today.getMonth()) >= vm.lockoutMonth && vm.today.getDate() > vm.lockoutDay && vm.today.getHours() > vm.lockoutHour){
-				$cookies.putObject('chosenDate', item);
-				vm.go('/schedule');
+			if(vm.today.getFullYear() > vm.lockoutYear){
+				vm.nextView(item);
 			}else{
-				alert("Sorry. You cannot book until after "+vm.lockoutYear+ "-" +(vm.lockoutMonth+1)+ "-"+vm.lockoutDay+" because you cancelled a booking within 5 hours of it's start time. Thanks!" );
-			}
+				if(vm.today.getMonth() > vm.lockoutMonth){
+					vm.nextView(item);		
+				}else{
+					if(vm.today.getDate() >= vm.lockoutDay){
+						if(vm.today.getHours() >= vm.lockoutHour){
+							vm.nextView(item);	
+						}else{
+							vm.alert();
+						}
+					}else{
+						vm.alert();
+					}
+				}						
+			}		
 		}else{
 			vm.go('/schedule');
 		}	
@@ -277,7 +291,16 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 	vm.go = function ( path ) {
   		$location.path( path );
+	};
+
+	vm.nextView = function(item){
+		$cookies.putObject('chosenDate', item);
+		vm.go('/schedule');
 	};	
+
+	vm.alert = function(){
+		alert("Sorry. You cannot book until after "+vm.lockoutYear+ "-" +(vm.lockoutMonth+1)+ "-"+vm.lockoutDay+" because you cancelled a booking within 5 hours of it's start time. Thanks!" );
+	};
 })
 
 .controller('scheduleController', function($rootScope, $location, $cookies, Booking, Schedule) {
