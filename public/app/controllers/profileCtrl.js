@@ -44,24 +44,36 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
             break
         }
 
-        Booking.getUserBookings(vm.netlink_id).success(function (bookingData) {
-          vm.userBookingData = bookingData
 
-          vm.totalBookings = Object.keys(bookingData).length
+        if (vm.userType === "Admin") {
+          Booking.getAllBookings()
+            .success(function (bookingData) {
+              vm.totalBookings = Object.keys(bookingData).length
+              vm.userBookingData = bookingData
+              vm.calulateBookings()
+          })
+        } else {
+            Booking.getUserBookings(vm.netlink_id)
+              .success(function (bookingData) {
+                vm.totalBookings = Object.keys(bookingData).length
+                vm.userBookingData = bookingData
+                vm.calulateBookings()
+            })
+        }
 
+        vm.calulateBookings = function() {
           var i;
           for ( i = 0; i< vm.totalBookings; i++) {
             if (vm.nowYear <= vm.userBookingData[i].start_year &&
-            vm.nowMonth <= (vm.userBookingData[i].start_month) &&
-            vm.nowDay <= vm.userBookingData[i].start_day) {
+              vm.nowMonth <= (vm.userBookingData[i].start_month) &&
+              vm.nowDay <= vm.userBookingData[i].start_day) {
 
               vm.startTime = new Date(vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].start_hour, vm.userBookingData[i].start_minute)
               vm.endTime = new Date (vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].end_hour, vm.userBookingData[i].end_minute )
               vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i]})
             }
           }
-        })
-      
+        }
       })
         
     } else {
