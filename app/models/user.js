@@ -9,8 +9,12 @@ var UserSchema = new Schema({
 	last_name: String,
 	user_type: Number, 
 	username: { type: String, required: true, index: { unique: true }}, //this is not needed in the real app, this is still here so that it doesn't break the code.
-	password: { type: String, required: true, select: false }
+	password: { type: String, required: true, select: false },
+	email: String,
+	phone: String,
+	lockout: String
 });
+
 
 // hash the password before the user is saved
 UserSchema.pre('save', function(next) {
