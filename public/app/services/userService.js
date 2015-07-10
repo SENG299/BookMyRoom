@@ -38,11 +38,7 @@ angular.module('userService', [])
 	userFactory.delete = function(id) {
 		return $http.delete('/api/users/' + id);
 	};
-
-	//locks a user out
-	userFactory.lockout = function(netlink_id, lockout) {
-		return $http.put('/api/users/lockout/'+ netlink_id, lockout);
-	};
 	
 	return userFactory;
+
 });

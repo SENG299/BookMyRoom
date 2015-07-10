@@ -17,11 +17,16 @@ angular.module('bookingService', [])
 	
 	// create a single booking
 	bookingFactory.create = function(bookingData) {
+
+        console.log("in booking create service")
 		return $http.post('/api/bookings/create/', bookingData);
+    
 	};
 
-    	// delete a single booking
+    // delete a single booking
 	bookingFactory.delete = function(bookingId) {
+
+        console.log("call to delete booking api in service");
 		return $http.delete('/api/bookings/delete/' + bookingId);
  
 	};

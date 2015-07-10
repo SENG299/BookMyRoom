@@ -46,15 +46,15 @@ angular.module('app.routes', ['ngRoute'])
 		controllerAs: 'user'
 	})
 
-	  // page to edit a user
-	  .when("/users/:user_id", {
-	      templateUrl: 'app/views/pages/users/single.html',
-	      controller: 'userEditController',
-	      controllerAs: 'user'
-	  })
+  // page to edit a user
+  .when("/users/:user_id", {
+      templateUrl: 'app/views/pages/users/single.html',
+      controller: 'userEditController',
+      controllerAs: 'user'
+  })
 
 	//Page for login screen
-  	.when("/login", {
+  .when("/login", {
 		templateUrl: 'app/views/pages/login.html',
 		controller: 'loginController',
 		controllerAs: 'login'
