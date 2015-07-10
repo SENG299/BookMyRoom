@@ -41,7 +41,7 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
             break
         }
 
-        Booking.getUserBookings("bunny").success(function (bookingData) {
+        Booking.getUserBookings(vm.netlink_id).success(function (bookingData) {
           vm.userBookingData = bookingData
 
           vm.totalBookings = Object.keys(bookingData).length
