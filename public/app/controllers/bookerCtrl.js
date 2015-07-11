@@ -19,7 +19,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 	vm.createBooking = function()
 	{
-		
+		console.log("in create booking")
 		//these values are from the cookies
 		vm.chosenDate = new Date($cookies.getObject('chosenDate'));
 		vm.selectedStartTime = $cookies.getObject('chosenStartTime');
@@ -114,24 +114,33 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 					
 			
 		//the create booking service is called, vm.bookingData will populate the new booking in the db
-
-				$rootScope.modalinfo = vm.bookingData;
-				if ($rootScope.modalinfo.projector_id === -1){
+			
+				$rootScope.modalinfo = {};
+				$rootScope.modalinfo.start_hour = vm.bookingData.start_hour;
+				$rootScope.modalinfo.start_minute = vm.bookingData.start_minute;
+				$rootScope.modalinfo.end_hour = vm.bookingData.end_hour;
+				$rootScope.modalinfo.end_minute = vm.bookingData.end_minute;
+				$rootScope.modalinfo.projector_id = "Yes";
+				$rootScope.modalinfo.laptop_id = "Yes";
+				console.log("modalinfo:");
+				console.log($rootScope.modalinfo);
+				console.log("bookingData:");
+				console.log(vm.bookingData);
+				if (vm.bookingData.projector_id === -1){
 					$rootScope.modalinfo.projector_id = "No";
-				}else{
-					$rootScope.modalinfo.projector_id = "Yes";
 				}
-				if ($rootScope.modalinfo.laptop_id === -1){
+				if (vm.bookingData.laptop_id === -1){
 					$rootScope.modalinfo.laptop_id = "No";
-				}else{
-					$rootScope.modalinfo.laptop_id = "Yes";
 				}
 			
-				console.log("data to create booking" );
-				console.log($rootScope.modalinfo);
+				//console.log("modal data" );
+				//console.log($rootScope.modalinfo);
 
+				
 			Booking.create(vm.bookingData)
 				.success(function(data) {
+					console.log("in booking.create")
+					console.log(vm.bookingData)
 					vm.processing = false; 
 			});
 			
@@ -374,24 +383,24 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			var projectors = objectArrays.projectors;
 			var laptops = objectArrays.laptops;
 		
-			roomSchedule = Schedule.buildSchedule(rooms, vm.bookingDuration);
-			projectorSchedule = Schedule.buildSchedule(projectors, vm.bookingDuration);
-			laptopSchedule = Schedule.buildSchedule(laptops, vm.bookingDuration);
+			roomSchedule = Schedule.buildSchedule(rooms, vm.bookingDuration.duration);
+			projectorSchedule = Schedule.buildSchedule(projectors, vm.bookingDuration.duration);
+			laptopSchedule = Schedule.buildSchedule(laptops, vm.bookingDuration.duration);
 
 			for(var i = 0; i < Schedule.numSlots; i++)
 			{
 				var hours = Schedule.startHour + Math.floor(i / 2);	
 				var mins = (i%2 == 0) ? 0 : 30;
 
-				var roomAvailable = (roomSchedule[i] == 0) ? true : false;			
+				var roomUnAvailable = (roomSchedule[i] == 0) ? false : true;			
 				var laptopAvailable = (laptopSchedule[i] == 0) ? true : false;			
 				var projectorAvailable = (projectorSchedule[i] == 0) ? true : false;			
 
 				vm.timeSlots.push({hour: hours,
 						   minutes: mins,
 						   projector: projectorAvailable,
-						   laptop: roomAvailable,
-						   avail: roomAvailable});
+						   laptop: laptopAvailable,
+						   unAvail: roomUnAvailable});
 			}
 			
 
