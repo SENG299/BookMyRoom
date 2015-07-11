@@ -273,12 +273,14 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 				if(vm.today.getMonth() > vm.lockoutMonth){
 					vm.nextView(item);		
 				}else{
-					if(vm.today.getDate() >= vm.lockoutDay){
+					if(vm.today.getDate() > vm.lockoutDay){
+						vm.nextView(item);	
+					}else if(vm.today.getDate() == vm.lockoutDay){
 						if(vm.today.getHours() >= vm.lockoutHour){
 							vm.nextView(item);	
 						}else{
 							vm.alert();
-						}
+						}					
 					}else{
 						vm.alert();
 					}
