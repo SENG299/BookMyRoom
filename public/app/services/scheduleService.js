@@ -5,8 +5,8 @@ angular.module('scheduleService', [])
 	var scheduleFactory = {};
 
 	scheduleFactory.numRooms = 3;
-	scheduleFactory.numProjectors = 3;
-	scheduleFactory.numLaptops = 3;
+	scheduleFactory.numProjectors = 2;
+	scheduleFactory.numLaptops = 2;
 
 	scheduleFactory.numSlots = 28;
 	scheduleFactory.startHour = 8; 
