@@ -62,7 +62,7 @@
 
        <div class="navbar-right" ng-controller="loginController as login">
           <a href="/login" class="btn navbar-btn btn-default btn-small" ng-if = "login.loggedIn == false" >Login</a>
-          <a href="/profile" class="btn navbar-btn btn-default btn-small" ng-if = "login.loggedIn" >Profile</a>
+          <a href="/profile" class="btn navbar-btn btn-default btn-small" ng-if = "login.loggedIn" ><i class="fa fa-user fa-lg"></i></a>
           <a href="#" class="btn navbar-btn btn-default btn-small" ng-click="login.doLogout()" ng-if = "login.loggedIn"><i class="fa fa-sign-out fa-lg"></i></a>
       </div>
 		 </div>
