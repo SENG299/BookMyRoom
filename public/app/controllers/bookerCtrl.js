@@ -345,7 +345,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 	vm.bookingDuration = vm.validDurations[0];
 	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
-	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
 
 	vm.setBookingInformation = function(){
@@ -365,6 +364,10 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
             	vm.lastelement = temp["$$hashKey"];
         }
 	
+	vm.test = function(){
+		console.log("test");
+	}
+
 	vm.createTimeSlots = function(day)
 	{
 		Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth(), vm.chosenDate.getDate())
@@ -387,6 +390,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			projectorSchedule = Schedule.buildSchedule(projectors, vm.bookingDuration.duration);
 			laptopSchedule = Schedule.buildSchedule(laptops, vm.bookingDuration.duration);
 
+			vm.timeSlots = [];	
 			for(var i = 0; i < Schedule.numSlots; i++)
 			{
 				var hours = Schedule.startHour + Math.floor(i / 2);	
