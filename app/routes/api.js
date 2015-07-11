@@ -26,7 +26,7 @@ module.exports = function(app, express) {
     // select the name username and password explicitly
     User.findOne({
       username: req.body.username
-    }).select('name username password netlink_id email last_name user_type phone').exec(function  (err, user) {
+    }).select('name username password netlink_id email last_name user_type phone lockout').exec(function  (err, user) {
 
       if (err) throw err;
 
@@ -50,8 +50,6 @@ module.exports = function(app, express) {
 
           // if user is found and password is right
           // create a token
-          // console.log(" NETLINK ID IN AUTHENTICATE", user.netlink_id)
-
           var token = jwt.sign({
             name: user.name,
             username: user.username,
@@ -130,6 +128,7 @@ module.exports = function(app, express) {
       user.lockout = req.body.lockout;
 
       console.log("details: ", req.body.username, req.body.password, req.body.netlink )
+
 			user.save(function(err) {
 				if (err) {
 					// duplicate entry
@@ -207,8 +206,94 @@ module.exports = function(app, express) {
       });
     });
 
+
+//############################ Routes with http://localhost:8080/api/users/lockout
+ // update the user's lockout status
+ //(accessed at PUT http://localhost:8080/api/users/lockout)
+ apiRouter.route('/users/lockout/:netlink_id')
+    .put(function(req, res) {
+
+      User.findOne({ netlink_id: req.params.netlink_id}, function (err, user){
+        if (err) res.send(err)
+
+           console.log("Passed in data is", req.body)
+        if (req.body.lockout) user.lockout = req.body.lockout
+
+        user.save(function(err) {
+          if (err) res.send(err)
+
+          var token = jwt.sign({
+            name: user.name,
+            username: user.username,
+            netlinkId: user.netlink_id,
+            email: user.email,
+            last_name: user.last_name,
+            user_type: user.user_type,
+            phone: user.phone,
+            lockout: user.lockout
+          }, superSecret, {
+              expiresInMinutes: 1440 // expires in 24 hours TODO: Change the token expiry timing
+          });
+          
+          // return the information including token as JSON
+          res.json({
+            success: true,
+            message: 'Enjoy your token!',
+            token: token
+          });
+
+          console.log(jwt.decode(token))
+        })
+      })
+    })
+
+//##################### Finding by netlink_id ############
+ apiRouter.route('/users/update/:netlink_id')
+    .put(function(req, res) {
+
+      User.findOne({ netlink_id: req.params.netlink_id}, function (err, user){
+        if (err) res.send(err)
+
+           console.log("Passed in data is", req.body)
+        if (req.body.email) user.email = req.body.email
+        if (req.body.phone) user.phone = req.body.phone
+
+        // user.visits.$inc();
+        // user.save()
+
+        user.save(function(err) {
+          if (err) res.send(err)
+
+          var token = jwt.sign({
+            name: user.name,
+            username: user.username,
+            netlinkId: user.netlink_id,
+            email: user.email,
+            last_name: user.last_name,
+            user_type: user.user_type,
+            phone: user.phone,
+            lockout: user.lockout
+          }, superSecret, {
+              expiresInMinutes: 1440 // expires in 24 hours TODO: Change the token expiry timing
+          });
+          
+          // return the information including token as JSON
+          res.json({
+            success: true,
+            message: 'Enjoy your token!',
+            token: token
+          });
+
+          console.log(jwt.decode(token))
+        })
+
+      })
+
+    })
+
+
+
 //############################ Routes with http://localhost:8080/api/bookings/*
-//added by JJ 
 // on routes that end in /bookings/day
 // returns all the boookings in a specific day
 // ----------------------------------------------------
@@ -230,7 +315,6 @@ module.exports = function(app, express) {
 
 // on routes that end in /bookings/create
 // creates a new booking
-
   apiRouter.route('/bookings/create')
 		
 		// create a user (accessed at POST http://localhost:8080/api/bookings/create)
@@ -265,14 +349,14 @@ module.exports = function(app, express) {
 		});
 
 /*
-############################ Routes with http://localhost:8080/api/bookings/netlink_id
+############################ Routes with http://localhost:8080/api/bookings/:netlink_id
 on routes that end in /bookings/user
 returns all the boookings for a user
 */
 
 	apiRouter.route('/bookings/:netlink_id')
 
-		//(accessed at GET http://localhost:8080/api/bookings/netlink_id)
+		//(accessed at GET http://localhost:8080/api/bookings/:netlink_id)
 		.get(function(req, res) {
 
 			Booking.find({"netlink_id":req.params.netlink_id}, function(err, bookings) {
@@ -300,7 +384,7 @@ returns all the boookings for a user
 
 
 // on routes that end in /bookings/day
-// returns all the boookings in a specific day
+// returns all the existing boookings 
 // ----------------------------------------------------
   apiRouter.route('/allbookings')
     
@@ -330,24 +414,6 @@ returns all the boookings for a user
       res.send(req.decoded);
 	});
 
-//##################### Finding by netlink_id ############
- apiRouter.route('/profile/:netlink_id')
-    .put(function(req, res) {
 
-      User.findOne({ netlink_id: req.params.netlink_id}, function (err, user){
-        if (err) res.send(err)
-
-        if (req.body.email) user.email = req.body.email
-        if (req.body.phone) user.phone = req.body.phone
-
-        user.save(function(err) {
-          if (err) res.send(err)
-
-          res.json({ message: 'User updated!' })
-        })
-
-      })
-
-    })
 	return apiRouter;
 };

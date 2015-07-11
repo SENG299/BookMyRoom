@@ -11,7 +11,8 @@ angular.module('userApp', [
     'scheduleService',
     'userService',
     'loginCtrl',
-    'profileCtrl'
+    'profileCtrl',
+    'ui.bootstrap'
 
 ])
 

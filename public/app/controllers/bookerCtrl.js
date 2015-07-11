@@ -1,6 +1,6 @@
-angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
+angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'userService', 'authService'])
 
-.controller('bookingCreatorController', function($rootScope, $location, Booking, $cookies, Schedule) {
+.controller('bookingCreatorController', function($rootScope, $location, Booking, $cookies, Schedule, User, Auth) {
 
     var vm = this;
 
@@ -8,24 +8,30 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
     
     //this object is populated with the information that will belong to the new booking
 	
+	vm.userData = "";
+	vm.loggedIn = Auth.isLoggedIn();
+	if(vm.loggedIn){
+		Auth.getUser()
+			.success(function(data){
+				vm.userData = data;			
+			});
+	}
 
 	vm.createBooking = function()
 	{
+		
+		//these values are from the cookies
+		vm.chosenDate = new Date($cookies.getObject('chosenDate'));
+		vm.selectedStartTime = $cookies.getObject('chosenStartTime');
+		vm.selectedDuration = $cookies.getObject('duration').duration; 
+		vm.addProjector = $cookies.getObject('equipment').projector;
+		vm.addLaptop = $cookies.getObject('equipment').laptop;
 
-
-        console.log("in create booking")
-
-        //these values are from the cookies
-        vm.chosenDate = new Date($cookies.getObject('chosenDate'));
-	    vm.selectedStartTime = $cookies.getObject('chosenStartTime');
-	    vm.selectedDuration = $cookies.getObject('duration').duration; 
-        vm.addProjector = $cookies.getObject('equipment').projector;
-	    vm.addLaptop = $cookies.getObject('equipment').laptop;
-		console.log(vm.selectedDuration);
-
+		//the selectedDuration is divided by 2 because we are using integer values for each half hour increment.
+		// 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
 		vm.calculateEndTime = function(){
-			var decimalPart = Number((vm.selectedDuration % 1).toFixed(1));
-			var integerPart = Math.floor(vm.selectedDuration);
+			var decimalPart = Number(((vm.selectedDuration/2) % 1).toFixed(1));
+			var integerPart = Math.floor((vm.selectedDuration/2));
 			var totalHours = Number(integerPart) + Number(vm.selectedStartTime.hour);
 			var totalMinutes = vm.selectedStartTime.minutes;
 
@@ -40,14 +46,13 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 		};
 
 		vm.finalEndTime = vm.calculateEndTime();
-        vm.bookingData = {};
+			vm.bookingData = {};
 
 		//these flags disable the checkboxes for adding laptops/projectors
 		vm.disableAddProjector = false;
 		vm.disableAddLaptop = false;
 
 		//console.log(vm.selectedStartTime, vm.selectedDuration, vm.finalEndTime, vm.chosenDate);
-
 		Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth(), vm.chosenDate.getDate())
 		.success(function(data)
 		{	
@@ -76,29 +81,25 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 
 
 			var roomId = Schedule.findRoom(rooms, startSlot, endSlot);
-                
-            var projectorId;
+				
+				var projectorId;
 			var laptopId;
-    
-            if(vm.addLaptop){
-			    laptopId = Schedule.findLaptop(laptops, startSlot, endSlot);
-            }else{
+	
+			if(vm.addLaptop){
+					laptopId = Schedule.findLaptop(laptops, startSlot, endSlot);
+			}else{
 
-                laptopId = -1;
-            }
+				laptopId = -1;
+			}
 			
-            if(vm.addProjector){
-                projectorId = Schedule.findProjector(projectors, startSlot, endSlot);
-            }else{
-                projectorId = -1;
-        
-            }
+			if(vm.addProjector){
+				projectorId = Schedule.findProjector(projectors, startSlot, endSlot);
+			}else{
+				projectorId = -1;
+			}
 			
-		    
-
-            
 			//data to create new booking (hard coded for debugging)	
-			vm.bookingData.netlink_id = "bunny"; 
+			vm.bookingData.netlink_id = vm.userData.netlinkId; 
 			vm.bookingData.room_id = roomId; 
 			vm.bookingData.projector_id = projectorId;
 			vm.bookingData.laptop_id = laptopId;
@@ -112,73 +113,139 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 			
 			
 
-            
-			vm.bookingData.booking_id = vm.bookingData.start_year + ":" +
-						    vm.bookingData.start_month + ":" +
-						    vm.bookingData.start_day + ":" +
-						    vm.bookingData.start_hour + ":" +
-						    vm.bookingData.start_minute + ":" + 
-						    vm.bookingData.end_hour + ":" +
-						    vm.bookingData.end_minute + ":" +
-						    vm.bookingData.room_id; 
-            
-            		
 			
-			//the create booking service is called, vm.bookingData will populate the new booking in the db
+			vm.bookingData.booking_id = vm.bookingData.start_year + ":" +
+							vm.bookingData.start_month + ":" +
+							vm.bookingData.start_day + ":" +
+							vm.bookingData.start_hour + ":" +
+							vm.bookingData.start_minute + ":" + 
+							vm.bookingData.end_hour + ":" +
+							vm.bookingData.end_minute + ":" +
+							vm.bookingData.room_id; 
+			
+					
+			
+		//the create booking service is called, vm.bookingData will populate the new booking in the db
 
-            $rootScope.modalinfo = vm.bookingData;
-            
-                console.log("data to create booking" );
-                console.log($rootScope.modalinfo);
+				$rootScope.modalinfo = vm.bookingData;
+				if ($rootScope.modalinfo.projector_id === -1){
+					$rootScope.modalinfo.projector_id = "No";
+				}else{
+					$rootScope.modalinfo.projector_id = "Yes";
+				}
+				if ($rootScope.modalinfo.laptop_id === -1){
+					$rootScope.modalinfo.laptop_id = "No";
+				}else{
+					$rootScope.modalinfo.laptop_id = "Yes";
+				}
+			
+				console.log("data to create booking" );
+				console.log($rootScope.modalinfo);
 
-				
 			Booking.create(vm.bookingData)
 				.success(function(data) {
 					vm.processing = false; 
 			});
-            
-
-		})
-		.error(function(data){
-			console.log(data);
-		});
-	};
+			
+			
+			})
+			.error(function(data){
+				console.log("Error when creating booking!");
+				console.log(data);
+			});	
+		};
 
     vm.clearBookingData = function () {
         //clear the form
-		vm.bookingData = {};
+	vm.bookingData = {};
         
     };
-    
-    
+      
     vm.deleteBooking = function() {
 
-        console.log("want to delete");
         vm.selectedBooking = $cookies.getObject('selectedBooking');
-        console.log(vm.selectedBooking);
 
         //get booking id
         vm.bookingId = vm.selectedBooking.data._id;
-     
+	
+	var now = new Date();
+	var nowYear = now.getFullYear();
+	var nowMonth = now.getMonth();
+	var nowDay = now.getDate();
+	var nowHour = now.getHours();
+	var nowMinute = now.getMinutes();
+
+	var bookingDate = new Date(vm.selectedBooking.startTime);
+	var bookingYear = bookingDate.getFullYear();
+	var bookingMonth = bookingDate.getMonth();
+	var bookingDay = bookingDate.getDate();
+	var bookingHour = bookingDate.getHours();
+	var bookingMinute = bookingDate.getMinutes();
+
+	//lockout code
+	//if booking is cancelled less than 5 hours before booking, lock user
+	console.log(vm.selectedBooking);
+	console.log("current time " + nowYear+" "+nowMonth+" "+nowDay+" "+nowHour);
+	console.log("booking time " + bookingYear+" "+bookingMonth+" "+bookingDay+" "+bookingHour);
+	//if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === nowDay && (nowHour - 5) <= bookingHour){
+	if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === nowDay && (nowHour - 5) <= bookingHour){
+
+		//if true, the user will be locked out
+		//calculation of the user's lockout
+		nowDay++; //user is locked out until next day at same time
+		var lockoutDate = {lockout: nowYear+"-"+nowMonth+"-"+nowDay+"-"+nowHour};
+		console.log(lockoutDate);
+
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE 
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE 
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE 
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
+/*
+		//using a service, the user is changed in the db
+		User.lockout(vm.userData.netlinkId, lockoutDate)
+			.success(function() {	 
+				console.log("User was locked out.");
+			})
+			.error(function(data, status, headers, config) {	 
+				console.log("got an error...");
+				console.log(data);
+				console.log(status);		
+				console.log(headers);
+				console.log(config);
+			});
+*/
+//TODO: please remind me to uncomment it before handing it in
+//TODO: please remind me to uncomment it before handing it in
+//TODO: please remind me to uncomment it before handing it in
+//TODO: please remind me to uncomment it before handing it in
+//TODO: please remind me to uncomment it before handing it in
+	}
+
         //make a DELETE http request to backend /api/deletebooking through service
         Booking.delete(vm.bookingId)
-				.success(function() {	 
-					
-					console.log("did it delete?");
-                  
-            
-			    });
+		.success(function() {	 
+			console.log("Booking was deleted.");
+		});
 
-        //in backend: find booking by the passed in object id
-        //delete booking once found. 
-        
+		//in backend: find booking by the passed in object id
+		//delete booking once found. 
 	};
-
 })
 
-.controller('daySelectorController', function($rootScope, $location, $cookies, Schedule) {
+.controller('daySelectorController', function($rootScope, $location, $cookies, Schedule, User, Auth) {
 
   var vm = this;
+
+	vm.loggedIn = Auth.isLoggedIn();
+	if(vm.loggedIn){
+		Auth.getUser()
+			.success(function(data){
+				vm.userData = data;			
+		});
+	}
+
 	vm.dates = [
 		date = new Date(),
 		date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
@@ -192,38 +259,98 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 	vm.today = new Date();
  
 	vm.updateSelectedValue = function(item){
+		
+		if(vm.loggedIn){
+			
+			console.log(vm.userData);
+			vm.lockoutString = vm.userData.lockout;
+			if(typeof vm.lockoutString === 'undefined'){
+				vm.lockoutString = '1999-9-9-9'; //random date from the past in case the user has no lockout in the db
+			}
+			vm.lockoutDate = vm.lockoutString.split("-");
+			vm.lockoutYear = Number(vm.lockoutDate[0]);
+			vm.lockoutMonth = Number(vm.lockoutDate[1]);
+			vm.lockoutDay = Number(vm.lockoutDate[2]);
+			vm.lockoutHour = Number(vm.lockoutDate[3]);
+			console.log("lockout "+vm.lockoutYear+" "+vm.lockoutMonth+" "+vm.lockoutDay+" "+vm.lockoutHour);
+			console.log(vm.today.getFullYear());
+			console.log(vm.today.getMonth());
+			console.log(vm.today.getDate());
+			console.log(vm.today.getHours());
 
-		vm.lockoutDate = "2015-1-6-8".split("-"); //TODO: this lockout date should be grabbed from the user's lockout date in the db or the "session"
-		vm.lockoutYear = Number(vm.lockoutDate[0]);
-		vm.lockoutMonth = Number(vm.lockoutDate[1]);
-		vm.lockoutDay = Number(vm.lockoutDate[2]);
-		vm.lockoutHour = Number(vm.lockoutDate[3]);
-
-		if(vm.today.getFullYear() >= vm.lockoutYear && (vm.today.getMonth()) >= vm.lockoutMonth && vm.today.getDate() > vm.lockoutDay && vm.today.getHours() > vm.lockoutHour){
-			$cookies.putObject('chosenDate', item);
-			vm.go('/schedule');
+			if(vm.today.getFullYear() > vm.lockoutYear){
+				vm.nextView(item);
+			}else{
+				if(vm.today.getMonth() > vm.lockoutMonth){
+					vm.nextView(item);		
+				}else{
+					if(vm.today.getDate() > vm.lockoutDay){
+						vm.nextView(item);	
+					}else if(vm.today.getDate() == vm.lockoutDay){
+						if(vm.today.getHours() >= vm.lockoutHour){
+							vm.nextView(item);	
+						}else{
+							vm.alert();
+						}					
+					}else{
+						vm.alert();
+					}
+				}						
+			}		
 		}else{
-			alert('Sorry. You cannot book until after '+vm.lockoutYear+ "-" +vm.lockoutMonth+ "-"+vm.lockoutDay+' because you cancelled a booking within 5 hours of its start time. Thanks!' );
+			vm.go('/schedule');
 		}	
 	};
 
 	vm.go = function ( path ) {
   		$location.path( path );
+	};
+
+	vm.nextView = function(item){
+		$cookies.putObject('chosenDate', item);
+		vm.go('/schedule');
 	};	
+
+	vm.alert = function(){
+		alert("Sorry. You cannot book until after "+vm.lockoutYear+ "-" +(vm.lockoutMonth+1)+ "-"+vm.lockoutDay+" because you cancelled a booking within 5 hours of it's start time. Thanks!" );
+	};
 })
 
-.controller('scheduleController', function($rootScope, $location, $cookies, Booking, Schedule) {
+.controller('scheduleController', function($rootScope, $location, $cookies, Booking, Schedule, Auth) {
 
-       var vm = this;
-
+		var vm = this;
+		
+		
+		vm.userData = "";
+		vm.loggedIn = Auth.isLoggedIn();
+		if(vm.loggedIn){
+			Auth.getUser()
+			.success(function(data){
+				vm.userData = data;			
+			});
+		}
         //valid durations have to be calculated TODO: hard coded for debugging (remove when done)
         // 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
-        vm.validDurations =
-	[
-	     {duration: 0.5},
-	     {duration: 1.0},
-	     {duration: 1.5}
-	];
+        if (vm.userData.user_type === 3){
+			vm.validDurations =
+			[
+			 {duration: 1},
+			 {duration: 2},
+			];	
+		}else{
+			vm.validDurations =
+			[
+			 {duration: 1},
+			 {duration: 2},
+			 {duration: 3},
+			 {duration: 4},
+			 {duration: 5},
+			 {duration: 6}
+			];
+			
+		}
+		
+		
 
     vm.equipment = {
         projector:false,
@@ -278,7 +405,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 			var rooms = objectArrays.rooms;
 			var projectors = objectArrays.projectors;
 			var laptops = objectArrays.laptops;
-
+			console.log("booking duration is:", vm.bookingDuration)
 			roomSchedule = Schedule.buildSchedule(rooms, 1);
 			projectorSchedule = Schedule.buildSchedule(projectors, 1);
 			laptopSchedule = Schedule.buildSchedule(laptops, 1);

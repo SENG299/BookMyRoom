@@ -1,6 +1,6 @@
 angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
 
-  .controller('profileController', function($rootScope, $location, Auth, Booking, $cookies) {
+  .controller('profileController', function($rootScope, $location, Auth, Booking, $cookies, User, AuthToken) {
     var vm = this
 
 
@@ -25,6 +25,9 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
         vm.netlink_id = data.netlinkId
         vm.name = data.name
 
+        vm.new_email =  vm.email
+        vm.new_phone =  vm.phone
+
         console.log("in prfile controller", data)
 
         switch (data.user_type) {
@@ -41,20 +44,38 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
             break
         }
 
-        Booking.getUserBookings("bunny").success(function (bookingData) {
-          vm.userBookingData = bookingData
 
-          vm.totalBookings = Object.keys(bookingData).length
+        if (vm.userType === "Admin") {
+          Booking.getAllBookings()
+            .success(function (bookingData) {
+              vm.totalBookings = Object.keys(bookingData).length
+              vm.userBookingData = bookingData
+              vm.calulateBookings()
+          })
+        } else {
+            Booking.getUserBookings(vm.netlink_id)
+              .success(function (bookingData) {
+                vm.totalBookings = Object.keys(bookingData).length
+                vm.userBookingData = bookingData
+                vm.calulateBookings()
+            })
+        }
 
+        vm.calulateBookings = function() {
           var i;
           for ( i = 0; i< vm.totalBookings; i++) {
-            vm.startTime = new Date(vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].start_hour, vm.userBookingData[i].start_minute)
-            vm.endTime = new Date (vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].end_hour, vm.userBookingData[i].end_minute )
-            vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i]})
+            if (vm.nowYear <= vm.userBookingData[i].start_year &&
+              vm.nowMonth <= (vm.userBookingData[i].start_month) &&
+              vm.nowDay <= vm.userBookingData[i].start_day) {
+
+              vm.startTime = new Date(vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].start_hour, vm.userBookingData[i].start_minute)
+              vm.endTime = new Date (vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].end_hour, vm.userBookingData[i].end_minute )
+              vm.hasLaptop = (Number(vm.userBookingData[i].laptop_id) === -1)? "No" : "Yes"
+              vm.hasProjector = (Number(vm.userBookingData[i].projector_id) === -1)? "No" : "Yes"
+              vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i], hasLaptop:vm.hasLaptop, hasProjector: vm.hasProjector})
+            }
           }
-        })
-      
-        // console.log(vm.userFutureBookings)
+        }
       })
         
     } else {
@@ -65,5 +86,17 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
       $cookies.putObject('selectedBooking', booking)
       console.log(booking);
       $location.path("/booker")
+    }
+
+    vm.updateUserInfo = function() {
+
+      if(vm.new_email != vm.email || vm.new_phone != vm.phone) {
+        User.updateInfo(vm.netlink_id, vm.new_email, vm.new_phone)
+          .success(function(data) {
+            AuthToken.setToken(data.token)
+            location.reload()
+          })
+
+      }
     }
   })
