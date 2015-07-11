@@ -1,48 +1,48 @@
 <div class="container fill" >
 
-  <div class="col-xs-1 col-md-3 "></div>
-  <div class="col-xs-10 col-md-6" id="centre">
+	<div class="col-xs-1 col-md-3 "></div>
+	<div class="col-xs-10 col-md-6" id="centre">
             
-    <!-- buttons -->
-    <form ng-submit="profile.updateUserInfo() "id= "profileform" role="form" class="form-horizontal"> 
-      <div class="form-group has-feedback">
-     
-        <div class=" col-xs-12">
-          <p class="form-control-static" style="padding-left: 13px; text-align: left; text-transform: capitalize">{{ profile.name}} {{profile.last_name}} [{{ profile.userType}}] </p>
-            <i class="form-control-feedback glyphicon glyphicon-user"></i>
-        </div>
+  	<!-- buttons -->
+		<form ng-submit="profile.updateUserInfo() "id= "profileform" role="form" class="form-horizontal"> 
+		  <div class="form-group has-feedback">
+		 
+		    <div class=" col-xs-12">
+		    	<p class="form-control-static" style="padding-left: 13px; text-align: left; text-transform: capitalize">{{ profile.name}} {{profile.last_name}} [{{ profile.userType}}] </p>
+		      	<i class="form-control-feedback glyphicon glyphicon-user"></i>
+		    </div>
 
-        <div class=" col-xs-12">
-          <p class="form-control-static" style="padding-left: 13px; text-align: left; text-transform: capitalize">{{ profile.netlink_id}}</p>
-            <i class="form-control-feedback fa fa-smile-o" style="padding-top: 10px;"></i>
-        </div>
-  
-        <div class=" col-xs-12">
-          <input type="text" class="form-control" ng-model="profile.new_email" placeholder= "{{ profile.email }}  [Click to change preferred email]" />
-            <i class="form-control-feedback glyphicon glyphicon-envelope"></i>
-        </div>
+		    <div class=" col-xs-12">
+		    	<p class="form-control-static" style="padding-left: 13px; text-align: left; text-transform: capitalize">{{ profile.netlink_id}}</p>
+		      	<i class="form-control-feedback fa fa-smile-o" style="padding-top: 10px;"></i>
+		    </div>
+	
+		    <div class=" col-xs-12">
+		      <input type="text" class="form-control" ng-model="profile.new_email" placeholder= "{{ profile.email }}  [Click to change preferred email]" />
+		      	<i class="form-control-feedback glyphicon glyphicon-envelope"></i>
+		    </div>
 
-        <div class=" col-xs-12">
-          <input type="text" class="form-control" ng-model="profile.new_phone" placeholder=" {{ profile.phone }} [Click to change preferred phone]" />
-            <i class="form-control-feedback glyphicon glyphicon-earphone"></i>
-        </div>
+		    <div class=" col-xs-12">
+		      <input type="text" class="form-control" ng-model="profile.new_phone" placeholder=" {{ profile.phone }} [Click to change preferred phone]" />
+		      	<i class="form-control-feedback glyphicon glyphicon-earphone"></i>
+		    </div>
 
-        <div class="col-xs-12" style=" margin-top:5px;">
-          <button type="submit"class="btn btn-info">Save Changes</button>
-        </div>
-        
-       
-      </div>
-    </form>
+		    <div class="col-xs-12" style=" margin-top:5px;">
+		      <button type="submit"class="btn btn-info">Save Changes</button>
+		    </div>
+	 	    
+		   
+			</div>
+		</form>
 
 
-    <div class="row show-hide-message" ng-if = "user.message">
-      <div class="col-sm-6 col-sm-offset-2">
-        <div class="alert alert-info">
-          {{ user.message }}
-        </div>
-      </div>
-    </div>
+		<div class="row show-hide-message" ng-if = "user.message">
+			<div class="col-sm-6 col-sm-offset-2">
+				<div class="alert alert-info">
+					{{ user.message }}
+				</div>
+			</div>
+		</div>
 
 
     <label class="checkbox" align="left" style="padding-left: 20px;">
@@ -52,23 +52,23 @@
 
     <accordion close-others="oneAtATime" >
 
-      <div id= "userbookinglist" class="panel panel-primary scroll">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-              My Bookings
-          </h4>
-        </div>
-      </div>
+  		<div id= "userbookinglist" class="panel panel-primary scroll">
+  	 		<div class="panel-heading">
+  	      <h4 class="panel-title">
+  	          My Bookings
+  	      </h4>
+  			</div>
+  		</div>
 
       <accordion-group heading="Booking on {{ userFutureBooking.startTime | date : 'd MMM, yyyy'}}" ng-repeat="userFutureBooking in profile.userFutureBookings">
         <div class="panel-body" style="padding:0px;">
-          <!-- <div class="col-xs-4 "></div> -->
-          <!-- <div class="col-xs-4 " style="text-align:left; font-size: 16px;" > -->
-            <!-- <br>Date: {{userFutureBooking.startTime | date : 'd MMM, yyyy'}}
-            <br>From: {{userFutureBooking.startTime | date : 'h:mm a'}}
-            <br>To: {{userFutureBooking.endTime | date : 'h:mm a'}}
-            <br>Laptop:  {{ userFutureBooking.hasLaptop}}
-            <br>Projector: {{ userFutureBooking.hasProjector}} -->
+  				<!-- <div class="col-xs-4 "></div> -->
+  				<!-- <div class="col-xs-4 " style="text-align:left; font-size: 16px;" > -->
+  	        <!-- <br>Date: {{userFutureBooking.startTime | date : 'd MMM, yyyy'}}
+  	        <br>From: {{userFutureBooking.startTime | date : 'h:mm a'}}
+  	        <br>To: {{userFutureBooking.endTime | date : 'h:mm a'}}
+  	        <br>Laptop:  {{ userFutureBooking.hasLaptop}}
+  	        <br>Projector: {{ userFutureBooking.hasProjector}} -->
             <table class="table table-striped" style="margin-bottom: 0px;" showHeader="false">
               <tbody align="left">
                 <tr>
@@ -99,8 +99,8 @@
             </table>
             <button class="editbutton btn btn-info" ng-click="profile.setSelected(userFutureBooking);"><i class="fa fa-pencil"></i></button>
         </div>
-           <!-- <div class="col-xs-4 "></div> -->
-          <!-- </div> -->
+  	       <!-- <div class="col-xs-4 "></div> -->
+  	      <!-- </div> -->
       </accordion-group>
       
     </accordion>
