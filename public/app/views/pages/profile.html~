@@ -78,7 +78,7 @@
 
 
                   
-with Laptop # {{userFutureBooking.data.laptop_id }} and Projector # {{userFutureBooking.data.projector_id }}
+with Laptop # {{userFutureBooking.laptop_id }} and Projector # {{userFutureBooking.projector_id }}
 			    
 							<button class="editbutton btn btn-info" ng-click="profile.setSelected(userFutureBooking);"><i class="fa fa-pencil"></i></button>
 			      </div>

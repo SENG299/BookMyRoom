@@ -231,7 +231,8 @@ module.exports = function(app, express) {
 			booking.netlink_id = req.body.netlink_id; //sets netlink id in the booking model from the request
 			booking.room_id = req.body.room_id;  //sets room id in the booking model from the request
 			booking.projector_id = req.body.projector_id;
-             //sets projector id in the booking model from the request
+            console.log("proj:")
+            console.log(booking.projector_id)  //sets projector id in the booking model from the request
 			booking.laptop_id = req.body.laptop_id;  //sets laptop id in the booking model from the request
 			booking.start_year = req.body.start_year; //sets start_year in the booking model from the request
 			booking.start_month = req.body.start_month;

@@ -23,6 +23,9 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
 
         Booking.getUserBookings("bunny").success(function (bookingData) {
           vm.userBookingData = bookingData
+
+            
+            
     
             console.log("booking data for bunny " + bookingData);
           
@@ -39,6 +42,7 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
 
               
               vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i]})
+            console.log(vm.userBookingData[i]);
               
             
           }
