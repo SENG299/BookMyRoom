@@ -28,7 +28,7 @@ angular.module('loginCtrl', ['authService'])
         vm.processing = false;
 
         if (data.success)
-            $location.path('/users');
+            $location.path('/');
         else
             vm.error = data.message;
 

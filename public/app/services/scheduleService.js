@@ -4,15 +4,41 @@ angular.module('scheduleService', [])
 
 	var scheduleFactory = {};
 
-	scheduleFactory.calculateSlot = function(hour, minute, startHour){
-		return ((hour - startHour) * 2) + Math.floor(minute / 30);	
+	scheduleFactory.numRooms = 3;
+	scheduleFactory.numProjectors = 3;
+	scheduleFactory.numLaptops = 3;
+
+	scheduleFactory.numSlots = 28;
+	scheduleFactory.startHour = 8; 
+
+
+	scheduleFactory.setDay = function(day)
+	{
+		if(day == 6 || day == 0)
+		{
+			scheduleFactory.numSlots = 14;
+			scheduleFactory.startHour = 11;
+		}
+		else
+		{
+			scheduleFactory.numSlots = 28;
+			scheduleFactory.startHour = 8;	
+		} 
 	};
 
-	scheduleFactory.buildObjectArrays = function(numSlots, startHour, bookings)
+	scheduleFactory.calculateSlot = function(hour, minute)
 	{
-		var numRooms = 3;
-		var numProjectors = 3;
-		var numLaptops = 3;
+		return ((hour - scheduleFactory.startHour) * 2) + Math.floor(minute / 30);	
+	};
+
+	scheduleFactory.buildObjectArrays = function(bookings)
+	{
+		var startHour = scheduleFactory.startHour;
+		var numSlots = scheduleFactory.numSlots;
+			
+		var numRooms = scheduleFactory.numRooms;
+		var numProjectors = scheduleFactory.numRooms;
+		var numLaptops = scheduleFactory.numLaptops;
 
 		var rooms = new Array(numRooms);
 		var projectors = new Array(numProjectors);
@@ -30,7 +56,6 @@ angular.module('scheduleService', [])
 
 		for(var i = 0; i < bookings.length; i++)	
 		{				
-			//console.log(bookings[i].start_day);	
 			var roomId = bookings[i].room_id;
 			var projectorId = bookings[i].projector_id;
 			var laptopId = bookings[i].laptop_id;

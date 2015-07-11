@@ -23,16 +23,26 @@ angular.module('userService', [])
 		return $http.post('/api/users', userData)	
 	};
 
-	// update a user
+	// update a user (By direct API calls)
 	userFactory.update = function(id, userData) {
 		return $http.put('/api/users/' + id, userData);
+	};
+
+	// update a user (From profile)
+	userFactory.updateInfo = function(netlink_id, newEmail, newPhone) {
+		var newInfo = { email: newEmail, phone: newPhone }
+		return $http.put('/api/users/update/' + netlink_id, newInfo);
 	};
 
 	// delete a user
 	userFactory.delete = function(id) {
 		return $http.delete('/api/users/' + id);
 	};
+
+	//locks a user out
+	userFactory.lockout = function(netlink_id, lockout) {
+		return $http.put('/api/users/lockout/'+ netlink_id, lockout);
+	};
 	
 	return userFactory;
-
 });
