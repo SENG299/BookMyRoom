@@ -28,8 +28,6 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
         vm.new_email =  vm.email
         vm.new_phone =  vm.phone
 
-        console.log("in prfile controller", data)
-
         switch (data.user_type) {
           case 0: vm.userType = "Admin"
             break
@@ -43,7 +41,6 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
           case 3: vm.userType = "Student"
             break
         }
-
 
         if (vm.userType === "Admin") {
           Booking.getAllBookings()
@@ -72,14 +69,15 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
               vm.endTime = new Date (vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].end_hour, vm.userBookingData[i].end_minute )
               vm.hasLaptop = (Number(vm.userBookingData[i].laptop_id) === -1)? "No" : "Yes"
               vm.hasProjector = (Number(vm.userBookingData[i].projector_id) === -1)? "No" : "Yes"
-              vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i], hasLaptop:vm.hasLaptop, hasProjector: vm.hasProjector})
+              vm.roomId = vm.userBookingData[i].room_id
+              vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i], hasLaptop:vm.hasLaptop, hasProjector: vm.hasProjector, roomId: vm.roomId})
             }
           }
         }
       })
-        
     } else {
-      console.log("User is not logged in! ")
+      alert("Please log in!")
+      $location.path( "/login" )
     }
     
     vm.setSelected = function (booking) {
@@ -96,7 +94,6 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
             AuthToken.setToken(data.token)
             location.reload()
           })
-
       }
     }
   })
