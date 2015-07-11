@@ -16,10 +16,10 @@
 
 				<div class="btn-group">
                   <label class="btn btn-info">
-                    <input type="checkbox" ng-model="schedule.equipment.laptop"><i class='fa fa-laptop'></i>
+                    <input type="checkbox" ng-model="schedule.equipment.laptop" ng-change="schedule.createTimeSlots()"><i class='fa fa-laptop'></i>
                   </label>
                   <label class="btn btn-info">
-                    <input type="checkbox" ng-model="schedule.equipment.projector"><i class='fa fa-video-camera fg-lg'></i>         
+                    <input type="checkbox" ng-model="schedule.equipment.projector" ng-change="schedule.createTimeSlots()"><i class='fa fa-video-camera fg-lg'></i>         
                 </label>
                 </div>
 			</div>
@@ -37,7 +37,7 @@
 				<ul>
 					<div ng-repeat="item in schedule.timeSlots">
 						<li class="buttonlist">
-							<button id="{{item['$$hashKey']}}" class="btn btn-large btn-block btn-info" ng-disabled="item.unAvail" ng-click="schedule.selectedTimeSlot = item; schedule.buttonToggle(item)"> {{(item.hour > 12) && (item.hour - 12) || (item.hour)}}:{{(item.minutes == 0) && ('00') || item.minutes}} {{(item.hour > 11) && ('PM') || ('AM')}}<span><i class="fa fa-video-camera" style="color:black; float:right;" ng-if="item.projector"></i>
+							<button id="{{item.index}}" class="btn btn-large btn-block btn-info" ng-disabled="item.room" ng-click="schedule.selectedTimeSlot = item; schedule.buttonToggle($index)"> {{(item.hour > 12) && (item.hour - 12) || (item.hour)}}:{{(item.minutes == 0) && ('00') || item.minutes}} {{(item.hour > 11) && ('PM') || ('AM')}}<span><i class="fa fa-video-camera" style="color:black; float:right;" ng-if="item.projector"></i>
 								<i class="fa fa-video-camera" style="color:grey; float:right;" ng-if="item.projector == false"></i>
 								<i class="fa fa-laptop" style="color:black; display:inline-block; float:right; margin-right:10px;" ng-if="item.laptop"></i>
 								<i class="fa fa-laptop" style="color:grey; display:inline-block;  float:right; margin-right:10px;" ng-if="item.laptop == false"></i></span>

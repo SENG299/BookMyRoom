@@ -353,22 +353,18 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
         	$cookies.putObject('equipment', vm.equipment);
 	};
 
-	vm.lastelement = "";
-
-	vm.buttonToggle = function (temp){
-		if (vm.lastelement != ""){
+	vm.lastelement = -1;
+	vm.buttonToggle = function (index){
+		if (vm.lastelement != -1){
 			document.getElementById(vm.lastelement).style.color = "white";
            	}
 
-            	document.getElementById(temp["$$hashKey"]).style.color = "black";
-            	vm.lastelement = temp["$$hashKey"];
+            	document.getElementById(index).style.color = "black";
+            	vm.lastelement = index;
+	
         }
 	
-	vm.test = function(){
-		console.log("test");
-	}
-
-	vm.createTimeSlots = function(day)
+	vm.createTimeSlots = function()
 	{
 		Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth(), vm.chosenDate.getDate())
 		.success(function(data)
@@ -377,8 +373,8 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			vm.processing = false;
 
 			vm.bookings = data;
-
-			Schedule.setDay(day);
+	
+			Schedule.setDay(vm.chosenDate.getDay());
 
 			// Initialize room array
 			var objectArrays = Schedule.buildObjectArrays(vm.bookings);
@@ -396,15 +392,28 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 				var hours = Schedule.startHour + Math.floor(i / 2);	
 				var mins = (i%2 == 0) ? 0 : 30;
 
-				var roomUnAvailable = (roomSchedule[i] == 0) ? false : true;			
+				var roomAvailable = (roomSchedule[i] == 0) ? true : false;			
 				var laptopAvailable = (laptopSchedule[i] == 0) ? true : false;			
 				var projectorAvailable = (projectorSchedule[i] == 0) ? true : false;			
 
-				vm.timeSlots.push({hour: hours,
+				if(vm.equipment.projector)
+				{
+					roomAvailable = roomAvailable && projectorAvailable;
+				}
+
+				if(vm.equipment.laptop)
+				{
+					roomAvailable = roomAvailable && laptopAvailable;
+				}
+
+				
+				
+				vm.timeSlots.push({index: i,
+						   hour: hours,
 						   minutes: mins,
 						   projector: projectorAvailable,
 						   laptop: laptopAvailable,
-						   unAvail: roomUnAvailable});
+						   room: !roomAvailable});
 			}
 			
 
