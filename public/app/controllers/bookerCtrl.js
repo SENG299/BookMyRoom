@@ -52,29 +52,18 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 		vm.disableAddProjector = false;
 		vm.disableAddLaptop = false;
 
-		//console.log(vm.selectedStartTime, vm.selectedDuration, vm.finalEndTime, vm.chosenDate);
 		Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth(), vm.chosenDate.getDate())
 		.success(function(data)
 		{	
-			console.log("Success");
 			vm.processing = true;
-			vm.message = '';
-		
-			var numSlots = 28;
-			var startHour = 8;
+			vm.message = '';	
+	
+			Schedule.setDay(vm.chosenDate.getDay());
+	
+			var startSlot = Schedule.calculateSlot(vm.selectedStartTime.hour, vm.selectedStartTime.minutes);
+			var endSlot = Schedule.calculateSlot(vm.finalEndTime.hour, vm.finalEndTime.minutes); 
 
-			//it's a weekend
-			var day = vm.chosenDate.getDay();
-			if(day > 5 || day == 0)
-			{
-				numSlots = 14;	
-				startHour = 11;
-			}	
-		
-			var startSlot = Schedule.calculateSlot(vm.selectedStartTime.hour, vm.selectedStartTime.minutes, startHour);
-			var endSlot = Schedule.calculateSlot(vm.finalEndTime.hour, vm.finalEndTime.minutes, startHour); 
-
-			var objectArrays = Schedule.buildObjectArrays(numSlots, startHour, data);
+			var objectArrays = Schedule.buildObjectArrays(data);
 			var rooms = objectArrays.rooms;
 			var projectors = objectArrays.projectors;
 			var laptops = objectArrays.laptops;
@@ -85,19 +74,18 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
            		var projectorId;
 			var laptopId;
     
-		    if(vm.addLaptop){
-				    laptopId = Schedule.findLaptop(laptops, startSlot, endSlot);
-		    }else{
+			if(vm.addLaptop){
+	    			laptopId = Schedule.findLaptop(laptops, startSlot, endSlot);
+			}else{
+				laptopId = -1;
+			}
 
-		        laptopId = -1;
-		    }
-			
-		    if(vm.addProjector){
-		        projectorId = Schedule.findProjector(projectors, startSlot, endSlot);
-		    }else{
-		        projectorId = -1;
-		    }
-			
+			if(vm.addProjector){
+				projectorId = Schedule.findProjector(projectors, startSlot, endSlot);
+			}else{
+				projectorId = -1;
+			}
+	
 			//data to create new booking (hard coded for debugging)	
 			vm.bookingData.netlink_id = vm.userData.netlinkId; 
 			vm.bookingData.room_id = roomId; 
@@ -186,11 +174,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 		console.log(lockoutDate);
 
 //TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
-//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE 
-//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE 
-//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE 
-//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
-//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
 /*
 		//using a service, the user is changed in the db
 		User.lockout(vm.userData.netlinkId, lockoutDate)
@@ -206,10 +189,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			});
 */
 //TODO: please remind me to uncomment it before handing it in
-//TODO: please remind me to uncomment it before handing it in
-//TODO: please remind me to uncomment it before handing it in
-//TODO: please remind me to uncomment it before handing it in
-//TODO: please remind me to uncomment it before handing it in
 	}
 
         //make a DELETE http request to backend /api/deletebooking through service
@@ -224,8 +203,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 })
 
 .controller('daySelectorController', function($rootScope, $location, $cookies, Schedule, User, Auth) {
-
-  var vm = this;
+	var vm = this;
 
 	vm.loggedIn = Auth.isLoggedIn();
 	if(vm.loggedIn){
@@ -307,26 +285,25 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 .controller('scheduleController', function($rootScope, $location, $cookies, Booking, Schedule) {
 
-       var vm = this;
+        var vm = this;
 
         //valid durations have to be calculated TODO: hard coded for debugging (remove when done)
         // 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
         vm.validDurations =
 	[
-	     {duration: 1},
-	     {duration: 2},
-	     {duration: 3}
+		{duration: 1},
+		{duration: 2},
+		{duration: 3}
 	];
 
-    vm.equipment = {
-        projector:false,
-        laptop:false    
-    };
+	vm.equipment = {
+		projector:false,
+		laptop:false   
+	};
 
 
-    vm.bookingDuration = vm.validDurations[0];
+	vm.bookingDuration = vm.validDurations[0];
 	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
-        vm.bookingDuration = vm.validDurations[0];
 	vm.timeSlots = [];
 	vm.selectedTimeSlot = "";
     
@@ -334,17 +311,18 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 	vm.setBookingInformation = function(){
 		$cookies.putObject('duration', vm.bookingDuration);
 		$cookies.putObject('chosenStartTime', vm.selectedTimeSlot);
-        $cookies.putObject('equipment', vm.equipment);
+        	$cookies.putObject('equipment', vm.equipment);
 	};
 
 	vm.lastelement = "";
 
-       vm.buttonToggle = function (temp){
-            if (vm.lastelement != ""){
-                document.getElementById(vm.lastelement).style.color = "white";
-            }
-            document.getElementById(temp["$$hashKey"]).style.color = "black";
-            vm.lastelement = temp["$$hashKey"];
+	vm.buttonToggle = function (temp){
+		if (vm.lastelement != ""){
+			document.getElementById(vm.lastelement).style.color = "white";
+           	}
+
+            	document.getElementById(temp["$$hashKey"]).style.color = "black";
+            	vm.lastelement = temp["$$hashKey"];
         }
 	
 	vm.createTimeSlots = function(day)
@@ -357,29 +335,21 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 			vm.bookings = data;
 
-			var numSlots = 28;
-			var startHour = 8;
-
-			//it's a weekend
-			if(day > 5 || day == 0)
-			{
-				numSlots = 14;	
-				startHour = 11;
-			}	
+			Schedule.setDay(day);
 
 			// Initialize room array
-			var objectArrays = Schedule.buildObjectArrays(numSlots, startHour, vm.bookings);
+			var objectArrays = Schedule.buildObjectArrays(vm.bookings);
 			var rooms = objectArrays.rooms;
 			var projectors = objectArrays.projectors;
 			var laptops = objectArrays.laptops;
+		
+			roomSchedule = Schedule.buildSchedule(rooms, vm.bookingDuration);
+			projectorSchedule = Schedule.buildSchedule(projectors, vm.bookingDuration);
+			laptopSchedule = Schedule.buildSchedule(laptops, vm.bookingDuration);
 
-			roomSchedule = Schedule.buildSchedule(rooms, 1);
-			projectorSchedule = Schedule.buildSchedule(projectors, 1);
-			laptopSchedule = Schedule.buildSchedule(laptops, 1);
-
-			for(var i = 0; i < numSlots; i++)
+			for(var i = 0; i < Schedule.numSlots; i++)
 			{
-				var hours = startHour + Math.floor(i / 2);	
+				var hours = Schedule.startHour + Math.floor(i / 2);	
 				var mins = (i%2 == 0) ? 0 : 30;
 
 				var roomAvailable = (roomSchedule[i] == 0) ? true : false;			
@@ -398,18 +368,11 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 	};
 
-    
-
 	vm.createTimeSlots(new Date(vm.chosenDate).getDay());
 	vm.selectedDuration = vm.validDurations[0];	
-
-
-
 /*
 	Monday thru Friday 8 am to 10pm and on Saturdays and Sundays 11 am to 6pm. 
 */
-
-
 });
 
 
