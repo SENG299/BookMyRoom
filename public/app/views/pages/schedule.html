@@ -6,10 +6,11 @@
 				<h3>{{schedule.chosenDate | date}}</h3> 
 	Duration:
 			<div id="sel1">
-			  <select class="form-control form-small" ng-model="schedule.bookingDuration" ng-options="item as item.duration for item in schedule.validDurations">
+			  <select class="form-control form-small" style="width:auto" ng-model="schedule.bookingDuration" ng-options="item as item.duration/2 for item in schedule.validDurations">
 					<option value="" ng-if="false"></option> 
 			  </select>
 			</div>
+			hours
 
 			<div id="equip">
 
@@ -61,13 +62,18 @@
     <div class="modal-dialog">
     
       <!-- Modal content-->
-      <div class="modal-content">
+      <div class="modal-content"> 
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Your Booking Info</h4>
+          <h4 class="modal-title">Your booking has been created.</h4>
         </div>
         <div class="modal-body">
-         {{ modalinfo }}
+		
+		{{schedule.chosenDate | date}} </br>
+		at </br>
+		
+		{{(modalinfo.start_hour > 12) && (modalinfo.start_hour - 12) || (modalinfo.start_hour)}}:{{(modalinfo.start_minute == 0) && ('00') || modalinfo.start_minute}} {{(modalinfo.start_hour > 11) && ('PM') || ('AM')}} to {{(modalinfo.end_hour > 12) && (modalinfo.end_hour - 12) || (modalinfo.end_hour)}}:{{(modalinfo.end_minute == 0) && ('00') || modalinfo.end_minute}} {{(modalinfo.end_hour > 11) && ('PM') || ('AM')}}</br>
+		Projector: {{ modalinfo.projector_id }} </br>
+		Laptop: {{ modalinfo.laptop_id }} </br>
         </div>
         <div class="modal-footer">
           <button onclick="window.location.href='/profile'" ng-click="" class="btn btn-default">OK</button>
@@ -91,7 +97,7 @@
 
        <div class=" navbar-right">
 
-   <button  class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" ng-click="schedule.setBookingInformation(); booker.createBooking()">Confirm</button>
+   <button  class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" ng-if="schedule.selectedTimeSlot" ng-click="schedule.setBookingInformation(); booker.createBooking()">Confirm</button>
 
      
       </div>

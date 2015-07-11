@@ -60,6 +60,12 @@ angular.module('app.routes', ['ngRoute'])
 		controllerAs: 'login'
 	})
 
+
+	.when("/error", {
+		templateUrl: 'app/views/pages/error.html',
+	})
+	
+
 	// Added to remove the # from URLs
 	$locationProvider.html5Mode(true);
 });
