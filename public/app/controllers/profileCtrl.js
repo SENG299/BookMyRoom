@@ -64,6 +64,8 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
     
     vm.setSelected = function (booking) {
 
+        console.log("setSelectBooking cookie");
+
         $cookies.putObject('selectedBooking', booking)
         console.log(booking);
 

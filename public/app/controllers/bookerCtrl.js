@@ -155,16 +155,17 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
     };
 
 
-    vm.newBookingData = $cookies.getObject('selectedBooking');
+   
     //vm.chosenDate = new Date($cookies.getObject('chosenDate'));
 
+
     //console.log(vm.newBookingData)
-    vm.proj = (vm.newBookingData.data.projector_id < 0 ? false : true);
-    vm.lap = (vm.newBookingData.data.laptop_id < 0 ? false : true);
+    
 
 
     vm.proj_changed = false;
     vm.lap_changed = false;
+        
 
     vm.editProjector = function(){
         vm.proj_changed = !vm.proj_changed;
@@ -178,10 +179,14 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 
 
 
+    vm.newBookingData = {};
+    vm.newBookingData = $cookies.getObject('selectedBooking');
+
     /// edit booking 
     vm.setNewBookingData = function () {
 
 
+        
         vm.bookingId = vm.newBookingData.data._id;
      
         //make a DELETE http request to backend /api/deletebooking through service
@@ -203,6 +208,10 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService'])
 
         //create new booking
     
+        vm.proj = (vm.newBookingData.data.projector_id < 0 ? false : true);
+        vm.lap = (vm.newBookingData.data.laptop_id < 0 ? false : true);
+
+
         //set new endtime for booking
         vm.newBookingData.data.end_hour = new Date(vm.extendSelected).getHours();
 	    vm.newBookingData.data.end_minute = new Date(vm.extendSelected).getMinutes();
