@@ -70,7 +70,9 @@ angular.module('profileCtrl', ['authService', 'bookingService', 'userService'])
 
               vm.startTime = new Date(vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].start_hour, vm.userBookingData[i].start_minute)
               vm.endTime = new Date (vm.userBookingData[i].start_year, vm.userBookingData[i].start_month, vm.userBookingData[i].start_day, vm.userBookingData[i].end_hour, vm.userBookingData[i].end_minute )
-              vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i]})
+              vm.hasLaptop = (Number(vm.userBookingData[i].laptop_id) === -1)? "No" : "Yes"
+              vm.hasProjector = (Number(vm.userBookingData[i].projector_id) === -1)? "No" : "Yes"
+              vm.userFutureBookings.push({startTime:vm.startTime, endTime:vm.endTime, data:vm.userBookingData[i], hasLaptop:vm.hasLaptop, hasProjector: vm.hasProjector})
             }
           }
         }

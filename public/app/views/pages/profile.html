@@ -4,7 +4,6 @@
 	<div class="col-xs-10 col-md-6" id="centre">
             
   	<!-- buttons -->
-		
 		<form ng-submit="profile.updateUserInfo() "id= "profileform" role="form" class="form-horizontal"> 
 		  <div class="form-group has-feedback">
 		 
@@ -19,19 +18,15 @@
 		    </div>
 	
 		    <div class=" col-xs-12">
-		      <input type="text" class="form-control" ng-model="profile.new_email"/>
+		      <input type="text" class="form-control" ng-model="profile.new_email" placeholder= "{{ profile.email }}  [Click to change preferred email]" />
 		      	<i class="form-control-feedback glyphicon glyphicon-envelope"></i>
 		    </div>
 
 		    <div class=" col-xs-12">
-		      <input type="text" class="form-control" ng-model="profile.new_phone"/>
+		      <input type="text" class="form-control" ng-model="profile.new_phone" placeholder=" {{ profile.phone }} [Click to change preferred phone]" />
 		      	<i class="form-control-feedback glyphicon glyphicon-earphone"></i>
 		    </div>
 
-		   <!--  <div class="col-xs-12" style=" margin-top:5px;">
-		      <button class="btn btn-info">Reset Changes</button>
-		    </div>
- -->
 		    <div class="col-xs-12" style=" margin-top:5px;">
 		      <button type="submit"class="btn btn-info">Save Changes</button>
 		    </div>
@@ -50,45 +45,66 @@
 		</div>
 
 
-		<div id= "userbookinglist" class="panel panel-primary scroll">
-		 <div class="panel-heading">
-		      <h4 class="panel-title">
-		          My Bookings
-		      </h4>
-		    </div>
+    <label class="checkbox" align="left" style="padding-left: 20px;">
+      <input type="checkbox" ng-model="oneAtATime">
+      Open only one booking at a time
+    </label>
 
-			<div class="panel-group" id="accordion">
-			  <div class="panel panel-default" ng-repeat="userFutureBooking in profile.userFutureBookings">
-			    <div class="panel-heading">
-			      <h4 class="panel-title">
-			        <a data-toggle="collapse" data-parent="#accordion" 
-			          href="#collapseOne">
-			          Booking {{ $index + 1}}
-			        </a>
-			      </h4>
-			    </div>
-			    <div id="collapseOne" class="panel-collapse collapse in">
-			      <div class="panel-body">
-                    {{userFutureBooking.startTime | date : 'd MMM, yyyy'}}  ---
+    <accordion close-others="oneAtATime" >
 
-			        {{userFutureBooking.startTime | date : 'HH:mm'}} to {{userFutureBooking.endTime | date : 'HH:mm'}}
+  		<div id= "userbookinglist" class="panel panel-primary scroll">
+  	 		<div class="panel-heading">
+  	      <h4 class="panel-title">
+  	          My Bookings
+  	      </h4>
+  			</div>
+  		</div>
 
+      <accordion-group heading="Booking on {{ userFutureBooking.startTime | date : 'd MMM, yyyy'}}" ng-repeat="userFutureBooking in profile.userFutureBookings">
+        <div class="panel-body" style="padding:0px;">
+  				<!-- <div class="col-xs-4 "></div> -->
+  				<!-- <div class="col-xs-4 " style="text-align:left; font-size: 16px;" > -->
+  	        <!-- <br>Date: {{userFutureBooking.startTime | date : 'd MMM, yyyy'}}
+  	        <br>From: {{userFutureBooking.startTime | date : 'h:mm a'}}
+  	        <br>To: {{userFutureBooking.endTime | date : 'h:mm a'}}
+  	        <br>Laptop:  {{ userFutureBooking.hasLaptop}}
+  	        <br>Projector: {{ userFutureBooking.hasProjector}} -->
+            <table class="table table-striped" style="margin-bottom: 0px;" showHeader="false">
+              <tbody align="left">
+                <tr>
+                  <td><strong>Date:</strong></td>
+                  <td>{{userFutureBooking.startTime | date : 'd MMM, yyyy'}}</td>
+                </tr>
+                <tr>
+                  <td><strong>From:</strong></td>
+                  <td>{{userFutureBooking.startTime | date : 'h:mm a'}}</td>
+                </tr>
+                <tr>
+                  <td><strong>To:</strong></td>
+                  <td>{{userFutureBooking.endTime | date : 'h:mm a'}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Laptop:</strong></td>
+                  <td>{{ userFutureBooking.hasLaptop}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Projector:</strong></td>
+                  <td>{{ userFutureBooking.hasProjector}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <button class="editbutton btn btn-info" ng-click="profile.setSelected(userFutureBooking);"><i class="fa fa-pencil"></i></button>
+        </div>
+  	       <!-- <div class="col-xs-4 "></div> -->
+  	      <!-- </div> -->
+      </accordion-group>
+      
+    </accordion>
+  </div>
 
-                  
-							with Laptop # {{userFutureBooking.data.laptop_id }} and Projector # {{userFutureBooking.data.projector_id }}
-			    
-							<button class="editbutton btn btn-info" ng-click="profile.setSelected(userFutureBooking);"><i class="fa fa-pencil"></i></button>
-			      </div>
-			    </div>
-			  </div>
-
-			</div>
-		</div>
-	
-	</div>
+</div>
         
   <div class="col-xs-1 col-md-3"  ></div>
-</div>
 
 
 <nav class="navbar navbar-default navbar-fixed-bottom">
@@ -99,8 +115,7 @@
     </div>
     
 
-    <div class="equip col-xs-6"><a href="/users" class="btn navbar-btn btn-default btn-small" >Users</a>
-	</div>
+    <div class="equip col-xs-6"></div>
     
     <div class=" navbar-right"></div>
 
