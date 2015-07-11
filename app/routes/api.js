@@ -1,4 +1,4 @@
-var bodyParser = require('body-parser'); 	// get body-parser
+var bodyParser = require('body-parser');  // get body-parser
 var User       = require('../models/user');
 var Booking = require('../models/booking');
 var jwt        = require('jsonwebtoken');
@@ -9,7 +9,7 @@ var superSecret = config.secret;
 
 module.exports = function(app, express) {
 
-	var apiRouter = express.Router();
+  var apiRouter = express.Router();
 
 //################### Authentication ##############################
 /*
@@ -54,9 +54,13 @@ module.exports = function(app, express) {
             name: user.name,
             username: user.username,
             netlinkId: user.netlink_id,
-
+            email: user.email,
+            last_name: user.last_name,
+            user_type: user.user_type,
+            phone: user.phone,
+            lockout: user.lockout
           }, superSecret, {
-              expiresInMinutes: 1440 // expires in 24 hours
+              expiresInMinutes: 1440 // expires in 24 hours TODO: Change the token expiry timing
           });
           
           // return the information including token as JSON
@@ -107,45 +111,49 @@ module.exports = function(app, express) {
 ################################ USER ROUTES ###########################################
 ################################ Routes with localhost://users/* #############################
 */
-	apiRouter.route('/users')
+  apiRouter.route('/users')
 
-		// create a user (accessed at POST http://localhost:8080/api/users)
-		.post(function(req, res) {
-			
-			var user = new User();		// create a new instance of the User model
-			user.name = req.body.name;  // set the users name (comes from the request)
-			user.username = req.body.username;  // set the users username (comes from the request)
-			user.password = req.body.password;  // set the users password (comes from the request)
+    // create a user (accessed at POST http://localhost:8080/api/users)
+    .post(function(req, res) {
+      
+      var user = new User();    // create a new instance of the User model
+      user.name = req.body.name;  // set the users name (comes from the request)
+      user.username = req.body.username;  // set the users username (comes from the request)
+      user.password = req.body.password;  // set the users password (comes from the request)
       user.netlink_id = req.body.netlink;
-
+      user.last_name = req.body.last_name;
+      user.email = req.body.email;
+      user.phone = req.body.phone;
+      user.user_type = req.body.user_type;
+      user.lockout = req.body.lockout;
 
       console.log("details: ", req.body.username, req.body.password, req.body.netlink )
 
-			user.save(function(err) {
-				if (err) {
-					// duplicate entry
-					if (err.code == 11000) 
-						return res.json({ success: false, message: 'A user with that username already exists. '});
-					else 
-						return res.send(err);
-				}
+      user.save(function(err) {
+        if (err) {
+          // duplicate entry
+          if (err.code == 11000) 
+            return res.json({ success: false, message: 'A user with that username already exists. '});
+          else 
+            return res.send(err);
+        }
 
-				// return a message
-				res.json({ message: 'User created!' });
-			});
+        // return a message
+        res.json({ message: 'User created!' });
+      });
 
-		})
+    })
 
-		// get all the users (accessed at GET http://localhost:8080/api/users)
-		.get(function(req, res) {
+    // get all the users (accessed at GET http://localhost:8080/api/users)
+    .get(function(req, res) {
 
-			User.find({}, function(err, users) {
-				if (err) res.send(err);
+      User.find({}, function(err, users) {
+        if (err) res.send(err);
 
-				// return the users
-				res.json(users);
-			});
-		});
+        // return the users
+        res.json(users);
+      });
+    });
 
 
 //########################################## Routes with localhost://users/:user id  
@@ -171,7 +179,9 @@ module.exports = function(app, express) {
         // set the new user information if it exists in the request
         if (req.body.name) user.name = req.body.name;
         if (req.body.username) user.username = req.body.username;
-        if (req.body.password) user.password = req.body.password;
+        // if (req.body.password) user.password = req.body.password;
+        if (req.body.email) user.email = req.body.email
+        if (req.body.phone) user.phone = req.body.phone
 
         // save the user
         user.save(function(err) {
@@ -289,55 +299,54 @@ module.exports = function(app, express) {
 // ----------------------------------------------------
   apiRouter.route('/bookings')
 
-		.post(function(req, res) {
-			var year = req.body.year;
-			var month = req.body.month;
-			var day = req.body.day;
+    .post(function(req, res) {
+      var year = req.body.year;
+      var month = req.body.month;
+      var day = req.body.day;
 
-			Booking.find({"start_year":year, "start_month": month, "start_day": day}, function(err, bookings) {
-				if (err) res.send(err);
+      Booking.find({"start_year":year, "start_month": month, "start_day": day}, function(err, bookings) {
+        if (err) res.send(err);
 
-				// return the bookings
-				res.json(bookings);
-			});
-		});
+        // return the bookings
+        res.json(bookings);
+      });
+    });
 
 
 // on routes that end in /bookings/create
 // creates a new booking
   apiRouter.route('/bookings/create')
-		
-		// create a user (accessed at POST http://localhost:8080/api/bookings/create)
-		.post(function(req, res) {
-			
-			var booking = new Booking();		// create a new instance of the Booking model
-			booking.booking_id = req.body.booking_id; //sets the booking id in the booking model from the request
-			booking.netlink_id = req.body.netlink_id; //sets netlink id in the booking model from the request
-			booking.room_id = req.body.room_id;  //sets room id in the booking model from the request
-			booking.projector_id = req.body.projector_id;
-             //sets projector id in the booking model from the request
-			booking.laptop_id = req.body.laptop_id;  //sets laptop id in the booking model from the request
-			booking.start_year = req.body.start_year; //sets start_year in the booking model from the request
-			booking.start_month = req.body.start_month;
-			booking.start_day = req.body.start_day;
-			booking.start_hour = req.body.start_hour;
-			booking.start_minute = req.body.start_minute;
-			booking.end_hour = req.body.end_hour; //sets end_hour in the booking model from the request	
-			booking.end_minute = req.body.end_minute;
-			booking.save(function(err) {
-				if (err) {
-					// duplicate entry
-					if (err.code == 11000) 
-						return res.json({ success: false, message: 'A booking with that id already exists. '});
-					else 
-						return res.send(err);
-				}
+    
+    // create a user (accessed at POST http://localhost:8080/api/bookings/create)
+    .post(function(req, res) {
+      
+      var booking = new Booking();    // create a new instance of the Booking model
+      booking.booking_id = req.body.booking_id; //sets the booking id in the booking model from the request
+      booking.netlink_id = req.body.netlink_id; //sets netlink id in the booking model from the request
+      booking.room_id = req.body.room_id;  //sets room id in the booking model from the request
+      booking.projector_id = req.body.projector_id;  //sets projector id in the booking model from the request
+      booking.laptop_id = req.body.laptop_id;  //sets laptop id in the booking model from the request
+      booking.start_year = req.body.start_year; //sets start_year in the booking model from the request
+      booking.start_month = req.body.start_month;
+      booking.start_day = req.body.start_day;
+      booking.start_hour = req.body.start_hour;
+      booking.start_minute = req.body.start_minute;
+      booking.end_hour = req.body.end_hour; //sets end_hour in the booking model from the request 
+      booking.end_minute = req.body.end_minute;
+      booking.save(function(err) {
+        if (err) {
+          // duplicate entry
+          if (err.code == 11000) 
+            return res.json({ success: false, message: 'A booking with that id already exists. '});
+          else 
+            return res.send(err);
+        }
 
-				// return a message
-				res.json({ message: 'Booking created!' });
-			});
+        // return a message
+        res.json({ message: 'Booking created!' });
+      });
 
-		});
+    });
 
 /*
 ############################ Routes with http://localhost:8080/api/bookings/:netlink_id
@@ -345,33 +354,33 @@ on routes that end in /bookings/user
 returns all the boookings for a user
 */
 
-	apiRouter.route('/bookings/:netlink_id')
+  apiRouter.route('/bookings/:netlink_id')
 
-		//(accessed at GET http://localhost:8080/api/bookings/:netlink_id)
-		.get(function(req, res) {
+    //(accessed at GET http://localhost:8080/api/bookings/:netlink_id)
+    .get(function(req, res) {
 
-			Booking.find({"netlink_id":req.params.netlink_id}, function(err, bookings) {
-			if (err) res.send(err);
+      Booking.find({"netlink_id":req.params.netlink_id}, function(err, bookings) {
+      if (err) res.send(err);
 
-				// return the bookings belonging to the user with the netlink_id
-				res.json(bookings);
-			});
-		});
+        // return the bookings belonging to the user with the netlink_id
+        res.json(bookings);
+      });
+    });
 
 // on routes that end in /api/bookings/delete/:/booking_id
 // deletes a specific booking
 // ----------------------------------------------------
   apiRouter.route('/bookings/delete/:booking_id')
-  		// delete the booking with this id
-  	.delete(function(req, res) {
-  		Booking.remove({
-  			_id: req.params.booking_id
-  		}, function(err, booking) {
-  			if (err) res.send(err);
+      // delete the booking with this id
+    .delete(function(req, res) {
+      Booking.remove({
+        _id: req.params.booking_id
+      }, function(err, booking) {
+        if (err) res.send(err);
 
-  			res.json({ message: 'Successfully deleted' });
-  		});
-  	});
+        res.json({ message: 'Successfully deleted' });
+      });
+    });
 
 
 // on routes that end in /bookings/day
@@ -391,19 +400,20 @@ returns all the boookings for a user
     });
 
 
-	// on routes that end in /users/:user_id
-	// ----------------------------------------------------
-	
+  // on routes that end in /users/:user_id
+  // ----------------------------------------------------
+  
 
-	// api endpoint to get user information
-	apiRouter.route('/me')
+  // api endpoint to get user information
+  apiRouter.route('/me')
     .get(function(req, res) {
 
       // var decodedT = jwt.decode(token)
       //     console.log("DEcodedetoken in middleware:", decodedT)
 
       res.send(req.decoded);
-	});
+  });
 
-	return apiRouter;
+
+  return apiRouter;
 };
