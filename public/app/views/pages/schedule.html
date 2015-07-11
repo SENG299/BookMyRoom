@@ -6,7 +6,7 @@
 				<h3>{{schedule.chosenDate | date}}</h3> 
 	Duration:
 			<div id="sel1">
-			  <select class="form-control form-small" style="width:auto" ng-model="schedule.bookingDuration" ng-options="item as item.duration/2 for item in schedule.validDurations">
+			  <select class="form-control form-small" style="width:auto" ng-model="schedule.bookingDuration" ng-change="schedule.createTimeSlots()" ng-options="item as item.duration/2 for item in schedule.validDurations">
 					<option value="" ng-if="false"></option> 
 			  </select>
 			</div>
