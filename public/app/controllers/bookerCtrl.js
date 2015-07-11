@@ -154,6 +154,215 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 	vm.bookingData = {};
         
     };
+
+
+    vm.proj_changed = false;
+    vm.lap_changed = false;
+        
+
+    vm.editProjector = function(){
+        vm.proj_changed = !vm.proj_changed;
+        
+    }
+
+    vm.editLaptop = function(){
+        vm.lap_changed = !vm.lap_changed;
+            
+    }
+
+
+
+    vm.newBookingData = {};
+    vm.newBookingData = $cookies.getObject('selectedBooking');
+
+    vm.proj = (vm.newBookingData.data.projector_id < 0 ? false : true);
+    vm.lap = (vm.newBookingData.data.laptop_id < 0 ? false : true);
+
+    /// edit booking 
+    vm.setNewBookingData = function () {
+
+        vm.bookingId = vm.newBookingData.data._id;
+     
+        //make a DELETE http request to backend /api/deletebooking through service
+        Booking.delete(vm.bookingId)
+			.success(function() {	 
+				
+				console.log("did it delete?");
+              
+		    });
+        
+        console.log("in edit booking")
+
+        //add extend timing limit here
+      
+        //create new booking
+
+        //set new endtime for booking
+        vm.newBookingData.data.end_hour = new Date(vm.extendSelected).getHours();
+	    vm.newBookingData.data.end_minute = new Date(vm.extendSelected).getMinutes();
+
+        vm.newBookingData.endTime = new Date (vm.newBookingData.endTime).setMinutes(vm.newBookingData.data.end_minute)
+        vm.newBookingData.endTime = new Date (vm.newBookingData.endTime).setHours(vm.newBookingData.data.end_hour)
+
+        Booking.getBookings(vm.newBookingData.data.start_year, vm.newBookingData.data.start_month, vm.newBookingData.data.start_day)
+		.success(function(data)
+		{	
+        
+            console.log("get bookings success")
+
+            var numSlots = 28;
+		    var startHour = 8;
+
+	        //it's a weekend
+		    var day = new Date(vm.newBookingData.data.start_year,vm.newBookingData.data.start_month,vm.newBookingData.data.start_day).getDay();
+
+		    if(day > 5 || day == 0)
+		    {
+			    numSlots = 14;	
+			    startHour = 11;
+		    }	
+
+
+            var startSlot = Schedule.calculateSlot(vm.newBookingData.data.start_hour, vm.newBookingData.data.start_minute, startHour);
+
+	        var endSlot = Schedule.calculateSlot(vm.newBookingData.data.end_hour, vm.newBookingData.data.end_minute, startHour); 
+
+            console.log("---------");
+            var objectArrays = Schedule.buildObjectArrays(numSlots, startHour, data);
+
+	        var projectors = objectArrays.projectors;
+		    var laptops = objectArrays.laptops;
+
+
+            var projectorId = vm.newBookingData.data.projector_id;
+	        var laptopId = vm.newBookingData.data.laptop_id;
+        
+            if(vm.lap_changed){
+                if(vm.lap){
+                    laptopId = Schedule.findLaptop(laptops, startSlot, endSlot);
+                    console.log("laptop changed to true -> " + laptopId)
+                }else{
+                    
+                    laptopId = -1;
+                    console.log("laptop changed to false -> " + laptopId)
+                }
+
+            }else{
+
+                 if(vm.lap){
+          
+                    
+                    console.log(" orginal laptop -> " + laptopId)
+                }else{
+                    laptopId = -1;
+                     console.log(" original laptop -> " + laptopId)
+                }
+            }
+
+
+		
+            //console.log("im here")
+            
+            if(vm.proj_changed){
+                if(vm.proj){
+                    projectorId = Schedule.findProjector(projectors, startSlot, endSlot);
+                    console.log("projector changed to true-> " + projectorId)
+                }else{
+                    projectorId = -1;
+                    console.log("projector changed to false-> " + projectorId)
+                }
+
+            }else{
+
+                if(vm.proj){
+                    
+                    console.log("orginal proj -> " + projectorId)
+                }else{
+                    projectorId = -1;
+                    console.log("proj -> " + projectorId)
+                }
+
+        
+
+            }
+
+		    vm.newBookingData.data.netlink_id = "bunny"; 
+		    vm.newBookingData.data.projector_id = projectorId;
+		    vm.newBookingData.data.laptop_id = laptopId;
+            
+            console.log( "proj ->" +   vm.newBookingData.data.projector_id)	
+            console.log( "laptop ->" +   vm.newBookingData.data.laptop_id)
+
+		    vm.newBookingData.data.booking_id = vm.newBookingData.data.start_year + ":" +
+					        vm.newBookingData.data.start_month + ":" +
+					        vm.newBookingData.data.start_day + ":" +
+					        vm.newBookingData.data.start_hour + ":" +
+					        vm.newBookingData.data.start_minute + ":" + 
+					        vm.newBookingData.data.end_hour + ":" +
+					        vm.newBookingData.data.end_minute + ":" +
+					        vm.newBookingData.data.room_id; 
+             
+            Booking.create(vm.newBookingData.data)
+				.success(function(data) {
+					vm.processing = false; 
+                    console.log("made the new booking");
+			});
+
+
+            $rootScope.modalinfo = vm.newBookingData;
+
+            
+            console.log("-------")
+            console.log("-------")
+            console.log(vm.newBookingData.data)
+
+        }).error(function(data){
+            console.log("ifuckedup");
+        })
+        
+        console.log("data to create new booking" );
+        console.log(vm.newBookingData);
+        
+      }   
+      
+
+
+
+     vm.addMin = function(date, minutes) {
+
+        var d = new Date(date);
+        //console.log(new Date(d.getTime()+ minutes*60000));
+
+        return new Date(d.getTime() + minutes*60000);
+     };
+
+
+
+     vm.extendTimes = []
+     vm.extendSelected = ""
+
+     vm.dropMade = false;
+
+     vm.setExtendDrop = function (){
+
+      if(vm.dropMade == false){
+            vm.dropMade = true;
+            var i
+            for(i=0; i <= 6; i++){
+
+                vm.first = vm.addMin(vm.newBookingData.endTime,30*i);
+                vm.extendTimes.push(vm.first)
+
+            } 
+             
+            
+            console.log("extend times creation")
+         vm.extendSelected = vm.extendTimes[0];
+        }
+        
+    };
+    
+
       
     vm.deleteBooking = function() {
 
