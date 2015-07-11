@@ -99,9 +99,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			vm.bookingData.end_hour = vm.finalEndTime.hour;
 			vm.bookingData.end_minute = vm.finalEndTime.minutes;
 			
-			
-
-			
 			vm.bookingData.booking_id = vm.bookingData.start_year + ":" +
 							vm.bookingData.start_month + ":" +
 							vm.bookingData.start_day + ":" +
@@ -115,26 +112,26 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			
 		//the create booking service is called, vm.bookingData will populate the new booking in the db
 			
-				$rootScope.modalinfo = {};
-				$rootScope.modalinfo.start_hour = vm.bookingData.start_hour;
-				$rootScope.modalinfo.start_minute = vm.bookingData.start_minute;
-				$rootScope.modalinfo.end_hour = vm.bookingData.end_hour;
-				$rootScope.modalinfo.end_minute = vm.bookingData.end_minute;
-				$rootScope.modalinfo.projector_id = "Yes";
-				$rootScope.modalinfo.laptop_id = "Yes";
-				console.log("modalinfo:");
-				console.log($rootScope.modalinfo);
-				console.log("bookingData:");
-				console.log(vm.bookingData);
-				if (vm.bookingData.projector_id === -1){
-					$rootScope.modalinfo.projector_id = "No";
-				}
-				if (vm.bookingData.laptop_id === -1){
-					$rootScope.modalinfo.laptop_id = "No";
-				}
-			
-				//console.log("modal data" );
-				//console.log($rootScope.modalinfo);
+			$rootScope.modalinfo = {};
+			$rootScope.modalinfo.start_hour = vm.bookingData.start_hour;
+			$rootScope.modalinfo.start_minute = vm.bookingData.start_minute;
+			$rootScope.modalinfo.end_hour = vm.bookingData.end_hour;
+			$rootScope.modalinfo.end_minute = vm.bookingData.end_minute;
+			$rootScope.modalinfo.projector_id = "Yes";
+			$rootScope.modalinfo.laptop_id = "Yes";
+			console.log("modalinfo:");
+			console.log($rootScope.modalinfo);
+			console.log("bookingData:");
+			console.log(vm.bookingData);
+			if (vm.bookingData.projector_id === -1){
+				$rootScope.modalinfo.projector_id = "No";
+			}
+			if (vm.bookingData.laptop_id === -1){
+				$rootScope.modalinfo.laptop_id = "No";
+			}
+		
+			//console.log("modal data" );
+			//console.log($rootScope.modalinfo);
 
 				
 			Booking.create(vm.bookingData)
@@ -305,20 +302,20 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 .controller('scheduleController', function($rootScope, $location, $cookies, Booking, Schedule, Auth) {
 
-		var vm = this;
-		
-		
-		vm.userData = "";
-		vm.loggedIn = Auth.isLoggedIn();
-		if(vm.loggedIn){
-			Auth.getUser()
-			.success(function(data){
-				vm.userData = data;			
-			});
-		}
+	var vm = this;
+	
+	vm.userData = "";
+	vm.loggedIn = Auth.isLoggedIn();
+	if(vm.loggedIn){
+		Auth.getUser()
+		.success(function(data){
+			vm.userData = data;			
+		});
+	}
+
         //valid durations have to be calculated TODO: hard coded for debugging (remove when done)
         // 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
-       if (vm.userData.user_type === 3){
+        if (vm.userData.user_type === 3){
 			vm.validDurations =
 			[
 			 {duration: 1},
@@ -345,7 +342,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 	vm.bookingDuration = vm.validDurations[0];
 	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
-	vm.selectedTimeSlot = "";
 
 	vm.setBookingInformation = function(){
 		$cookies.putObject('duration', vm.bookingDuration);
@@ -373,6 +369,8 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			vm.processing = false;
 
 			vm.bookings = data;
+			vm.timeSlots = [];	
+			vm.selectedTimeSlot = "";
 	
 			Schedule.setDay(vm.chosenDate.getDay());
 
@@ -386,7 +384,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			projectorSchedule = Schedule.buildSchedule(projectors, vm.bookingDuration.duration);
 			laptopSchedule = Schedule.buildSchedule(laptops, vm.bookingDuration.duration);
 
-			vm.timeSlots = [];	
 			for(var i = 0; i < Schedule.numSlots; i++)
 			{
 				var hours = Schedule.startHour + Math.floor(i / 2);	
