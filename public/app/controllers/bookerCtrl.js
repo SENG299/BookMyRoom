@@ -241,46 +241,49 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 .controller('scheduleController', function($rootScope, $location, $cookies, Booking, Schedule, Auth) {
 
 	var vm = this;
-	
+ 
 	vm.userData = "";
 	vm.loggedIn = Auth.isLoggedIn();
 	if(vm.loggedIn){
 		Auth.getUser()
 		.success(function(data){
-			vm.userData = data;			
+			vm.userData = data;
+			if (vm.userData.user_type === 3){
+				vm.validDurations =
+				[
+				 {duration: 1},
+				 {duration: 2},
+				];	
+			}else{
+				vm.validDurations =
+				[
+				 {duration: 1},
+				 {duration: 2},
+				 {duration: 3},
+				 {duration: 4},
+				 {duration: 5},
+				 {duration: 6}
+				];	
+			}	
+
+			vm.bookingDuration = vm.validDurations[0];
+			vm.chosenDate = new Date($cookies.getObject('chosenDate'));
+
+			vm.createTimeSlots(new Date(vm.chosenDate).getDay());
+			vm.selectedDuration = vm.validDurations[0];	
 		});
 	}
 
         //valid durations have to be calculated TODO: hard coded for debugging (remove when done)
         // 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
-        if (vm.userData.user_type === 3){
-			vm.validDurations =
-			[
-			 {duration: 1},
-			 {duration: 2},
-			];	
-		}else{
-			vm.validDurations =
-			[
-			 {duration: 1},
-			 {duration: 2},
-			 {duration: 3},
-			 {duration: 4},
-			 {duration: 5},
-			 {duration: 6}
-			];
-			
-		}
-		
+       
 	vm.equipment = {
 		projector:false,
 		laptop:false   
 	};
 
 
-	vm.bookingDuration = vm.validDurations[0];
-	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
-
+	
 	vm.setBookingInformation = function(){
 		$cookies.putObject('duration', vm.bookingDuration);
 		$cookies.putObject('chosenStartTime', vm.selectedTimeSlot);
@@ -356,8 +359,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 	};
 
-	vm.createTimeSlots(new Date(vm.chosenDate).getDay());
-	vm.selectedDuration = vm.validDurations[0];	
 /*
 	Monday thru Friday 8 am to 10pm and on Saturdays and Sundays 11 am to 6pm. 
 */
