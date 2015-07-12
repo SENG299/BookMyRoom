@@ -67,11 +67,17 @@
           <h4 class="modal-title">Your booking has been created.</h4>
         </div>
         <div class="modal-body">
+		 {{schedule.chosenDate | date}}
+		</br>
 		
-		{{schedule.chosenDate | date}} </br>
-		at </br>
+        </br>
 		
-		{{(modalinfo.start_hour > 12) && (modalinfo.start_hour - 12) || (modalinfo.start_hour)}}:{{(modalinfo.start_minute == 0) && ('00') || modalinfo.start_minute}} {{(modalinfo.start_hour > 11) && ('PM') || ('AM')}} to {{(modalinfo.end_hour > 12) && (modalinfo.end_hour - 12) || (modalinfo.end_hour)}}:{{(modalinfo.end_minute == 0) && ('00') || modalinfo.end_minute}} {{(modalinfo.end_hour > 11) && ('PM') || ('AM')}}</br>
+        dAY:
+        FROM TO
+        with projectorID: none ...
+        in Room ..
+
+
 		Projector: {{ modalinfo.projector_id }} </br>
 		Laptop: {{ modalinfo.laptop_id }} </br>
         </div>
@@ -97,7 +103,7 @@
 
        <div class=" navbar-right">
 
-   <button  class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" ng-if="schedule.selectedTimeSlot" ng-click="schedule.setBookingInformation(); booker.createBooking()">Confirm</button>
+   <button  class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal" data-backdrop="static" ng-if="schedule.selectedTimeSlot" ng-click="schedule.setBookingInformation(); booker.createBooking()">Confirm</button>
 
      
       </div>
