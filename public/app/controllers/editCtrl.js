@@ -21,7 +21,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 
     vm.newBookingData = {};
     vm.newBookingData = $cookies.getObject('selectedBooking');
-    vm.canEdit = false;
+    vm.cantEdit = true;
 
     var today = new Date();
     var now = today.getHours() + (today.getMinutes () / 60);
@@ -33,7 +33,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
        today.getDate() == vm.newBookingData.data.start_day &&
        timeDiff < 2 && timeDiff > 0)
 	{
-		vm.canEdit = true;
+		vm.cantEdit = false;
 	} 
 
     vm.proj = (vm.newBookingData.data.projector_id < 0 ? false : true);

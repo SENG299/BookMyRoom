@@ -27,7 +27,7 @@
                         or extend to
                  
                         <div id="sel1" style="" >
-                            <select style="width:auto;" class="form-control form-small" ng-model="editor.extendSelected" ng-options=" (item | date : 'shortTime') for item  in editor.extendTimes" ng-click="editor.setExtendDrop()">
+                            <select style="width:auto;" class="form-control form-small" ng-model="editor.extendSelected" ng-options=" (item | date : 'shortTime') for item  in editor.extendTimes" ng-click="editor.setExtendDrop()" ng-disabled="editor.cantEdit">
                                 <option value="" ng-if="false"></option> 
                             </select>
                 

@@ -68,9 +68,14 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			var projectors = objectArrays.projectors;
 			var laptops = objectArrays.laptops;
 
-
 			var roomId = Schedule.findRoom(rooms, startSlot, endSlot);
-				
+			if(roomId == -1)
+			{
+				$location.path('/error');
+				return;
+			}
+			
+	
 			var projectorId;
 			var laptopId;
     
