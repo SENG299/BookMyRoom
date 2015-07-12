@@ -7,13 +7,13 @@
             <!-- USERNAME INPUT -->
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" class="form-control" ng-model="login.username">
+                <input type="text" class="form-control" ng-model="login.username" required>
             </div>
 
             <!-- PASSWORD INPUT -->
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" ng-model="login.password">
+                <label>Password </label>
+                <input type="password" class="form-control" ng-model="login.password" required>
             </div>
 
             <div class="alert alert-danger" ng-if="login.error">

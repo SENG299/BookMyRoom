@@ -87,13 +87,20 @@
                   <td><strong>Room Number:</strong></td>
                   <td>{{userFutureBooking.roomId }}</td>
                 </tr>
+
                 <tr>
-                  <td><strong>Laptop:</strong></td>
-                  <td>{{ userFutureBooking.hasLaptop}}</td>
+                  <td><strong>Laptop ID:</strong></td>
+                  <td ng-if=userFutureBooking.data.laptop_id == -1" >None</i>    
+                  </td>
+                  <td ng-if="userFutureBooking.data.laptop_id != -1" >{{userFutureBooking.data.laptop_id}}</i>    
+                  </td>
                 </tr>
                 <tr>
-                  <td><strong>Projector:</strong></td>
-                  <td>{{ userFutureBooking.hasProjector}}</td>
+                  <td><strong>Projector ID:</strong></td>
+                  <td ng-if="userFutureBooking.data.projector_id == -1" >None</i>    
+                  </td>
+                  <td ng-if="userFutureBooking.data.projector_id != -1" >{{userFutureBooking.data.projector_id}}</i>    
+                  </td>
                 </tr>
               </tbody>
             </table>

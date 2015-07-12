@@ -56,15 +56,15 @@
 <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container" ng-controller="daySelectorController as selector">
 
-          <a href="/"><img  class="navbar-brand" style= "width:50px; height:50px; padding:4px"src="bmr.png"/> </a>
+          <a href="/"><img  class="navbar-brand" style= "width:43px; height:50px; padding:4px; padding-right:0px; padding-left:0px;margin-right:0px"src="bmr.png"/> </a>
        
-          <a class="navbar-brand" style="padding-left:0px; padding-right:0px; margin-right:0px" href="/">BookMyRoom</a>
+          <a class="navbar-brand" style="padding-right:0px; margin-right:0px" href="/">BookMyRoom</a>
         
 
        <div class="navbar-right" ng-controller="loginController as login">
           <a href="/login" class="btn navbar-btn btn-default btn-small" ng-if = "login.loggedIn == false" >Login</a>
-          <a href="/profile" class="btn navbar-btn btn-default btn-small" ng-if = "login.loggedIn" >Profile</a>
-          <a href="#" class="btn navbar-btn btn-default btn-small" ng-click="login.doLogout()" ng-if = "login.loggedIn">Logout</a>
+          <a href="/profile" class="btn navbar-btn btn-default btn-small" ng-if = "login.loggedIn" ><i class="fa fa-user fa-lg"></i></a>
+          <a href="#" class="btn navbar-btn btn-default btn-small" ng-click="login.doLogout()" ng-if = "login.loggedIn"><i class="fa fa-sign-out fa-lg"></i></a>
       </div>
 		 </div>
     </div>
