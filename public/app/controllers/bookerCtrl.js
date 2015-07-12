@@ -72,7 +72,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			if(roomId == -1)
 			{
 
-                $window.location.href='/profile';
+                $window.location.href='/error';
 				//$location.path('/error');
 				return;
 			}
