@@ -315,7 +315,7 @@ module.exports = function(app, express) {
 
 // on routes that end in /bookings/create
 // creates a new booking
-  apiRouter.route('/bookings/create')
+	apiRouter.route('/bookings/create')
 		
 		// create a user (accessed at POST http://localhost:8080/api/bookings/create)
 		.post(function(req, res) {
@@ -348,6 +348,15 @@ module.exports = function(app, express) {
 
 		});
 
+	apiRouter.route('/bookings/:room_id/:year/:month/:day')
+		.get(function(req, res){
+			Booking.find({"room_id":req.params.room_id, "start_year":req.params.year, "start_month": req.params.month, "start_day": req.params.day}, 
+			function(err, bookings) {
+				if(err) res.send(err);			
+				
+				res.json(bookings);
+			});
+		});
 /*
 ############################ Routes with http://localhost:8080/api/bookings/:netlink_id
 on routes that end in /bookings/user

@@ -31,6 +31,12 @@ angular.module('bookingService', [])
 		return $http.get('/api/bookings/' + netlink_id);
 	};
 
+
+	//Get all bookings for one room on one day
+	bookingFactory.getRoomBookings = function(roomid, year, month, day){
+		return $http.get('/api/bookings/'+roomid+'/'+year+'/'+month+'/'+day);	
+	};
+
 	// return our entire bookingFactory object
 	return bookingFactory;
 });

@@ -40,6 +40,9 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
     vm.proj = (vm.newBookingData.data.projector_id < 0 ? false : true);
     vm.lap = (vm.newBookingData.data.laptop_id < 0 ? false : true);
 
+    var day = new Date(vm.newBookingData.data.start_year,vm.newBookingData.data.start_month,vm.newBookingData.data.start_day).getDay();
+    Schedule.setDay(day);
+
     /// edit booking 
     vm.setNewBookingData = function () {
 
@@ -65,7 +68,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
         vm.newBookingData.endTime = new Date (vm.newBookingData.endTime).setMinutes(vm.newBookingData.data.end_minute)
         vm.newBookingData.endTime = new Date (vm.newBookingData.endTime).setHours(vm.newBookingData.data.end_hour)
 
-        Booking.getBookings(vm.newBookingData.data.start_year, vm.newBookingData.data.start_month, vm.newBookingData.data.start_day)
+	Booking.getBookings(vm.newBookingData.data.start_year, vm.newBookingData.data.start_month, vm.newBookingData.data.start_day)
 		.success(function(data)
 		{	
         
@@ -73,10 +76,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 
 
 	        //it's a weekend
-	    var day = new Date(vm.newBookingData.data.start_year,vm.newBookingData.data.start_month,vm.newBookingData.data.start_day).getDay();
-	    Schedule.setDay(day);
-
-            var startSlot = Schedule.calculateSlot(vm.newBookingData.data.start_hour, vm.newBookingData.data.start_minute);
+	               var startSlot = Schedule.calculateSlot(vm.newBookingData.data.start_hour, vm.newBookingData.data.start_minute);
 	    var endSlot = Schedule.calculateSlot(vm.newBookingData.data.end_hour, vm.newBookingData.data.end_minute); 
 
             console.log("---------");
@@ -182,18 +182,46 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
         return new Date(d.getTime() + minutes*60000);
      };
 
-     vm.extendTimes = []
+    
+    var roomId = vm.newBookingData.data.room_id;
+    var year = vm.newBookingData.data.start_year;
+    var month = vm.newBookingData.data.start_month;
+    var day = vm.newBookingData.data.start_day;
 
-    var i
-    for(i=0; i <= 6; i++){
-
-	vm.first = vm.addMin(vm.newBookingData.endTime,30*i);
-	vm.extendTimes.push(vm.first)
-
-    } 
-
+    var bookingEnd = Schedule.calculateSlot(vm.newBookingData.data.end_hour, vm.newBookingData.data.end_minute); 	
+    var maxSlot = Schedule.numSlots; //TODO: This should be changed depending on user time.
+  
+    vm.extendTimes = []
+    vm.extendTimes.push(vm.addMin(vm.newBookingData.endTime, 0));
     vm.extendSelected = vm.extendTimes[0];
-		
+
+    // Figure how long you can extend to
+    Booking.getRoomBookings(roomId, year, month, day)
+	.success(function(data){
+		for(var i = 0; i < data.length; i++)
+		{
+			var booking = data[i];
+			var startSlot = Schedule.calculateSlot(booking.start_hour, booking.start_minute);
+			console.log(booking.start_hour, booking.start_minute, Schedule.startHour);	
+			console.log("startSlot: " + startSlot + " maxSlot: " + maxSlot + " bookingEnd: " + bookingEnd);
+			
+			if(startSlot < maxSlot && startSlot >= bookingEnd)
+			{
+				maxSlot = startSlot;
+			}
+		}
+
+		console.log("maxslot: " + maxSlot);
+	 
+		var i
+		for(i=0; i <= 6; i++){
+
+		vm.first = vm.addMin(vm.newBookingData.endTime,30*i);
+		vm.extendTimes.push(vm.first)
+
+		} 
+	});
+	
     vm.deleteBooking = function() {
 
         vm.selectedBooking = $cookies.getObject('selectedBooking');
