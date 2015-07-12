@@ -8,8 +8,8 @@ angular.module('app.routes', ['ngRoute'])
 	// Route for home page
 	.when("/booker", {
 		templateUrl: 'app/views/pages/booker.html',
-		controller: 'bookingCreatorController',
-		controllerAs: 'booker'
+		controller: 'bookingEditController',
+		controllerAs: 'editor'
 	})
 
 	// Route for home page

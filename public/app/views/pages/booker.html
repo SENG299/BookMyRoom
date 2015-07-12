@@ -10,12 +10,12 @@
         <div class="col-xs-1 col-md-3 "  ></div>
         <div class="col-xs-10 col-md-6" id="centre">
             
-        <h3>{{booker.newBookingData.startTime | date : 'mediumDate'}} </h3>
+        <h3>{{editor.newBookingData.startTime | date : 'mediumDate'}} </h3>
             
-			<h4>Room {{booker.newBookingData.data.room_id }}</h4>
+			<h4>Room {{editor.newBookingData.data.room_id }}</h4>
             
 			<h4>
-                {{booker.newBookingData.startTime | date : 'shortTime'}}  <i class="fa fa-arrow-right "></i>  {{booker.newBookingData.endTime | date : 'shortTime'}}
+                {{editor.newBookingData.startTime | date : 'shortTime'}}  <i class="fa fa-arrow-right "></i>  {{editor.newBookingData.endTime | date : 'shortTime'}}
             </h4>
 
 
@@ -28,29 +28,29 @@
 				<div class="btn-group">
 
                   <label class="btn btn-info" >
-                    <input type="checkbox" ng-model="booker.lap" ng-click="booker.editLaptop()" ><i class='fa fa-laptop'></i>
+                    <input type="checkbox" ng-model="editor.lap" ng-click="editor.editLaptop()" ><i class='fa fa-laptop'></i>
                   </label>
                   <label class="btn btn-info" >
-                    <input type="checkbox"  ng-model="booker.proj"  ng-click="booker.editProjector()" ><i class='fa fa-video-camera fg-lg'></i>         
+                    <input type="checkbox"  ng-model="editor.proj"  ng-click="editor.editProjector()" ><i class='fa fa-video-camera fg-lg'></i>         
                   </label>
 
                    
                     
                   <!-- equipment is not booking  
-                  <label class="btn btn-info" ng-if="booker.bookingInfo.data.laptop_id < 0">
+                  <label class="btn btn-info" ng-if="editor.bookingInfo.data.laptop_id < 0">
                     <input type="checkbox"  ><i class='fa fa-laptop'></i>
                   </label>
-                  <label class="btn btn-info" ng-if="booker.bookingInfo.data.projector_id < 0">
+                  <label class="btn btn-info" ng-if="editor.bookingInfo.data.projector_id < 0">
                     <input type="checkbox"  ><i class='fa fa-video-camera fg-lg'></i>         
                   </label>
                 -->
 
 
                   <!-- equipment is in booking  
-                  <label class="btn btn-info" ng-if="booker.bookingInfo.data.laptop_id >= 0">
+                  <label class="btn btn-info" ng-if="editor.bookingInfo.data.laptop_id >= 0">
                     <input type="checkbox"  checked><i class='fa fa-laptop'></i>
                   </label>
-                  <label class="btn btn-info" ng-if="booker.bookingInfo.data.projector_id >= 0">
+                  <label class="btn btn-info" ng-if="editor.bookingInfo.data.projector_id >= 0">
                     <input type="checkbox"  checked><i class='fa fa-video-camera fg-lg'></i>         
                   </label>
                     -->
@@ -65,8 +65,8 @@
 
              
 
-            <select style="width:auto" class="form-control form-small" ng-model="booker.extendSelected" ng-options=" (item | date : 'shortTime') for item  in booker.extendTimes" ng-click="booker.setExtendDrop()">
-            
+            <select style="width:auto" class="form-control form-small" ng-model="editor.extendSelected" ng-options=" (item | date : 'shortTime') for item  in editor.extendTimes" ng-click="editor.setExtendDrop()">
+           <option value="" ng-if="false"></option> 
             </select>
             
 
@@ -76,7 +76,7 @@
 			</div>         
             </br> </br>     
 		<!-- Trigger the modal with a button -->
-		<button type="button" ng-click="booker.setNewBookingData();" class="btn btn-info" data-toggle="modal" data-target="#myModal"> Save changes </button>
+		<button type="button" ng-click="editor.setNewBookingData();" class="btn btn-info" data-toggle="modal" data-target="#myModal"> Save changes </button>
 		<!-- Modal -->
 		<div id="myModal" class="modal fade" role="dialog">
   		<div class="modal-dialog modal-sm">
@@ -113,7 +113,7 @@
 		<p>Are you sure you want to delete your booking?<p>
 	      </div>
 	      <div class="modal-footer">
-		<button type="button" class="btn btn-default" data-dismiss="modal" onclick="window.location.href='/profile'"  ng-click="booker.deleteBooking(userFutureBookings)">Confirm</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal" onclick="window.location.href='/profile'"  ng-click="editor.deleteBooking(userFutureBookings)">Confirm</button>
 		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	      </div>
 	    </div>
