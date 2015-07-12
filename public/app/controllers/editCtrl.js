@@ -19,7 +19,6 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
         
     };
 
-
     vm.proj_changed = false;
     vm.lap_changed = false;
         
@@ -135,7 +134,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 
             }
 
-	    vm.newBookingData.data.netlink_id = "bunny"; 
+	    vm.newBookingData.data.netlink_id = vm.userData.netlinkId; 
 	    vm.newBookingData.data.projector_id = projectorId;
 	    vm.newBookingData.data.laptop_id = laptopId;
             
@@ -189,7 +188,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
     var day = vm.newBookingData.data.start_day;
 
     var bookingEnd = Schedule.calculateSlot(vm.newBookingData.data.end_hour, vm.newBookingData.data.end_minute); 	
-    var maxSlot = Schedule.numSlots; //TODO: This should be changed depending on user time.
+    var maxSlot = Schedule.numSlots-1; //TODO: This should be changed depending on user time.
   
     vm.extendTimes = []
     vm.extendTimes.push(vm.addMin(vm.newBookingData.endTime, 0));
@@ -198,6 +197,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
     // Figure how long you can extend to
     Booking.getRoomBookings(roomId, year, month, day)
 	.success(function(data){
+		console.log(data);
 		for(var i = 0; i < data.length; i++)
 		{
 			var booking = data[i];
@@ -211,14 +211,23 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 			}
 		}
 
-		console.log("maxslot: " + maxSlot);
-	 
-		var i
-		for(i=0; i <= 6; i++){
-
-		vm.first = vm.addMin(vm.newBookingData.endTime,30*i);
-		vm.extendTimes.push(vm.first)
-
+		var numExtendSlots = maxSlot - bookingEnd;	
+		if(vm.userData.user_type == 3 && numExtendSlots > 2)
+		{
+			numExtendSlots = 2;
+		}	
+		else if(numExtendSlots > 6)
+		{
+			numExtendSlots = 6;
+		}
+			
+		console.log(numExtendSlots);
+		console.log(vm.userData.user_type);	
+	
+		for(var i = 1; i <= numExtendSlots; i++)
+		{
+			vm.first = vm.addMin(vm.newBookingData.endTime,30*i);
+			vm.extendTimes.push(vm.first)
 		} 
 	});
 	
