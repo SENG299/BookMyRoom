@@ -113,25 +113,26 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 		//the create booking service is called, vm.bookingData will populate the new booking in the db
 			
 			$rootScope.modalinfo = {};
-			$rootScope.modalinfo.start_hour = vm.bookingData.start_hour;
-			$rootScope.modalinfo.start_minute = vm.bookingData.start_minute;
-			$rootScope.modalinfo.end_hour = vm.bookingData.end_hour;
-			$rootScope.modalinfo.end_minute = vm.bookingData.end_minute;
-			$rootScope.modalinfo.projector_id = "Yes";
-			$rootScope.modalinfo.laptop_id = "Yes";
-			console.log("modalinfo:");
-			console.log($rootScope.modalinfo);
+
 			console.log("bookingData:");
 			console.log(vm.bookingData);
+
+            /*
 			if (vm.bookingData.projector_id === -1){
 				$rootScope.modalinfo.projector_id = "No";
 			}
 			if (vm.bookingData.laptop_id === -1){
 				$rootScope.modalinfo.laptop_id = "No";
 			}
+            */
 		
-			//console.log("modal data" );
-			//console.log($rootScope.modalinfo);
+            $rootScope.modalinfo = vm.bookingData;
+            $rootScope.modalinfo.startTime = new Date(vm.bookingData.start_year, vm.bookingData.start_month, vm.bookingData.start_day, vm.bookingData.start_hour, vm.bookingData.start_minute)
+
+            $rootScope.modalinfo.endTime = new Date(vm.bookingData.start_year, vm.bookingData.start_month, vm.bookingData.start_day, vm.bookingData.end_hour, vm.bookingData.end_minute)
+
+			console.log("modal data" );
+			console.log($rootScope.modalinfo);
 
 				
 			Booking.create(vm.bookingData)

@@ -67,19 +67,48 @@
           <h4 class="modal-title">Your booking has been created.</h4>
         </div>
         <div class="modal-body">
-		 {{schedule.chosenDate | date}}
-		</br>
-		
-        </br>
-		
-        dAY:
-        FROM TO
-        with projectorID: none ...
-        in Room ..
+		<div class="modal-body">
+	           <div class="panel-body" style="padding:0px;">
+                    <table class="table table-striped" style="margin-bottom: 0px;" showHeader="false">
+                      <tbody align="left">
+                        <tr>
+                          <td><strong>Date:</strong></td>
+                          <td>{{modalinfo.startTime | date : 'mediumDate'}} </td>
+                        </tr>
+                        <tr>
+                          <td><strong>From:</strong></td>
+                          <td>{{modalinfo.startTime | date : 'shortTime'}}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>To:</strong></td>
+                          <td>{{modalinfo.endTime | date : 'shortTime' }}
+                               
+                         </td>
+                        </tr>
 
+                        <tr>
+                          <td><strong>Room Number:</strong></td>
+                          <td>{{modalinfo.room_id}}</td>
+                        </tr>
 
-		Projector: {{ modalinfo.projector_id }} </br>
-		Laptop: {{ modalinfo.laptop_id }} </br>
+                        <tr>
+                          <td><strong>Laptop ID:</strong></td>
+                          <td ng-if="modalinfo.laptop_id == -1" >None</i>    
+                          </td>
+                          <td ng-if="modalinfo.laptop_id != -1" >{{modalinfo.laptop_id}}</i>    
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><strong>Projector ID:</strong></td>
+                          <td ng-if="modalinfo.projector_id == -1" >None</i>    
+                          </td>
+                          <td ng-if="modalinfo.projector_id != -1" >{{modalinfo.projector_id}}</i>    
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+	      </div>
         </div>
         <div class="modal-footer">
           <button onclick="window.location.href='/profile'" ng-click="" class="btn btn-default">OK</button>
