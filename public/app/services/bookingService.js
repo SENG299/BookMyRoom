@@ -34,7 +34,17 @@ angular.module('bookingService', [])
 
 	//Get all bookings for one room on one day
 	bookingFactory.getRoomBookings = function(roomid, year, month, day){
-		return $http.get('/api/bookings/'+roomid+'/'+year+'/'+month+'/'+day);	
+		return $http.get('/api/roombookings/'+roomid+'/'+year+'/'+month+'/'+day);	
+	};
+
+	//Get all bookings for one laptop on one day
+	bookingFactory.getLaptopBookings = function(laptopid, year, month, day){
+		return $http.get('/api/laptopbookings/'+laptopid+'/'+year+'/'+month+'/'+day);	
+	};
+	
+	//Get all bookings for one projector on one day
+	bookingFactory.getProjectorBookings = function(projectorid, year, month, day){
+		return $http.get('/api/projectorbookings/'+projectorid+'/'+year+'/'+month+'/'+day);	
 	};
 
 	// return our entire bookingFactory object

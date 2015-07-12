@@ -19,26 +19,28 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
         
     };
 
-    vm.proj_changed = false;
-    vm.lap_changed = false;
-        
-
-    vm.editProjector = function(){
-        vm.proj_changed = !vm.proj_changed;
-        
-    }
-
-    vm.editLaptop = function(){
-        vm.lap_changed = !vm.lap_changed;
-            
-    }
-
     vm.newBookingData = {};
     vm.newBookingData = $cookies.getObject('selectedBooking');
+    vm.canEdit = false;
+
+    var today = new Date();
+    var now = today.getHours() + (today.getMinutes () / 60);
+    var bookingStart = vm.newBookingData.data.start_hour + (vm.newBookingData.data.start_minute / 60);
+    var timeDiff = bookingStart - now;
+
+    if(today.getFullYear() == vm.newBookingData.data.start_year &&
+       today.getMonth() == vm.newBookingData.data.start_month &&
+       today.getDate() == vm.newBookingData.data.start_day &&
+       timeDiff < 2 && timeDiff > 0)
+	{
+		vm.canEdit = true;
+	} 
 
     vm.proj = (vm.newBookingData.data.projector_id < 0 ? false : true);
     vm.lap = (vm.newBookingData.data.laptop_id < 0 ? false : true);
-
+    vm.projectorId = vm.newBookingData.data.projetor_id;
+    vm.laptopId = vm.newBookingData.data.laptop_id;	
+       
     var day = new Date(vm.newBookingData.data.start_year,vm.newBookingData.data.start_month,vm.newBookingData.data.start_day).getDay();
     Schedule.setDay(day);
 
@@ -86,54 +88,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 
             var projectorId = vm.newBookingData.data.projector_id;
 	    var laptopId = vm.newBookingData.data.laptop_id;
-        
-            if(vm.lap_changed){
-                if(vm.lap){
-                    laptopId = Schedule.findLaptop(laptops, startSlot, endSlot);
-                    console.log("laptop changed to true -> " + laptopId)
-                }else{
-                    
-                    laptopId = -1;
-                    console.log("laptop changed to false -> " + laptopId)
-                }
-
-            }else{
-
-                 if(vm.lap){
-          
-                    
-                    console.log(" orginal laptop -> " + laptopId)
-                }else{
-                    laptopId = -1;
-                     console.log(" original laptop -> " + laptopId)
-                }
-            }
-		
-            //console.log("im here")
-            
-            if(vm.proj_changed){
-                if(vm.proj){
-                    projectorId = Schedule.findProjector(projectors, startSlot, endSlot);
-                    console.log("projector changed to true-> " + projectorId)
-                }else{
-                    projectorId = -1;
-                    console.log("projector changed to false-> " + projectorId)
-                }
-
-            }else{
-
-                if(vm.proj){
-                    
-                    console.log("orginal proj -> " + projectorId)
-                }else{
-                    projectorId = -1;
-                    console.log("proj -> " + projectorId)
-                }
-
-        
-
-            }
-
+           
 	    vm.newBookingData.data.netlink_id = vm.userData.netlinkId; 
 	    vm.newBookingData.data.projector_id = projectorId;
 	    vm.newBookingData.data.laptop_id = laptopId;
@@ -165,7 +120,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
             console.log(vm.newBookingData.data)
 
         }).error(function(data){
-            console.log("ifuckedup");
+            console.log("Something went wrong.");
         })
         
         console.log("data to create new booking" );
@@ -181,31 +136,45 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
         return new Date(d.getTime() + minutes*60000);
      };
 
-    
+    /* Should be moved to top or in it own function  */ 
     var roomId = vm.newBookingData.data.room_id;
+    var laptopId = vm.newBookingData.data.laptop_id;
+    var projectorId = vm.newBookingData.data.projector_id;
     var year = vm.newBookingData.data.start_year;
     var month = vm.newBookingData.data.start_month;
     var day = vm.newBookingData.data.start_day;
 
-    var bookingEnd = Schedule.calculateSlot(vm.newBookingData.data.end_hour, vm.newBookingData.data.end_minute); 	
-    var maxSlot = Schedule.numSlots-1; //TODO: This should be changed depending on user time.
-  
     vm.extendTimes = []
     vm.extendTimes.push(vm.addMin(vm.newBookingData.endTime, 0));
     vm.extendSelected = vm.extendTimes[0];
+  
+    var bookingEnd = Schedule.calculateSlot(vm.newBookingData.data.end_hour, vm.newBookingData.data.end_minute); 	
+    var maxSlot = Schedule.numSlots-1; //TODO: This should be changed depending on user time.
+ 
+    vm.calculateExtendTime = function(){
 
-    // Figure how long you can extend to
-    Booking.getRoomBookings(roomId, year, month, day)
-	.success(function(data){
-		console.log(data);
+	    // Figure how long you can extend to
+	    Booking.getRoomBookings(roomId, year, month, day)
+		.success(function(roomdata){
+
+	    Booking.getLaptopBookings(laptopId, year, month, day)
+		.success(function(laptopdata){
+
+	    Booking.getProjectorBookings(projectorId, year, month, day)
+		.success(function(projectordata){		
+
+		var data = roomdata.concat(laptopdata.concat(projectordata));
+	
 		for(var i = 0; i < data.length; i++)
 		{
 			var booking = data[i];
 			var startSlot = Schedule.calculateSlot(booking.start_hour, booking.start_minute);
-			console.log(booking.start_hour, booking.start_minute, Schedule.startHour);	
-			console.log("startSlot: " + startSlot + " maxSlot: " + maxSlot + " bookingEnd: " + bookingEnd);
-			
-			if(startSlot < maxSlot && startSlot >= bookingEnd)
+
+			var lapTaken =  ((booking.laptop_id == vm.laptopId) && (vm.laptopId != -1));
+			var projTaken =  ((booking.projector_id == vm.projectorId) && (vm.projectorId != -1));
+
+			if(((startSlot < maxSlot) && (startSlot >= bookingEnd)) ||
+			   ((lapTaken || projTaken)))
 			{
 				maxSlot = startSlot;
 			}
@@ -222,14 +191,18 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 		}
 			
 		console.log(numExtendSlots);
-		console.log(vm.userData.user_type);	
 	
 		for(var i = 1; i <= numExtendSlots; i++)
 		{
 			vm.first = vm.addMin(vm.newBookingData.endTime,30*i);
 			vm.extendTimes.push(vm.first)
 		} 
-	});
+
+		});
+		});
+		});
+
+    }
 	
     vm.deleteBooking = function() {
 
@@ -294,5 +267,5 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 		//delete booking once found. 
 	};
 
-
+    	vm.calculateExtendTime();
 });
