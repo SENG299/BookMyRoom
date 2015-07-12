@@ -9,7 +9,6 @@
 	
         <div class="col-xs-1 col-md-3 "  ></div>
         <div class="col-xs-10 col-md-6" id="centre">
-
         
         <div class="panel-body" style="padding:0px;">
             <table class="table table-striped" style="margin-bottom: 0px;" showHeader="false">
@@ -28,7 +27,7 @@
                         or extend to
                  
                         <div id="sel1" style="" >
-                            <select style="width:auto;" class="form-control form-small" ng-model="editor.extendSelected" ng-options=" (item | date : 'shortTime') for item  in editor.extendTimes" ng-click="editor.setExtendDrop()">
+                            <select style="width:auto;" class="form-control form-small" ng-model="editor.extendSelected" ng-options=" (item | date : 'shortTime') for item  in editor.extendTimes" ng-click="editor.setExtendDrop()" ng-disabled="editor.cantEdit">
                                 <option value="" ng-if="false"></option> 
                             </select>
                 

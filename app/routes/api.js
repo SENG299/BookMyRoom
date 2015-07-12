@@ -348,7 +348,7 @@ module.exports = function(app, express) {
 
 		});
 
-	apiRouter.route('/bookings/:room_id/:year/:month/:day')
+	apiRouter.route('/roombookings/:room_id/:year/:month/:day')
 		.get(function(req, res){
 			Booking.find({"room_id":req.params.room_id, "start_year":req.params.year, "start_month": req.params.month, "start_day": req.params.day}, 
 			function(err, bookings) {
@@ -357,6 +357,28 @@ module.exports = function(app, express) {
 				res.json(bookings);
 			});
 		});
+
+	apiRouter.route('/laptopbookings/:laptop_id/:year/:month/:day')
+		.get(function(req, res){
+			Booking.find({"laptop_id":req.params.laptop_id, "start_year":req.params.year, "start_month": req.params.month, "start_day": req.params.day}, 
+			function(err, bookings) {
+				if(err) res.send(err);			
+				
+				res.json(bookings);
+			});
+		});
+	
+	apiRouter.route('/projectorbookings/:projector_id/:year/:month/:day')
+		.get(function(req, res){
+			Booking.find({"projector_id":req.params.projector_id, "start_year":req.params.year, "start_month": req.params.month, "start_day": req.params.day}, 
+			function(err, bookings) {
+				if(err) res.send(err);			
+				
+				res.json(bookings);
+			});
+		});
+
+
 /*
 ############################ Routes with http://localhost:8080/api/bookings/:netlink_id
 on routes that end in /bookings/user

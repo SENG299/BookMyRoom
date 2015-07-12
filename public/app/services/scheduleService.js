@@ -37,7 +37,7 @@ angular.module('scheduleService', [])
 		var numSlots = scheduleFactory.numSlots;
 			
 		var numRooms = scheduleFactory.numRooms;
-		var numProjectors = scheduleFactory.numRooms;
+		var numProjectors = scheduleFactory.numProjectors;
 		var numLaptops = scheduleFactory.numLaptops;
 
 		var rooms = new Array(numRooms);
