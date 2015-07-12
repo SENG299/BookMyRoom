@@ -71,7 +71,9 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			var roomId = Schedule.findRoom(rooms, startSlot, endSlot);
 			if(roomId == -1)
 			{
-				$location.path('/error');
+
+                $window.location.href='/profile';
+				//$location.path('/error');
 				return;
 			}
 			
