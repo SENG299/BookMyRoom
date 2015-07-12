@@ -69,19 +69,12 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			var laptops = objectArrays.laptops;
 
 
-            $rootScope.openPage = function (pageName) {
-
-                  console.log("open the error page");
-                  window.location = pageName;
-                  window.location.reload();
-              };
-
 			var roomId = Schedule.findRoom(rooms, startSlot, endSlot);
 			if(roomId == -1)
 			{
 
-                openPage('/error');
-				//$location.path('/error');
+                console.log("had conflict, please refresh")
+                window.location.href = '/error';
 				return;
 			}
 			
