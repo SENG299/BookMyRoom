@@ -68,11 +68,19 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			var projectors = objectArrays.projectors;
 			var laptops = objectArrays.laptops;
 
+
+            $rootScope.openPage = function (pageName) {
+
+                  console.log("open the error page");
+                  window.location = pageName;
+                  window.location.reload();
+              };
+
 			var roomId = Schedule.findRoom(rooms, startSlot, endSlot);
 			if(roomId == -1)
 			{
 
-                $window.location.href='/error';
+                openPage('/error');
 				//$location.path('/error');
 				return;
 			}
