@@ -169,6 +169,8 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			.success(function(data){
 				vm.userData = data;			
 		});
+	} else {
+		$location.path("/login");
 	}
 
 	vm.dates = [
