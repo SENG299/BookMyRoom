@@ -16,19 +16,13 @@ angular.module('scheduleService', [])
 	{
 		if(day == 6 || day == 0)
 		{
-			//scheduleFactory.numSlots = 14;
-			//scheduleFactory.startHour = 11;
-			scheduleFactory.numSlots = 48;
-			scheduleFactory.startHour = 0;
-
+			scheduleFactory.numSlots = 14;
+			scheduleFactory.startHour = 11;
 		}
 		else
 		{
-			//scheduleFactory.numSlots = 28;
-			//scheduleFactory.startHour = 8;
-			scheduleFactory.numSlots = 48;
-			scheduleFactory.startHour = 0;
-	
+			scheduleFactory.numSlots = 28;
+			scheduleFactory.startHour = 8;	
 		} 
 	};
 

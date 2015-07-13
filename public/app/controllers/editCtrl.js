@@ -149,7 +149,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
     vm.extendSelected = vm.extendTimes[0];
   
     var bookingEnd = Schedule.calculateSlot(vm.newBookingData.data.end_hour, vm.newBookingData.data.end_minute); 	
-    var maxSlot = Schedule.numSlots-1; 
+    var maxSlot = Schedule.numSlots-1; //TODO: This should be changed depending on user time.
  
     vm.calculateExtendTime = function(){
 
@@ -239,6 +239,8 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 		var lockoutDate = {lockout: nowYear+"-"+nowMonth+"-"+nowDay+"-"+nowHour};
 		console.log(lockoutDate);
 
+//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
+/*
 		//using a service, the user is changed in the db
 		User.lockout(vm.userData.netlinkId, lockoutDate)
 			.success(function() {	 
@@ -251,6 +253,8 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 				console.log(headers);
 				console.log(config);
 			});
+*/
+//TODO: please remind me to uncomment it before handing it in
 	}
 
         //make a DELETE http request to backend /api/deletebooking through service
