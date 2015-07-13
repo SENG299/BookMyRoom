@@ -64,11 +64,12 @@
       <!-- Modal content-->
       <div class="modal-content"> 
         <div class="modal-header">
-          <h4 class="modal-title">Your booking has been created.</h4>
+          <h4 class="modal-title" ng-if="booker.canCreate">Your booking has been created.</h4>
+	  <h4 class="modal-title" ng-if="booker.cantCreate">Your booking was not created.</h4>
         </div>
         <div class="modal-body">
 		<div class="modal-body">
-	           <div class="panel-body" style="padding:0px;">
+	           <div class="panel-body" style="padding:0px;" ng-if="booker.canCreate">
                     <table class="table table-striped" style="margin-bottom: 0px;" showHeader="false">
                       <tbody align="left">
                         <tr>
@@ -108,6 +109,9 @@
                       </tbody>
                     </table>
                 </div>
+		<div class="panel-body" style="padding:0px;" ng-if="booker.cantCreate">
+			<p style="text-align: center"><strong>Cannot create a booking. You already have one for today.</strong></p>	
+		</div>
 	      </div>
         </div>
         <div class="modal-footer">

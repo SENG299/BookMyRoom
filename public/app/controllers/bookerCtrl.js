@@ -4,9 +4,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
     	var vm = this;
 
-   	 $rootScope.modalinfo = {}
-    
-   	 //this object is populated with the information that will belong to the new booking
+   	$rootScope.modalinfo = {}
 	
 	vm.userData = "";
 	vm.loggedIn = Auth.isLoggedIn();
@@ -16,17 +14,35 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 				vm.userData = data;			
 			});
 	}
+	
+        //these values are from the cookies
+	vm.chosenDate = new Date($cookies.getObject('chosenDate'));
+	vm.selectedStartTime = $cookies.getObject('chosenStartTime');
+	vm.selectedDuration = $cookies.getObject('duration').duration; 
+	vm.addProjector = $cookies.getObject('equipment').projector;
+	vm.addLaptop = $cookies.getObject('equipment').laptop;
+
+	vm.canCreate = true;
+	vm.cantCreate = false;
+	Booking.getBookings(vm.chosenDate.getFullYear(), vm.chosenDate.getMonth(), vm.chosenDate.getDate())
+		.success(function(data)
+		{	
+			//User can only create one booking per day.	
+			for(var i = 0; i < data.length; i++)
+			{
+				if(data[i].netlink_id == vm.userData.netlinkId)
+				{
+					vm.canCreate = false;
+					vm.cantCreate = true;
+					return;
+				}		
+			}
+		});	
 
 	vm.createBooking = function()
 	{
 		console.log("in create booking")
-		//these values are from the cookies
-		vm.chosenDate = new Date($cookies.getObject('chosenDate'));
-		vm.selectedStartTime = $cookies.getObject('chosenStartTime');
-		vm.selectedDuration = $cookies.getObject('duration').duration; 
-		vm.addProjector = $cookies.getObject('equipment').projector;
-		vm.addLaptop = $cookies.getObject('equipment').laptop;
-
+		
 		//the selectedDuration is divided by 2 because we are using integer values for each half hour increment.
 		// 1 = 30 minutes, 2 = 60 minutes, 3 = 90 minutes etc...
 		vm.calculateEndTime = function(){
@@ -46,7 +62,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 		};
 
 		vm.finalEndTime = vm.calculateEndTime();
-			vm.bookingData = {};
+		vm.bookingData = {};
 
 		//these flags disable the checkboxes for adding laptops/projectors
 		vm.disableAddProjector = false;
@@ -57,7 +73,12 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 		{	
 			vm.processing = true;
 			vm.message = '';	
-	
+					
+			if(vm.cantCreate)
+			{
+				return;
+			}	
+
 			Schedule.setDay(vm.chosenDate.getDay());
 	
 			var startSlot = Schedule.calculateSlot(vm.selectedStartTime.hour, vm.selectedStartTime.minutes);
@@ -72,10 +93,9 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			var roomId = Schedule.findRoom(rooms, startSlot, endSlot);
 			if(roomId == -1)
 			{
-
-                console.log("had conflict, please refresh")
-                window.location.href = '/error';
-				return;
+				console.log("had conflict, please refresh")
+				window.location.href = '/error';
+						return;
 			}
 			
 	
