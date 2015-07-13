@@ -169,6 +169,8 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			.success(function(data){
 				vm.userData = data;			
 		});
+	} else {
+		$location.path("/login");
 	}
 
 	vm.dates = [
@@ -202,7 +204,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			console.log(vm.today.getMonth());
 			console.log(vm.today.getDate());
 			console.log(vm.today.getHours());
-
+			//2015-6-14-0
 			if(vm.today.getFullYear() > vm.lockoutYear){
 				vm.nextView(item);
 			}else{

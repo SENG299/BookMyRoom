@@ -214,7 +214,10 @@ module.exports = function(app, express) {
     .put(function(req, res) {
 
       User.findOne({ netlink_id: req.params.netlink_id}, function (err, user){
-        if (err) res.send(err)
+        if (err){
+		console.log("ERROR USER NOT FOUND",err); 
+		res.send(err)
+	}
 
            console.log("Passed in data is", req.body)
         if (req.body.lockout) user.lockout = req.body.lockout
@@ -244,7 +247,9 @@ module.exports = function(app, express) {
 
           console.log(jwt.decode(token))
         })
+
       })
+
     })
 
 //##################### Finding by netlink_id ############
