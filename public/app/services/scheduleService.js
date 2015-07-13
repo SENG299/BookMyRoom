@@ -4,9 +4,9 @@ angular.module('scheduleService', [])
 
 	var scheduleFactory = {};
 
-	scheduleFactory.numRooms = 3;
-	scheduleFactory.numProjectors = 2;
-	scheduleFactory.numLaptops = 2;
+	scheduleFactory.numRooms = 10;
+	scheduleFactory.numProjectors = 5;
+	scheduleFactory.numLaptops = 5;
 
 	scheduleFactory.numSlots = 28;
 	scheduleFactory.startHour = 8; 
@@ -16,13 +16,13 @@ angular.module('scheduleService', [])
 	{
 		if(day == 6 || day == 0)
 		{
-			scheduleFactory.numSlots = 14;
-			scheduleFactory.startHour = 11;
+			scheduleFactory.numSlots = 48; //should be 14
+			scheduleFactory.startHour = 0; //should be 11
 		}
 		else
 		{
-			scheduleFactory.numSlots = 28;
-			scheduleFactory.startHour = 8;	
+			scheduleFactory.numSlots = 48; //should be 28
+			scheduleFactory.startHour = 0;	//should be 8
 		} 
 	};
 

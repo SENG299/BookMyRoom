@@ -104,8 +104,13 @@
 	  </div>
 	</div>
 		<!-- Trigger the modal with a button -->
-		<button type="button" style="width:60px;padding:7px;position:absolute; right:0; margin:5px;" class="btn btn-danger" data-toggle="modal" data-target="#myModal2"> <i class="fa fa-trash-o fa-lg"></i>
+		<button type="button" style="width:60px;padding:7px;position:absolute; right:0; margin:5px;" ng-click="editor.deleteBooking(userFutureBookings)" class="btn btn-danger" data-toggle="modal" data-target="#myModal2"> <i class="fa fa-trash-o fa-lg"></i>
 </button>
+		</br></br>
+		Note: </br>If you cancel within 5 hours of the start time, then you cannot book again for 24 hours.
+		Please be sure that you want to delete your booking before clicking delete as you will not get a chance to undo this function.
+
+		
 		<!-- Modal -->
 		<div id="myModal2" class="modal fade" role="dialog">
   		<div class="modal-dialog modal-sm">
@@ -116,12 +121,10 @@
 		<h4 class="modal-title">Confirm Deletion</h4>
 	      </div>
 	      <div class="modal-body">
-             <p style="font-weight: bold;">Note: </br>If you cancel within 5 hours of the start time,</br> then you cannot book again for 24 hours.</br></br></p>
-		<p>Are you sure you want to delete your booking?</p>
+             <p style="font-weight: bold;">{{(editor.userIsLockedOut) && ('You have been locked out for 24 hours.') || ('You have not been locked out. Please feel free to make another booking.')}}</br></br></p>
 	      </div>
 	      <div class="modal-footer">
-		<button type="button" class="btn btn-default" data-dismiss="modal" onclick="window.location.href='/profile'"  ng-click="editor.deleteBooking(userFutureBookings)">Confirm</button>
-		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="editor.lockoutRedirect()"  >OK</button>
 	      </div>
 	    </div>
 	  </div>

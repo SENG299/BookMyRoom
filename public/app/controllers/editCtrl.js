@@ -1,9 +1,11 @@
 angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'userService', 'authService'])
 
-.controller('bookingEditController', function($rootScope, $location, Booking, $cookies, Schedule, User, Auth) {
+.controller('bookingEditController', function($rootScope, $location, Booking, $cookies, Schedule, User, Auth, AuthToken) {
 	var vm = this;
 
 	vm.userData = "";
+	vm.userIsLockedOut = true;
+	vm.userIsntLockedOut = false;
 	vm.loggedIn = Auth.isLoggedIn();
 	if(vm.loggedIn){
 		Auth.getUser()
@@ -237,14 +239,18 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 		//calculation of the user's lockout
 		nowDay++; //user is locked out until next day at same time
 		var lockoutDate = {lockout: nowYear+"-"+nowMonth+"-"+nowDay+"-"+nowHour};
-		console.log(lockoutDate);
+		console.log("before", lockoutDate);
+		vm.userIsLockedOut = true;
+		vm.userIsntLockedOut = false;
 
-//TODO: THIS CODE IS FUNCTIONAL, DON'T DELETE IT. IT'S COMMENTED OUT JUST FOR TESTING PLEASE
-/*
 		//using a service, the user is changed in the db
-		User.lockout(vm.userData.netlinkId, lockoutDate)
-			.success(function() {	 
+		User.lockout(vm.userData.netlinkId, lockoutDate.lockout)
+			.success(function(data) {	 
 				console.log("User was locked out.");
+				console.log("lockout lockout",data);
+				console.log("lll ", lockoutDate);
+				//AuthToken.setToken(data.token);
+				//location.reload();
 			})
 			.error(function(data, status, headers, config) {	 
 				console.log("got an error...");
@@ -253,19 +259,31 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 				console.log(headers);
 				console.log(config);
 			});
-*/
-//TODO: please remind me to uncomment it before handing it in
+
 	}
 
         //make a DELETE http request to backend /api/deletebooking through service
         Booking.delete(vm.bookingId)
 		.success(function() {	 
 			console.log("Booking was deleted.");
+			
 		});
 
 		//in backend: find booking by the passed in object id
 		//delete booking once found. 
+		
+		
 	};
-
+	vm.lockoutRedirect = function (){
+		
+		if(vm.userIsLockedOut){
+			Auth.logout();
+			window.location.href = '/login';
+		}else{
+			window.location.href = '/profile';
+		}
+		
+		
+	}
     	vm.calculateExtendTime();
 });

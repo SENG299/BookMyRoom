@@ -40,8 +40,9 @@ angular.module('userService', [])
 	};
 
 	//locks a user out
-	userFactory.lockout = function(netlink_id, lockout) {
-		return $http.put('/api/users/lockout/'+ netlink_id, lockout);
+	userFactory.lockout = function(netlink_id, l) {
+		var ll = {lockout: l};
+		return $http.put('/api/users/lockout/'+ netlink_id, ll);
 	};
 	
 	return userFactory;
