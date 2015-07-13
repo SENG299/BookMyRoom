@@ -1,57 +1,37 @@
 angular.module('app.routes', ['ngRoute'])
 
-//added by JJ
+
 .config(function($routeProvider, $locationProvider){
 
 	$routeProvider
 
-	// Route for home page
+	// Route for booking edit page
 	.when("/booker", {
 		templateUrl: 'app/views/pages/booker.html',
 		controller: 'bookingEditController',
 		controllerAs: 'editor'
 	})
 
-	// Route for home page
+	// Route for home/day selector page
 	.when("/", {
 		templateUrl: 'app/views/pages/dayselector.html',
 		controller: 'daySelectorController',
 		controllerAs: 'selector'
 	})
 
+    // Route for profile page
 	.when("/profile", {
 		templateUrl: 'app/views/pages/profile.html',
 		controller: 'profileController',
 		controllerAs: 'profile'
 	})
 
-	// Route for home page
+	// Route for timeslot/equipment selection
 	.when("/schedule", {
 		templateUrl: 'app/views/pages/schedule.html',
 		controller: 'scheduleController',
 		controllerAs: 'schedule'
 	})
-
-	// Route for home page
-	.when("/users", {
-		templateUrl: 'app/views/pages/users/all.html',
-		controller: 'userController',
-		controllerAs: 'user'
-	})
-
-	// Route for user create page
-	.when("/users/create", {
-		templateUrl: 'app/views/pages/users/single.html',
-		controller: 'userCreateController',
-		controllerAs: 'user'
-	})
-
-	  // page to edit a user
-	  .when("/users/:user_id", {
-	      templateUrl: 'app/views/pages/users/single.html',
-	      controller: 'userEditController',
-	      controllerAs: 'user'
-	  })
 
 	//Page for login screen
   	.when("/login", {
@@ -60,7 +40,7 @@ angular.module('app.routes', ['ngRoute'])
 		controllerAs: 'login'
 	})
 
-
+    //error page for scheduling conflicts
 	.when("/error", {
 		templateUrl: 'app/views/pages/error.html',
 	})
