@@ -9,10 +9,6 @@ Install and run the BookMyRoom application:
 Note: 
 May require Private Browsing when testing to automatically refresh the browser cache, cookies, etc.
 
-Mongo login info
- - Username:bookmyroom
- - Password:hellohello123
-
 Users for testing/use cases:
  - Username: Staff     Password: f     User type: Staff
  - Username: Faculty   Password: f     User type: Faculty
