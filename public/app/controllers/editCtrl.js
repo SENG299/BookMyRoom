@@ -4,8 +4,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 	var vm = this;
 
 	vm.userData = "";
-	vm.userIsLockedOut = true;
-	vm.userIsntLockedOut = false;
+	vm.userIsLockedOut = false;
 	vm.loggedIn = Auth.isLoggedIn();
 	if(vm.loggedIn){
 		Auth.getUser()
@@ -241,7 +240,6 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 		var lockoutDate = {lockout: nowYear+"-"+nowMonth+"-"+nowDay+"-"+nowHour};
 		console.log("before", lockoutDate);
 		vm.userIsLockedOut = true;
-		vm.userIsntLockedOut = false;
 
 		//using a service, the user is changed in the db
 		User.lockout(vm.userData.netlinkId, lockoutDate.lockout)
