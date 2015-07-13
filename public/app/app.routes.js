@@ -1,6 +1,5 @@
 angular.module('app.routes', ['ngRoute'])
 
-//added by JJ
 .config(function($routeProvider, $locationProvider){
 
 	$routeProvider

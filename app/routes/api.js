@@ -60,7 +60,7 @@ module.exports = function(app, express) {
             phone: user.phone,
             lockout: user.lockout
           }, superSecret, {
-              expiresInMinutes: 1440 // expires in 24 hours TODO: Change the token expiry timing
+              expiresInMinutes: 30 // expires in 30 mins
           });
           
           // return the information including token as JSON
@@ -126,8 +126,6 @@ module.exports = function(app, express) {
       user.phone = req.body.phone;
       user.user_type = req.body.user_type;
       user.lockout = req.body.lockout;
-
-      console.log("details: ", req.body.username, req.body.password, req.body.netlink )
 
 			user.save(function(err) {
 				if (err) {
@@ -219,7 +217,6 @@ module.exports = function(app, express) {
 		res.send(err)
 	}
 
-           console.log("Passed in data is", req.body)
         if (req.body.lockout) user.lockout = req.body.lockout
 
         user.save(function(err) {
@@ -235,7 +232,7 @@ module.exports = function(app, express) {
             phone: user.phone,
             lockout: user.lockout
           }, superSecret, {
-              expiresInMinutes: 1440 // expires in 24 hours TODO: Change the token expiry timing
+              expiresInMinutes: 30 // expires in 30 mins
           });
           
           // return the information including token as JSON
@@ -245,7 +242,6 @@ module.exports = function(app, express) {
             token: token
           });
 
-          console.log(jwt.decode(token))
         })
 
       })
@@ -259,7 +255,7 @@ module.exports = function(app, express) {
       User.findOne({ netlink_id: req.params.netlink_id}, function (err, user){
         if (err) res.send(err)
 
-           console.log("Passed in data is", req.body)
+
         if (req.body.email) user.email = req.body.email
         if (req.body.phone) user.phone = req.body.phone
 
@@ -279,7 +275,7 @@ module.exports = function(app, express) {
             phone: user.phone,
             lockout: user.lockout
           }, superSecret, {
-              expiresInMinutes: 1440 // expires in 24 hours TODO: Change the token expiry timing
+              expiresInMinutes: 30 // expires in 30 mins
           });
           
           // return the information including token as JSON
@@ -289,7 +285,7 @@ module.exports = function(app, express) {
             token: token
           });
 
-          console.log(jwt.decode(token))
+
         })
 
       })
@@ -443,9 +439,6 @@ returns all the boookings for a user
 	// api endpoint to get user information
 	apiRouter.route('/me')
     .get(function(req, res) {
-
-      // var decodedT = jwt.decode(token)
-      //     console.log("DEcodedetoken in middleware:", decodedT)
 
       res.send(req.decoded);
 	});

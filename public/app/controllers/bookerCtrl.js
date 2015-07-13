@@ -19,7 +19,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 
 	vm.createBooking = function()
 	{
-		console.log("in create booking")
+
 		//these values are from the cookies
 		vm.chosenDate = new Date($cookies.getObject('chosenDate'));
 		vm.selectedStartTime = $cookies.getObject('chosenStartTime');
@@ -73,7 +73,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			if(roomId == -1)
 			{
 
-                console.log("had conflict, please refresh")
                 window.location.href = '/error';
 				return;
 			}
@@ -122,31 +121,14 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			
 			$rootScope.modalinfo = {};
 
-			console.log("bookingData:");
-			console.log(vm.bookingData);
-
-            /*
-			if (vm.bookingData.projector_id === -1){
-				$rootScope.modalinfo.projector_id = "No";
-			}
-			if (vm.bookingData.laptop_id === -1){
-				$rootScope.modalinfo.laptop_id = "No";
-			}
-            */
 		
             $rootScope.modalinfo = vm.bookingData;
             $rootScope.modalinfo.startTime = new Date(vm.bookingData.start_year, vm.bookingData.start_month, vm.bookingData.start_day, vm.bookingData.start_hour, vm.bookingData.start_minute)
 
             $rootScope.modalinfo.endTime = new Date(vm.bookingData.start_year, vm.bookingData.start_month, vm.bookingData.start_day, vm.bookingData.end_hour, vm.bookingData.end_minute)
-
-			console.log("modal data" );
-			console.log($rootScope.modalinfo);
-
-				
+		
 			Booking.create(vm.bookingData)
 				.success(function(data) {
-					console.log("in booking.create")
-					console.log(vm.bookingData)
 					vm.processing = false; 
 			});
 			
@@ -154,7 +136,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			})
 			.error(function(data){
 				console.log("Error when creating booking!");
-				console.log(data);
 			});	
 		};
 
@@ -188,8 +169,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 	vm.updateSelectedValue = function(item){
 		
 		if(vm.loggedIn){
-			
-			console.log(vm.userData);
+
 			vm.lockoutString = vm.userData.lockout;
 			if(typeof vm.lockoutString === 'undefined'){
 				vm.lockoutString = '1999-9-9-9'; //random date from the past in case the user has no lockout in the db
@@ -199,11 +179,6 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 			vm.lockoutMonth = Number(vm.lockoutDate[1]);
 			vm.lockoutDay = Number(vm.lockoutDate[2]);
 			vm.lockoutHour = Number(vm.lockoutDate[3]);
-			console.log("lockout "+vm.lockoutYear+" "+vm.lockoutMonth+" "+vm.lockoutDay+" "+vm.lockoutHour);
-			console.log(vm.today.getFullYear());
-			console.log(vm.today.getMonth());
-			console.log(vm.today.getDate());
-			console.log(vm.today.getHours());
 			//2015-6-14-0
 			if(vm.today.getFullYear() > vm.lockoutYear){
 				vm.nextView(item);

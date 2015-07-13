@@ -52,11 +52,8 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
      
         //make a DELETE http request to backend /api/deletebooking through service
         Booking.delete(vm.bookingId)
-			.success(function() {
-				console.log("did it delete?");        
+			.success(function() {      
 		    });
-        
-        console.log("in edit booking")
 
         //add extend timing limit here
       
@@ -73,15 +70,11 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 	Booking.getBookings(vm.newBookingData.data.start_year, vm.newBookingData.data.start_month, vm.newBookingData.data.start_day)
 		.success(function(data)
 		{	
-        
-            console.log("get bookings success")
-
 
 	        //it's a weekend
 	               var startSlot = Schedule.calculateSlot(vm.newBookingData.data.start_hour, vm.newBookingData.data.start_minute);
 	    var endSlot = Schedule.calculateSlot(vm.newBookingData.data.end_hour, vm.newBookingData.data.end_minute); 
 
-            console.log("---------");
             var objectArrays = Schedule.buildObjectArrays(data);
 
 	    var projectors = objectArrays.projectors;
@@ -93,9 +86,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 	    vm.newBookingData.data.netlink_id = vm.userData.netlinkId; 
 	    vm.newBookingData.data.projector_id = projectorId;
 	    vm.newBookingData.data.laptop_id = laptopId;
-            
-            console.log( "proj ->" +   vm.newBookingData.data.projector_id)	
-            console.log( "laptop ->" +   vm.newBookingData.data.laptop_id)
+
 
 	    vm.newBookingData.data.booking_id = vm.newBookingData.data.start_year + ":" +
 					vm.newBookingData.data.start_month + ":" +
@@ -109,31 +100,20 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
             Booking.create(vm.newBookingData.data)
 				.success(function(data) {
 					vm.processing = false; 
-                    console.log("made the new booking");
 			});
 
 
             $rootScope.modalinfo = vm.newBookingData;
 
-            
-            console.log("-------")
-            console.log("-------")
-            console.log(vm.newBookingData.data)
-
         }).error(function(data){
             console.log("Something went wrong.");
         })
-        
-        console.log("data to create new booking" );
-        console.log(vm.newBookingData);
         
       }   
       
      vm.addMin = function(date, minutes) {
 
         var d = new Date(date);
-        //console.log(new Date(d.getTime()+ minutes*60000));
-
         return new Date(d.getTime() + minutes*60000);
      };
 
@@ -190,8 +170,6 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 		{
 			numExtendSlots = 6;
 		}
-			
-		console.log(numExtendSlots);
 	
 		for(var i = 1; i <= numExtendSlots; i++)
 		{
@@ -228,34 +206,19 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 
 	//lockout code
 	//if booking is cancelled less than 5 hours before booking, lock user
-	console.log(vm.selectedBooking);
-	console.log("current time " + nowYear+" "+nowMonth+" "+nowDay+" "+nowHour);
-	console.log("booking time " + bookingYear+" "+bookingMonth+" "+bookingDay+" "+bookingHour);
-	//if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === nowDay && (nowHour - 5) <= bookingHour){
 	if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === nowDay && (nowHour - 5) <= bookingHour){
 
 		//if true, the user will be locked out
 		//calculation of the user's lockout
 		nowDay++; //user is locked out until next day at same time
 		var lockoutDate = {lockout: nowYear+"-"+nowMonth+"-"+nowDay+"-"+nowHour};
-		console.log("before", lockoutDate);
 		vm.userIsLockedOut = true;
 
 		//using a service, the user is changed in the db
 		User.lockout(vm.userData.netlinkId, lockoutDate.lockout)
 			.success(function(data) {	 
-				console.log("User was locked out.");
-				console.log("lockout lockout",data);
-				console.log("lll ", lockoutDate);
-				//AuthToken.setToken(data.token);
-				//location.reload();
 			})
 			.error(function(data, status, headers, config) {	 
-				console.log("got an error...");
-				console.log(data);
-				console.log(status);		
-				console.log(headers);
-				console.log(config);
 			});
 
 	}
@@ -263,7 +226,6 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
         //make a DELETE http request to backend /api/deletebooking through service
         Booking.delete(vm.bookingId)
 		.success(function() {	 
-			console.log("Booking was deleted.");
 			
 		});
 

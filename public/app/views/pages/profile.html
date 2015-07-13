@@ -62,13 +62,6 @@
 
       <accordion-group heading="Booking on {{ userFutureBooking.startTime | date : 'd MMM, yyyy'}}" ng-repeat="userFutureBooking in profile.userFutureBookings">
         <div class="panel-body" style="padding:0px;">
-  				<!-- <div class="col-xs-4 "></div> -->
-  				<!-- <div class="col-xs-4 " style="text-align:left; font-size: 16px;" > -->
-  	        <!-- <br>Date: {{userFutureBooking.startTime | date : 'd MMM, yyyy'}}
-  	        <br>From: {{userFutureBooking.startTime | date : 'h:mm a'}}
-  	        <br>To: {{userFutureBooking.endTime | date : 'h:mm a'}}
-  	        <br>Laptop:  {{ userFutureBooking.hasLaptop}}
-  	        <br>Projector: {{ userFutureBooking.hasProjector}} -->
             <table class="table table-striped" style="margin-bottom: 0px;" showHeader="false">
               <tbody align="left">
                 <tr>
@@ -106,8 +99,6 @@
             </table>
             <button class="editbutton btn btn-info" ng-click="profile.setSelected(userFutureBooking);"><i class="fa fa-pencil"></i></button>
         </div>
-  	       <!-- <div class="col-xs-4 "></div> -->
-  	      <!-- </div> -->
       </accordion-group>
       
     </accordion>

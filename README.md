@@ -8,6 +8,9 @@ Install and run the BookMyRoom application:
 
 Note: 
 May require Private Browsing when testing to automatically refresh the browser cache, cookies, etc.
+In case you get locked out and want to reset your lockout date:
+ - Log in to the mongolab using the credentials at the bottom of the A3 documentation pdf
+ - Change your users lockout date to a time in the past (formatted as year, month, day, hour) seperated by - , eg: "1999-9-9-9"
 
 Users for testing/use cases:
  - Username: Staff     Password: f     User type: Staff
