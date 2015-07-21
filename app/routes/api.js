@@ -304,13 +304,17 @@ module.exports = function(app, express) {
 			var year = req.body.year;
 			var month = req.body.month;
 			var day = req.body.day;
+  			Booking.find({"start_year":year, "start_month": month, "start_day": day}, function(err, bookings) {
+  				if (err) res.send(err);
 
-			Booking.find({"start_year":year, "start_month": month, "start_day": day}, function(err, bookings) {
-				if (err) res.send(err);
 
-				// return the bookings
-				res.json(bookings);
-			});
+  				return the bookings
+          setTimeout(function () {
+            res.json(bookings);
+          }, 5000)
+          // res.json(bookings);
+  				
+  			});
 		});
 
 
