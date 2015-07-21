@@ -308,7 +308,7 @@ module.exports = function(app, express) {
   				if (err) res.send(err);
 
 
-  				return the bookings
+  				// return the bookings
           setTimeout(function () {
             res.json(bookings);
           }, 5000)
