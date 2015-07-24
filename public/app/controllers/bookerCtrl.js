@@ -214,7 +214,7 @@ angular.module('bookerCtrl', ['bookingService', 'ngCookies', 'scheduleService', 
 	};	
 
 	vm.alert = function(){
-		alert("Sorry. You cannot book until after "+vm.lockoutYear+ "-" +(vm.lockoutMonth+1)+ "-"+vm.lockoutDay+" because you cancelled a booking within 5 hours of it's start time. Thanks!" );
+		alert("Sorry. You cannot book until after "+vm.lockoutYear+ "-" +(vm.lockoutMonth+1)+ "-"+vm.lockoutDay+" after "+vm.lockoutHour+":00 "+((vm.lockoutHour < 12) ? "AM" : "PM") +" because you cancelled a booking within 5 hours of it's start time. Thanks!" );
 	};
 })
 

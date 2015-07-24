@@ -206,7 +206,7 @@ angular.module('editCtrl', ['bookingService', 'ngCookies', 'scheduleService', 'u
 
 	//lockout code
 	//if booking is cancelled less than 5 hours before booking, lock user
-	if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === nowDay && (nowHour - 5) <= bookingHour){
+	if(bookingYear === nowYear && bookingMonth === nowMonth && bookingDay === nowDay && (nowHour - 5) <= bookingHour && vm.userData.user_type != 0){
 
 		//if true, the user will be locked out
 		//calculation of the user's lockout
