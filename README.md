@@ -14,5 +14,5 @@ Clone the repository
 
 Run `npm install` to install the dependencies
 
-Run `npm server.js` to start local server for development
+Run `node server.js` to start local server for development
 
