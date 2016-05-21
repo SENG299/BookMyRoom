@@ -16,3 +16,5 @@ Run `npm install` to install the dependencies
 
 Run `node server.js` to start local server for development
 
+Created by Jose Gordillo, Adam Dubicki, Tim Salomonsson, Chrissanda Ann, Mike Weicker, and Antony 
+
